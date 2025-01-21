@@ -21,11 +21,7 @@ const app = new Elysia()
       credentials: true,
       allowedHeaders: ["content-type"],
       methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "HEAD", "OPTIONS"],
-      origin: [
-        "https://www.orbizy.app",
-        "https://receitaws.com.br",
-        "https://viacep.com.br",
-      ],
+      origin: "https://www.orbizy.app",
       // origin: (request): boolean => {
       //   const origin = request.headers.get("origin")
 
@@ -51,6 +47,47 @@ const app = new Elysia()
   .use(inviteValidate)
   .use(registerClient)
   .use(removeClient)
+
+app.get("/api/*", async ({ params, request }) => {
+  const path = params["*"]
+  const targetUrl = `https://receitaws.com.br/${path}`
+
+  try {
+    const response = await fetch(targetUrl, {
+      method: request.method,
+      headers: request.headers,
+    })
+    const data = await response.json()
+
+    return data
+  } catch (error) {
+    console.error("Erro no proxy:", error)
+    return {
+      error: "Erro ao acessar a API externa.",
+    }
+  }
+})
+
+// Proxy para /cep
+app.get("/cep/*", async ({ params, request }) => {
+  const path = params["*"]
+  const targetUrl = `https://viacep.com.br/${path}`
+
+  try {
+    const response = await fetch(targetUrl, {
+      method: request.method,
+      headers: request.headers,
+    })
+    const data = await response.json()
+
+    return data
+  } catch (error) {
+    console.error("Erro no proxy:", error)
+    return {
+      error: "Erro ao acessar a API externa.",
+    }
+  }
+})
 
 app.listen(3333, () => {
   console.log("🚀 Server is running on port 3333")
