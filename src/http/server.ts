@@ -21,7 +21,7 @@ const app = new Elysia()
       credentials: true,
       allowedHeaders: ["content-type"],
       methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "HEAD", "OPTIONS"],
-      origin: "https://orbizy.app",
+      origin: "https://www.orbizy.app",
       // origin: (request): boolean => {
       //   const origin = request.headers.get("origin")
 
