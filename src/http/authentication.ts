@@ -9,7 +9,6 @@ export interface CookieProps {
   }
 }
 export async function auth({ cookie }: CookieProps) {
-  // 1. Log para debug
   console.log("Cookie recebido:", cookie)
 
   if (!cookie) {
