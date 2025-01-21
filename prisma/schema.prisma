@@ -1,0 +1,272 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgres"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id         String  @id @default(uuid())
+  name       String?
+  email      String  @unique
+  role       Role    @default(BASIC)
+  type       Type    @default(basic)
+  company_id String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  Company Company? @relation(fields: [company_id], references: [id], onDelete: Cascade)
+
+  PendingUserInvites PendingUser[]
+  AuthLinks          AuthLinks[]
+
+  @@map("users")
+}
+
+model Company {
+  id             String   @id @default(uuid())
+  cnpj           String   @unique
+  phone          String
+  state          String
+  city           String
+  cep            String
+  address        String
+  neighborhood   String
+  address_number String
+  company_name   String
+  owner_id       String
+  createdAt      DateTime @default(now())
+
+  user              User[]
+  item              Item[]
+  paymentModeCustom PaymentModeCustom[]
+  unitTypeCustom    UnitTypeCustom[]
+  invoice           Invoice[]
+  estimate          Estimate[]
+  supplierUser      SupplierUser[]
+  client            Client[]
+  pendingUsers      PendingUser[]
+  inviteLinks       InviteLinks[]
+
+  @@map("companies")
+}
+
+model PendingUser {
+  id         String   @id @default(uuid())
+  email      String   @unique
+  company_id String
+  invited_by String
+  createdAt  DateTime @default(now())
+
+  invitedBy User @relation(fields: [invited_by], references: [id], onDelete: Cascade)
+
+  company Company @relation(fields: [company_id], references: [id], onDelete: Cascade)
+
+  @@map("pending_users")
+}
+
+model SupplierUser {
+  supplier_id String
+  company_id  String
+
+  supplier Supplier @relation(fields: [supplier_id], references: [id], onDelete: Cascade)
+
+  Company Company? @relation(fields: [company_id], references: [id], onDelete: Cascade)
+
+  @@id([supplier_id, company_id])
+}
+
+model Supplier {
+  id             String   @id @default(uuid())
+  cnpj           String   @unique
+  phone          String
+  state          String
+  city           String
+  cep            String
+  address        String
+  neighborhood   String
+  address_number String
+  company_name   String
+  email_address  String   @default("")
+  createdAt      DateTime @default(now())
+
+  supplierUser SupplierUser[]
+  estimate     Estimate[]
+
+  @@map("sluppliers")
+}
+
+model Client {
+  id             String   @id @default(uuid())
+  type           String
+  cpf            String?
+  cnpj           String?
+  name           String
+  company_name   String?
+  email_address  String
+  phone          String
+  cep            String
+  address        String
+  address_number String
+  neighborhood   String
+  city           String
+  state          String
+  createdAt      DateTime @default(now())
+
+  invoice Invoice[]
+
+  company    Company? @relation(fields: [company_id], references: [id], onDelete: Cascade)
+  company_id String?
+
+  @@map("clients")
+}
+
+model PaymentMode {
+  id   String @id @default(uuid())
+  name String
+
+  @@map("payments_mode")
+}
+
+model PaymentModeCustom {
+  id   String @id @default(uuid())
+  name String
+
+  company    Company? @relation(fields: [company_id], references: [id], onDelete: Cascade)
+  company_id String?  @map("company_id")
+
+  @@map("payments_mode_custom")
+}
+
+model UnitType {
+  id   String @id @default(uuid())
+  name String
+
+  @@map("unit_types")
+}
+
+model UnitTypeCustom {
+  id   String @id @default(uuid())
+  name String
+
+  company    Company? @relation(fields: [company_id], references: [id], onDelete: Cascade)
+  company_id String?  @map("company_id")
+
+  @@map("unit_types_custom")
+}
+
+model Item {
+  id          String  @id @default(uuid())
+  name        String
+  price       Decimal
+  description String
+  unit        String
+
+  company    Company? @relation(fields: [company_id], references: [id], onDelete: Cascade)
+  company_id String?  @map("company_id")
+
+  @@map("items")
+}
+
+model Invoice {
+  id             String   @id @default(uuid())
+  invoice_number String?
+  status         String?
+  notes          String?
+  sub_total      Decimal?
+  total          Decimal?
+  createdAt      DateTime @default(now())
+
+  invoiceItems InvoiceItems[]
+
+  company    Company? @relation(fields: [company_id], references: [id], onDelete: Cascade)
+  company_id String?  @map("company_id")
+
+  client    Client? @relation(fields: [client_id], references: [id], onDelete: Cascade)
+  client_id String? @map("client_id")
+
+  @@map("invoices")
+}
+
+model InvoiceItems {
+  id        String   @id @default(uuid())
+  name      String
+  price     Decimal
+  quantity  Decimal
+  unit      String
+  total     Decimal
+  createdAt DateTime @default(now())
+
+  invoice    Invoice @relation(fields: [invoice_id], references: [id], onDelete: Cascade)
+  invoice_id String  @map("invoice_id")
+
+  @@map("invoice_items")
+}
+
+model Estimate {
+  id              String   @id @default(uuid())
+  estimate_number String?
+  status          String?
+  notes           String?
+  createdAt       DateTime @default(now())
+
+  estimateItems EstimateItems[]
+
+  supplier    Supplier @relation(fields: [supplier_id], references: [id], onDelete: Cascade)
+  supplier_id String
+
+  company    Company? @relation(fields: [company_id], references: [id], onDelete: Cascade)
+  company_id String?  @map("company_id")
+
+  @@map("estimates")
+}
+
+model EstimateItems {
+  id        String   @id @default(uuid())
+  name      String
+  quantity  Decimal
+  createdAt DateTime @default(now())
+
+  estimate    Estimate @relation(fields: [estimate_id], references: [id], onDelete: Cascade)
+  estimate_id String   @map("estimate_id")
+
+  @@map("estimate_items")
+}
+
+model AuthLinks {
+  id        String   @id @default(uuid())
+  code      String   @unique
+  createdAt DateTime @default(now())
+  expiresAt DateTime
+
+  user    User   @relation(fields: [user_id], references: [id])
+  user_id String
+
+  @@map("auth_links")
+}
+
+model InviteLinks {
+  id        String   @id @default(uuid())
+  code      String   @unique
+  createdAt DateTime @default(now())
+  expiresAt DateTime
+
+  company    Company @relation(fields: [company_id], references: [id])
+  company_id String
+
+  @@map("invite_links")
+}
+
+enum Role {
+  BASIC
+  MASTER
+}
+
+enum Type {
+  basic
+  pro
+  team
+}
