@@ -12,16 +12,11 @@ export const createToken = (payload: TokenPayload) => {
 }
 
 export const verifyToken = (token: {
-  jar: {
-    auth: { value: string }
-  }
+  auth: { value: string }
 }): TokenPayload | null => {
   console.log("Verificando token:", token)
   try {
-    const tokenVerify = verify(
-      token.jar.auth.value,
-      env.JWT_SECRET
-    ) as TokenPayload
+    const tokenVerify = verify(token.auth.value, env.JWT_SECRET) as TokenPayload
     console.log("Token verificado:", tokenVerify)
     return tokenVerify
   } catch {

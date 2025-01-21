@@ -5,9 +5,7 @@ import { db } from "../lib/prisma"
 
 export interface CookieProps {
   cookie: {
-    jar: {
-      auth: { value: string }
-    }
+    auth: { value: string }
   }
 }
 export async function auth({ cookie }: CookieProps) {
