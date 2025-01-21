@@ -23,11 +23,7 @@ export const authFromLink = new Elysia().get(
       companyId: magicLink.user.company_id!,
     })
 
-    console.log("Token gerado:", token)
-
     setCookie(cookie.auth, token)
-
-    console.log("Cookie definido:", cookie.auth)
 
     // Limpar magic link usado
     await db.authLinks.delete({ where: { id: magicLink.id } })
