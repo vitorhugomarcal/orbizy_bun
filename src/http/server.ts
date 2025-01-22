@@ -16,6 +16,7 @@ import { registerInvited } from "./routes/registerInvited"
 import { inviteValidate } from "./routes/inviteValidate"
 import { registerClient } from "./routes/clients/registerClient"
 import { removeClient } from "./routes/clients/removeClient"
+import { logoutRoute } from "./routes/logout"
 
 const app = new Elysia()
 
@@ -53,6 +54,7 @@ app
   .use(inviteValidate)
   .use(registerClient)
   .use(removeClient)
+  .use(logoutRoute)
 
 // Proxy para /api
 app.get("/api/*", async ({ params, request }) => {
