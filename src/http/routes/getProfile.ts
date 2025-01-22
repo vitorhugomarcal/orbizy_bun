@@ -4,8 +4,6 @@ import { auth, type CookieProps } from "../authentication"
 export const getProfile = new Elysia().get(
   "/me",
   async ({ cookie }: CookieProps) => {
-    console.log("Iniciando getProfile", cookie)
-
     const user = await auth({ cookie })
 
     if (!user) {

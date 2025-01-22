@@ -7,19 +7,22 @@ interface TokenPayload {
 }
 
 export const createToken = (payload: TokenPayload) => {
-  console.log("Criando token com payload:", payload)
   return sign(payload, env.JWT_SECRET, { expiresIn: "7d" })
 }
 
 export const verifyToken = (token: {
   auth: { value: string }
 }): TokenPayload | null => {
-  console.log("Verificando token:", token)
   try {
     const tokenVerify = verify(token.auth.value, env.JWT_SECRET) as TokenPayload
-    console.log("Token verificado:", tokenVerify)
     return tokenVerify
   } catch {
     return null
+  }
+}
+
+export const removeToken = (token: { auth: { value: string } }): void => {
+  if (token?.auth?.value) {
+    token.auth.value = ""
   }
 }

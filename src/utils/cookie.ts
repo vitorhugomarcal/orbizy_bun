@@ -7,7 +7,8 @@ export const setCookie = (cookie: Cookie<any>, token: string) => {
     secure: process.env.NODE_ENV === "production",
     maxAge: 7 * 24 * 60 * 60, // 7 days
     path: "/",
-    // domain: "orbizy.app",
-    // sameSite: "lax",
   })
+}
+export const removeCookie = (cookie: Cookie<any>) => {
+  cookie.remove()
 }
