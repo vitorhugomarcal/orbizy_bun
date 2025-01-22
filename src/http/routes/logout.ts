@@ -7,7 +7,7 @@ export const logoutRoute = new Elysia().get("/signout", async ({ cookie }) => {
   return new Response(null, {
     status: 302,
     headers: {
-      Location: "/",
+      Location: "/sign-in",
     },
   })
 })
