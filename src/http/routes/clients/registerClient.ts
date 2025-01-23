@@ -1,7 +1,6 @@
 import Elysia, { t } from "elysia"
 import { db } from "../../../lib/prisma"
-import { env } from "../../../env"
-import { auth, type CookieProps } from "../../authentication"
+import { auth } from "../../authentication"
 
 class AuthError extends Error {
   constructor(

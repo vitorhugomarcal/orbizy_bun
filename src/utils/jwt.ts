@@ -20,9 +20,3 @@ export const verifyToken = (token: {
     return null
   }
 }
-
-export const removeToken = (token: { auth: { value: string } }): void => {
-  if (token?.auth?.value) {
-    token.auth.value = ""
-  }
-}

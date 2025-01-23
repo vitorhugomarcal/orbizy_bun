@@ -1,7 +1,7 @@
 import Elysia, { t } from "elysia"
-import { db } from "../../lib/prisma"
-import { createToken } from "../../utils/jwt"
-import { setCookie } from "../../utils/cookie"
+import { db } from "../../../lib/prisma"
+import { createToken } from "../../../utils/jwt"
+import { setCookie } from "../../../utils/cookie"
 
 export const authFromLink = new Elysia().get(
   "/auth/verify",

@@ -1,8 +1,8 @@
-import Elysia, { t } from "elysia"
-import { db } from "../../lib/prisma"
 import { createId } from "@paralleldrive/cuid2"
+import Elysia, { t } from "elysia"
 import { Resend } from "resend"
-import { env } from "../../env"
+import { env } from "../../../env"
+import { db } from "../../../lib/prisma"
 
 class AuthError extends Error {
   constructor(

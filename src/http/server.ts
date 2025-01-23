@@ -1,22 +1,23 @@
-import Elysia from "elysia"
 import cors from "@elysiajs/cors"
+import Elysia from "elysia"
 
 // Importações de rotas
-import { sendAuthLink } from "./routes/sendAuthLink"
-import { authFromLink } from "./routes/authLink"
-import { getProfile } from "./routes/getProfile"
+import { authFromLink } from "./routes/auth/authLink"
+import { inviteValidate } from "./routes/auth/inviteValidate"
+import { logoutRoute } from "./routes/auth/logout"
+import { registerInvited } from "./routes/auth/registerInvited"
+import { sendAuthLink } from "./routes/auth/sendAuthLink"
+import { sendInviteLink } from "./routes/auth/sendInvite"
+import { sessions } from "./routes/auth/sessions"
 import { getClients } from "./routes/clients/getClients"
-import { getItens } from "./routes/getItens"
-import { getSuppliers } from "./routes/getSuppliers"
-import { getSupplierEstimate } from "./routes/getSupplierEstimate"
-import { getInvoices } from "./routes/getInvoices"
-import { getCompany } from "./routes/getCompany"
-import { sendInviteLink } from "./routes/sendInvite"
-import { registerInvited } from "./routes/registerInvited"
-import { inviteValidate } from "./routes/inviteValidate"
 import { registerClient } from "./routes/clients/registerClient"
 import { removeClient } from "./routes/clients/removeClient"
-import { logoutRoute } from "./routes/logout"
+import { getCompany } from "./routes/company/getCompany"
+import { getInvoices } from "./routes/company/getInvoicesByCompany"
+import { getItens } from "./routes/company/getItensByCompany"
+import { getSupplierEstimate } from "./routes/supplier/getSupplierEstimate"
+import { getSuppliers } from "./routes/supplier/getSuppliers"
+import { getProfile } from "./routes/users/getProfile"
 
 const app = new Elysia()
 
@@ -55,6 +56,7 @@ app
   .use(registerClient)
   .use(removeClient)
   .use(logoutRoute)
+  .use(sessions)
 
 // Proxy para /api
 app.get("/api/*", async ({ params, request }) => {

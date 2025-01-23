@@ -1,6 +1,6 @@
 import Elysia from "elysia"
-import { auth, type CookieProps } from "../authentication"
-import { db } from "../../lib/prisma"
+import { db } from "../../../lib/prisma"
+import { auth, type CookieProps } from "../../authentication"
 
 export const getCompany = new Elysia().get(
   "/company",

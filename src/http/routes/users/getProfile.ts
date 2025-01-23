@@ -1,5 +1,5 @@
 import Elysia from "elysia"
-import { auth, type CookieProps } from "../authentication"
+import { auth, type CookieProps } from "../../authentication"
 
 export const getProfile = new Elysia().get(
   "/me",

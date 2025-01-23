@@ -1,5 +1,5 @@
-import { verifyToken } from "../utils/jwt"
 import { db } from "../lib/prisma"
+import { verifyToken } from "../utils/jwt"
 
 export interface CookieProps {
   cookie: {

@@ -1,6 +1,5 @@
 import Elysia, { t } from "elysia"
-import { db } from "../../lib/prisma"
-import { env } from "../../env"
+import { db } from "../../../lib/prisma"
 
 class AuthError extends Error {
   constructor(
