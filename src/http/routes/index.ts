@@ -6,6 +6,7 @@ import estimateRoutes from "./estimate"
 import itemRoutes from "./itens"
 import supplierRoutes from "./supplier"
 import unitRoutes from "./unit"
+import userRoutes from "./users"
 
 const routes = new Elysia()
   .use(authRoutes)
@@ -15,5 +16,6 @@ const routes = new Elysia()
   .use(itemRoutes)
   .use(supplierRoutes)
   .use(unitRoutes)
+  .use(userRoutes)
 
 export default routes
