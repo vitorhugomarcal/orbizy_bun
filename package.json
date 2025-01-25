@@ -29,6 +29,7 @@
     "@elysiajs/swagger": "^1.2.0",
     "@paralleldrive/cuid2": "^2.2.2",
     "@prisma/client": "^6.2.1",
+    "date-fns": "^4.1.0",
     "dayjs": "^1.11.13",
     "elysia": "^1.2.10",
     "jsonwebtoken": "^9.0.2",

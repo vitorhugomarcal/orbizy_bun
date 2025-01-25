@@ -3,6 +3,7 @@ import { Elysia } from "elysia"
 import { registerClient } from "./create"
 import { getAll } from "./getAll"
 import { getBy } from "./getBy"
+import { getByMonth } from "./getByMonth"
 import { removeClient } from "./remove"
 import { update } from "./update"
 
@@ -12,5 +13,6 @@ const clientsRoutes = new Elysia()
   .use(removeClient)
   .use(registerClient)
   .use(update)
+  .use(getByMonth)
 
 export default clientsRoutes
