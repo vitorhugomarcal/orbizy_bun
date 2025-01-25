@@ -1,22 +1,11 @@
 import Elysia, { t } from "elysia"
 import { db } from "../../../lib/prisma"
 import { auth } from "../../authentication"
-
-class AuthError extends Error {
-  constructor(
-    message: string,
-    public readonly code: string,
-    public readonly statusCode: number
-  ) {
-    super(message)
-    this.name = "AuthError"
-  }
-}
+import { AuthError } from "../errors/auth-error"
 
 export const registerClient = new Elysia().post(
   `/client/register`,
   async ({ cookie, body }) => {
-    // Changed this line - single destructuring
     const {
       type,
       email_address,
@@ -34,11 +23,43 @@ export const registerClient = new Elysia().post(
     } = body
 
     const user = await auth({ cookie })
-
     if (!user) {
       throw new AuthError("Unauthorized", "UNAUTHORIZED", 401)
     }
 
+    if (type === "física" && !cpf) {
+      throw new AuthError(
+        "CPF é obrigatório para clientes físicos",
+        "MISSING_CPF",
+        400
+      )
+    }
+
+    if (type === "jurídica" && (!cnpj || !company_name)) {
+      throw new AuthError(
+        "CNPJ e nome da empresa são obrigatórios para clientes jurídicos",
+        "MISSING_CNPJ_OR_COMPANY_NAME",
+        400
+      )
+    }
+
+    // Verificar se já existe um cliente com este email ou documentos
+    const existingClient = await db.client.findFirst({
+      where: {
+        company_id: user.Company?.id,
+        OR: [
+          { email_address },
+          { cpf: cpf || undefined },
+          { cnpj: cnpj || undefined },
+        ],
+      },
+    })
+
+    if (existingClient) {
+      throw new AuthError("Cliente já cadastrado", "CLIENT_ALREADY_EXISTS", 400)
+    }
+
+    // Criar o novo cliente
     const client = await db.client.create({
       data: {
         company_id: user.Company?.id,
@@ -57,16 +78,20 @@ export const registerClient = new Elysia().post(
         city,
       },
     })
-    return client
+
+    return {
+      message: "Cliente cadastrado com sucesso",
+      client,
+    }
   },
   {
     body: t.Object({
       type: t.String(),
       email_address: t.String(),
       name: t.String(),
-      company_name: t.Optional(t.String()),
-      cpf: t.Optional(t.String()),
-      cnpj: t.Optional(t.String()),
+      company_name: t.Optional(t.String()), // Opcional, mas validado na lógica
+      cpf: t.Optional(t.String()), // Opcional, mas validado na lógica
+      cnpj: t.Optional(t.String()), // Opcional, mas validado na lógica
       phone: t.String(),
       cep: t.String(),
       address: t.String(),

@@ -10,11 +10,9 @@ export const createToken = (payload: TokenPayload) => {
   return sign(payload, env.JWT_SECRET, { expiresIn: "7d" })
 }
 
-export const verifyToken = (token: {
-  auth: { value: string }
-}): TokenPayload | null => {
+export const verifyToken = (token: string): TokenPayload | null => {
   try {
-    const tokenVerify = verify(token.auth.value, env.JWT_SECRET) as TokenPayload
+    const tokenVerify = verify(token, env.JWT_SECRET) as TokenPayload
     return tokenVerify
   } catch {
     return null

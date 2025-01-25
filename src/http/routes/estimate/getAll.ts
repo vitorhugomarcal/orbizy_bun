@@ -1,13 +1,14 @@
 import Elysia from "elysia"
 import { db } from "../../../lib/prisma"
-import { auth, type CookieProps } from "../../authentication"
+import { auth } from "../../authentication"
+import { AuthError } from "../errors/auth-error"
 
 export const getEstimates = new Elysia().get(
-  "/company/estimates",
-  async ({ cookie }: CookieProps) => {
+  "/estimate",
+  async ({ cookie }) => {
     const user = await auth({ cookie })
     if (!user) {
-      return { error: "Unauthorized" }
+      throw new AuthError("Unauthorized", "UNAUTHORIZED", 401)
     }
     const estimates = await db.estimate.findMany({
       where: {

@@ -3,15 +3,15 @@ import { verifyToken } from "../utils/jwt"
 
 export interface CookieProps {
   cookie: {
-    auth: { value: string }
+    auth?: { value: string }
   }
 }
 export async function auth({ cookie }: CookieProps) {
-  if (!cookie) {
+  if (!cookie?.auth?.value) {
     return null
   }
 
-  const payload = verifyToken(cookie)
+  const payload = verifyToken(cookie.auth.value)
 
   if (!payload) {
     return null
@@ -19,7 +19,7 @@ export async function auth({ cookie }: CookieProps) {
 
   const user = await db.user.findUnique({
     where: { id: payload.sub },
-    include: { Company: true },
+    include: { Company: true }, // Incluindo a empresa do usuário, se existir
   })
 
   return user

@@ -2,17 +2,7 @@ import { createId } from "@paralleldrive/cuid2"
 import Elysia, { t } from "elysia"
 import { env } from "../../../env"
 import { db } from "../../../lib/prisma"
-
-class AuthError extends Error {
-  constructor(
-    message: string,
-    public readonly code: string,
-    public readonly statusCode: number
-  ) {
-    super(message)
-    this.name = "AuthError"
-  }
-}
+import { AuthError } from "../errors/auth-error"
 
 const AUTH_REDIRECT_URL = env.AUTH_REDIRECT_URL || "http://192.168.1.80:5173"
 

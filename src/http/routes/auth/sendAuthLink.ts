@@ -3,17 +3,7 @@ import Elysia, { t } from "elysia"
 import { Resend } from "resend"
 import { env } from "../../../env"
 import { db } from "../../../lib/prisma"
-
-class AuthError extends Error {
-  constructor(
-    message: string,
-    public readonly code: string,
-    public readonly statusCode: number
-  ) {
-    super(message)
-    this.name = "AuthError"
-  }
-}
+import { AuthError } from "../errors/auth-error"
 
 const RESEND_API = env.RESEND_API
 const JWT_SECRET = env.JWT_SECRET

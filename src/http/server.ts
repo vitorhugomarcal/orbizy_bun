@@ -2,22 +2,8 @@ import cors from "@elysiajs/cors"
 import Elysia from "elysia"
 
 // Importações de rotas
-import { authFromLink } from "./routes/auth/authLink"
-import { inviteValidate } from "./routes/auth/inviteValidate"
-import { logoutRoute } from "./routes/auth/logout"
-import { registerInvited } from "./routes/auth/registerInvited"
-import { sendAuthLink } from "./routes/auth/sendAuthLink"
-import { sendInviteLink } from "./routes/auth/sendInvite"
-import { sessions } from "./routes/auth/sessions"
-import { getClients } from "./routes/clients/getClients"
-import { registerClient } from "./routes/clients/registerClient"
-import { removeClient } from "./routes/clients/removeClient"
-import { getCompany } from "./routes/company/getCompany"
-import { getInvoices } from "./routes/company/getInvoicesByCompany"
-import { getItens } from "./routes/company/getItensByCompany"
-import { getSupplierEstimate } from "./routes/supplier/getSupplierEstimate"
-import { getSuppliers } from "./routes/supplier/getSuppliers"
-import { getProfile } from "./routes/users/getProfile"
+import swagger from "@elysiajs/swagger"
+import routes from "./routes"
 
 const app = new Elysia()
 
@@ -39,24 +25,20 @@ app.use(
   })
 )
 
+app.use(
+  swagger({
+    documentation: {
+      info: {
+        title: "Minha API",
+        description: "API para gerenciar clientes, empresas, usuários, etc.",
+        version: "1.0.0",
+      },
+    },
+  })
+)
+
 // Rotas
-app
-  .use(sendAuthLink)
-  .use(authFromLink)
-  .use(getProfile)
-  .use(getClients)
-  .use(getItens)
-  .use(getSuppliers)
-  .use(getSupplierEstimate)
-  .use(getInvoices)
-  .use(getCompany)
-  .use(sendInviteLink)
-  .use(registerInvited)
-  .use(inviteValidate)
-  .use(registerClient)
-  .use(removeClient)
-  .use(logoutRoute)
-  .use(sessions)
+app.use(routes)
 
 // Proxy para /api
 app.get("/api/*", async ({ params, request }) => {

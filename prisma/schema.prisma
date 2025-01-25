@@ -40,16 +40,20 @@ model Company {
   owner_id       String
   createdAt      DateTime @default(now())
 
-  user              User[]
-  item              Item[]
-  paymentModeCustom PaymentModeCustom[]
+  user         User[]
+  client       Client[]
+  item         Item[]
+  supplierUser SupplierUser[]
+
+  pendingUsers PendingUser[]
+  inviteLinks  InviteLinks[]
+
+  invoice          Invoice[]
+  estimate         Estimate[]
+  estimateSupplier EstimateSupplier[]
+
   unitTypeCustom    UnitTypeCustom[]
-  invoice           Invoice[]
-  estimate          Estimate[]
-  supplierUser      SupplierUser[]
-  client            Client[]
-  pendingUsers      PendingUser[]
-  inviteLinks       InviteLinks[]
+  paymentModeCustom PaymentModeCustom[]
 
   @@map("companies")
 }
@@ -93,8 +97,8 @@ model Supplier {
   email_address  String   @default("")
   createdAt      DateTime @default(now())
 
-  supplierUser SupplierUser[]
-  estimate     Estimate[]
+  supplierUser     SupplierUser[]
+  estimateSupplier EstimateSupplier[]
 
   @@map("sluppliers")
 }
@@ -116,10 +120,11 @@ model Client {
   state          String
   createdAt      DateTime @default(now())
 
-  invoice Invoice[]
-
   company    Company? @relation(fields: [company_id], references: [id], onDelete: Cascade)
   company_id String?
+
+  invoice  Invoice[]
+  estimate Estimate[]
 
   @@map("clients")
 }
@@ -171,6 +176,43 @@ model Item {
   @@map("items")
 }
 
+model Estimate {
+  id              String   @id @default(uuid())
+  estimate_number String?
+  status          String?
+  notes           String?
+  sub_total       Decimal?
+  total           Decimal?
+  createdAt       DateTime @default(now())
+
+  estimateItems EstimateItems[]
+
+  company    Company? @relation(fields: [company_id], references: [id], onDelete: Cascade)
+  company_id String?  @map("company_id")
+
+  client    Client? @relation(fields: [client_id], references: [id], onDelete: Cascade)
+  client_id String? @map("client_id")
+
+  @@map("estimates")
+}
+
+model EstimateItems {
+  id        String   @id @default(uuid())
+  name      String
+  price     Decimal
+  quantity  Decimal
+  unit      String
+  total     Decimal
+  createdAt DateTime @default(now())
+
+  estimate           Estimate          @relation(fields: [estimate_id], references: [id], onDelete: Cascade)
+  estimate_id        String            @map("estimate_id")
+  EstimateSupplier   EstimateSupplier? @relation(fields: [estimateSupplierId], references: [id])
+  estimateSupplierId String?
+
+  @@map("estimate_items")
+}
+
 model Invoice {
   id             String   @id @default(uuid())
   invoice_number String?
@@ -206,7 +248,7 @@ model InvoiceItems {
   @@map("invoice_items")
 }
 
-model Estimate {
+model EstimateSupplier {
   id              String   @id @default(uuid())
   estimate_number String?
   status          String?
@@ -218,22 +260,23 @@ model Estimate {
   supplier    Supplier @relation(fields: [supplier_id], references: [id], onDelete: Cascade)
   supplier_id String
 
-  company    Company? @relation(fields: [company_id], references: [id], onDelete: Cascade)
-  company_id String?  @map("company_id")
+  company               Company?                @relation(fields: [company_id], references: [id], onDelete: Cascade)
+  company_id            String?                 @map("company_id")
+  EstimateSupplierItems EstimateSupplierItems[]
 
-  @@map("estimates")
+  @@map("estimatesSupplier")
 }
 
-model EstimateItems {
+model EstimateSupplierItems {
   id        String   @id @default(uuid())
   name      String
   quantity  Decimal
   createdAt DateTime @default(now())
 
-  estimate    Estimate @relation(fields: [estimate_id], references: [id], onDelete: Cascade)
-  estimate_id String   @map("estimate_id")
+  estimateSupplier EstimateSupplier @relation(fields: [estimate_id], references: [id], onDelete: Cascade)
+  estimate_id      String           @map("estimate_id")
 
-  @@map("estimate_items")
+  @@map("estimate_supplier_items")
 }
 
 model AuthLinks {

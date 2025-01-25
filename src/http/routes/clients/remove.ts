@@ -1,20 +1,16 @@
 import Elysia, { t } from "elysia"
 import { db } from "../../../lib/prisma"
-
-class AuthError extends Error {
-  constructor(
-    message: string,
-    public readonly code: string,
-    public readonly statusCode: number
-  ) {
-    super(message)
-    this.name = "AuthError"
-  }
-}
+import { auth } from "../../authentication"
+import { AuthError } from "../errors/auth-error"
 
 export const removeClient = new Elysia().delete(
-  `/remove/client/:clientId`,
-  async ({ params }) => {
+  `/client/remove/:clientId`,
+  async ({ cookie, params }) => {
+    const user = await auth({ cookie })
+    if (!user) {
+      throw new AuthError("Unauthorized", "UNAUTHORIZED", 401)
+    }
+
     const { clientId } = params
 
     await db.client.delete({
