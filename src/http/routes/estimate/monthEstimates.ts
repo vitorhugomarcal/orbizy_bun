@@ -86,16 +86,14 @@ export const monthEstimates = new Elysia().get(
     const monthlyStats = calculateMonthlyChange(estimates)
 
     return {
-      message: "Contagem realizada com sucesso",
-      stats: monthlyStats,
+      monthlyStats,
     }
   },
   {
     response: {
       200: t.Object(
         {
-          message: t.String(),
-          stats: t.Object({
+          monthlyStats: t.Object({
             total: t.Number(),
             percentageChange: t.Number(),
           }),
