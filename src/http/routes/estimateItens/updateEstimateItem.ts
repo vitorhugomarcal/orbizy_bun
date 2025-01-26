@@ -3,7 +3,7 @@ import { db } from "../../../lib/prisma"
 import { auth } from "../../authentication"
 import { AuthError } from "../errors/auth-error"
 
-export const updateEstimateItem = new Elysia().patch(
+export const updateEstimateItem = new Elysia().put(
   `/itens/estimate/update/:itemInvoiceId`,
   async ({ cookie, body, params }) => {
     const { name, quantity, price, unit, total } = body
@@ -43,7 +43,7 @@ export const updateEstimateItem = new Elysia().patch(
     })
 
     return {
-      message: "Item cadastrado com sucesso",
+      message: "Item atualizado com sucesso",
       item,
     }
   },
@@ -58,5 +58,24 @@ export const updateEstimateItem = new Elysia().patch(
     params: t.Object({
       itemInvoiceId: t.String(),
     }),
+    response: {
+      201: t.Object({
+        message: t.String(),
+        item: t.Object({
+          name: t.Optional(t.String()),
+          quantity: t.Optional(t.Number()),
+          price: t.Optional(t.Number()),
+          unit: t.Optional(t.String()),
+          total: t.Optional(t.Number()),
+        }),
+      }),
+      401: t.Object({
+        error: t.String(),
+      }),
+    },
+    detail: {
+      description: "Update an estimate item",
+      tags: ["EstimateItem"],
+    },
   }
 )

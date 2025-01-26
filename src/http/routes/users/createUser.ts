@@ -59,5 +59,24 @@ export const createUser = new Elysia().post(
       name: t.String(),
       email: t.String(),
     }),
+    response: {
+      201: t.Object({
+        message: t.String(),
+        user: t.Object({
+          id: t.String(),
+          name: t.String(),
+          email: t.String(),
+          type: t.String(),
+          role: t.String(),
+        }),
+      }),
+      400: t.Object({
+        message: t.String(),
+      }),
+    },
+    detail: {
+      description: "Create a new user",
+      tags: ["User"],
+    },
   }
 )

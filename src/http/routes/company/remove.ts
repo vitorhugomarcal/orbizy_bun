@@ -18,10 +18,26 @@ export const removeCompany = new Elysia().delete(
         id: companyId,
       },
     })
+
+    return {
+      message: "Company removed successfully",
+    }
   },
   {
     params: t.Object({
       companyId: t.String(),
     }),
+    response: {
+      204: t.Object({
+        message: t.String(),
+      }),
+      401: t.Object({
+        error: t.String(),
+      }),
+    },
+    detail: {
+      description: "Remove a company",
+      tags: ["Company"],
+    },
   }
 )

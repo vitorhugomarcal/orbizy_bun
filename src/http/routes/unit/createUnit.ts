@@ -38,5 +38,20 @@ export const createUnit = new Elysia().post(
     body: t.Object({
       name: t.String(),
     }),
+    response: {
+      201: t.Object({
+        message: t.String(),
+        unit: t.Object({
+          name: t.String(),
+        }),
+      }),
+      401: t.Object({
+        error: t.String(),
+      }),
+    },
+    detail: {
+      description: "Create a new world unit",
+      tags: ["Unit"],
+    },
   }
 )

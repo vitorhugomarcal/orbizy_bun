@@ -18,10 +18,25 @@ export const removeItem = new Elysia().delete(
         id: itemId,
       },
     })
+    return {
+      message: "Item removido com sucesso",
+    }
   },
   {
     params: t.Object({
       itemId: t.String(),
     }),
+    resepone: {
+      204: t.Object({
+        message: t.String(),
+      }),
+      401: t.Object({
+        error: t.String(),
+      }),
+    },
+    detail: {
+      description: "Remove a item",
+      tags: ["Itens"],
+    },
   }
 )

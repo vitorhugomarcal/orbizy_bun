@@ -45,5 +45,24 @@ export const createItem = new Elysia().post(
       description: t.String(),
       unit: t.String(),
     }),
+    response: {
+      201: t.Object({
+        message: t.String(),
+        item: t.Object({
+          id: t.String(),
+          name: t.String(),
+          price: t.Number(),
+          description: t.String(),
+          unit: t.String(),
+        }),
+      }),
+      401: t.Object({
+        error: t.String(),
+      }),
+    },
+    detail: {
+      description: "Cadastra um novo item",
+      tags: ["Itens"],
+    },
   }
 )

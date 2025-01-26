@@ -21,20 +21,61 @@ export const getBy = new Elysia().get(
       )
     }
 
-    const clients = await db.client.findUnique({
+    const client = await db.client.findUnique({
       where: {
         id: clientId,
       },
       include: {
-        invoice: true,
+        estimate: true,
       },
     })
-    return clients
+
+    if (!client) {
+      throw new AuthError("Cliente não encontrado", "CLIENT_NOT_FOUND", 404)
+    }
+
+    return {
+      message: "Cliente encontrado",
+      client,
+    }
   },
 
   {
     params: t.Object({
       clientId: t.String(),
     }),
+    response: {
+      200: t.Object({
+        message: t.String(),
+        client: t.Object({
+          id: t.String(),
+          type: t.String(),
+          email_address: t.String(),
+          name: t.String(),
+          company_name: t.Nullable(t.String()),
+          cpf: t.Nullable(t.String()),
+          cnpj: t.Nullable(t.String()),
+          phone: t.String(),
+          cep: t.String(),
+          address: t.String(),
+          address_number: t.String(),
+          neighborhood: t.String(),
+          state: t.String(),
+          city: t.String(),
+          estimate: t.Array(
+            t.Object({
+              id: t.String(),
+            })
+          ),
+        }),
+      }),
+      401: t.Object({
+        error: t.String(),
+      }),
+    },
+    detail: {
+      description: "Retrieve all clients",
+      tags: ["Clients"],
+    },
   }
 )

@@ -98,5 +98,29 @@ export const createSupplier = new Elysia().post(
       address: t.String(),
       neighborhood: t.String(),
     }),
+    response: {
+      201: t.Object({
+        message: t.String(),
+        supplier: t.Object({
+          company_name: t.String(),
+          cnpj: t.String(),
+          phone: t.String(),
+          state: t.String(),
+          city: t.String(),
+          cep: t.String(),
+          address_number: t.String(),
+          email_address: t.String(),
+          address: t.String(),
+          neighborhood: t.String(),
+        }),
+      }),
+      401: t.Object({
+        error: t.String(),
+      }),
+    },
+    detail: {
+      description: "Create a new supplier",
+      tags: ["Supplier"],
+    },
   }
 )

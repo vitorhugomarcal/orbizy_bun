@@ -27,11 +27,43 @@ export const getById = new Elysia().get(
         id: itemId,
       },
     })
-    return item
+
+    if (!item) {
+      throw new AuthError("Item não encontrado", "ITEM_NOT_FOUND", 404)
+    }
+
+    const formattedItem = {
+      ...item,
+      price: Number(item.price),
+    }
+
+    return {
+      message: "Item encontrado",
+      formattedItem,
+    }
   },
   {
     params: t.Object({
       itemId: t.String(),
     }),
+    response: {
+      200: t.Object({
+        message: t.String(),
+        formattedItem: t.Object({
+          id: t.String(),
+          name: t.String(),
+          price: t.Number(),
+          description: t.String(),
+          unit: t.String(),
+        }),
+      }),
+      401: t.Object({
+        error: t.String(),
+      }),
+    },
+    detail: {
+      description: "Get a item by id",
+      tags: ["Itens"],
+    },
   }
 )

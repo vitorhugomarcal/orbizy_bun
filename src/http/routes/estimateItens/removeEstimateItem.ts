@@ -18,10 +18,26 @@ export const removeEstimateItem = new Elysia().delete(
         id: itemId,
       },
     })
+
+    return {
+      message: "Item do orçamento removido com sucesso",
+    }
   },
   {
     params: t.Object({
       itemId: t.String(),
     }),
+    response: {
+      204: t.Object({
+        message: t.String(),
+      }),
+      401: t.Object({
+        error: t.String(),
+      }),
+    },
+    detail: {
+      description: "Remove an estimate item",
+      tags: ["EstimateItem"],
+    },
   }
 )

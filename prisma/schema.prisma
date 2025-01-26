@@ -119,12 +119,12 @@ model Client {
   city           String
   state          String
   createdAt      DateTime @default(now())
-
-  company    Company? @relation(fields: [company_id], references: [id], onDelete: Cascade)
-  company_id String?
+  company_id     String?
 
   invoice  Invoice[]
   estimate Estimate[]
+
+  company Company? @relation(fields: [company_id], references: [id], onDelete: Cascade)
 
   @@map("clients")
 }
@@ -181,8 +181,8 @@ model Estimate {
   estimate_number String?
   status          String?
   notes           String?
-  sub_total       Decimal?
-  total           Decimal?
+  sub_total       Decimal  @default(0)
+  total           Decimal  @default(0)
   createdAt       DateTime @default(now())
 
   estimateItems EstimateItems[]

@@ -16,7 +16,6 @@ export const registerCompany = new Elysia().post(
       neighborhood,
       address_number,
       company_name,
-      owner_id,
     } = body
 
     const user = await auth({ cookie })
@@ -71,5 +70,36 @@ export const registerCompany = new Elysia().post(
       company_name: t.String(),
       owner_id: t.String(),
     }),
+    response: {
+      201: t.Object({
+        message: t.String(),
+        company: t.Object({
+          id: t.String(),
+          cnpj: t.String(),
+          phone: t.String(),
+          state: t.String(),
+          city: t.String(),
+          cep: t.String(),
+          address: t.String(),
+          neighborhood: t.String(),
+          address_number: t.String(),
+          company_name: t.String(),
+          owner_id: t.String(),
+          createdAt: t.Date(),
+        }),
+      }),
+      400: t.Object({
+        code: t.String(),
+        message: t.String(),
+      }),
+      401: t.Object({
+        code: t.String(),
+        message: t.String(),
+      }),
+    },
+    detail: {
+      description: "Register a new company (individual or corporate)",
+      tags: ["Company"],
+    },
   }
 )

@@ -96,5 +96,32 @@ export const update = new Elysia().put(
       state: t.Optional(t.String()),
       city: t.Optional(t.String()),
     }),
+    response: {
+      200: t.Object({
+        message: t.String(),
+        client: t.Object({
+          type: t.String(),
+          email_address: t.String(),
+          name: t.String(),
+          company_name: t.Nullable(t.String()),
+          cpf: t.Nullable(t.String()),
+          cnpj: t.Nullable(t.String()),
+          phone: t.String(),
+          cep: t.String(),
+          address: t.String(),
+          address_number: t.String(),
+          neighborhood: t.String(),
+          state: t.String(),
+          city: t.String(),
+        }),
+      }),
+      401: t.Object({
+        error: t.String(),
+      }),
+    },
+    detail: {
+      description: "Update client",
+      tags: ["Clients"],
+    },
   }
 )

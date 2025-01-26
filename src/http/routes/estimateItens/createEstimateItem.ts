@@ -51,5 +51,25 @@ export const createEstimateItem = new Elysia().post(
     params: t.Object({
       estimateId: t.String(),
     }),
+    response: {
+      201: t.Object({
+        message: t.String(),
+        item: t.Object({
+          id: t.String(),
+          name: t.String(),
+          quantity: t.Number(),
+          price: t.Number(),
+          unit: t.String(),
+          total: t.Number(),
+        }),
+      }),
+      401: t.Object({
+        error: t.String(),
+      }),
+    },
+    detail: {
+      description: "Create a new estimate item",
+      tags: ["EstimateItem"],
+    },
   }
 )

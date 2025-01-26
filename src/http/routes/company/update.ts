@@ -68,5 +68,34 @@ export const update = new Elysia().put(
       company_name: t.Optional(t.String()),
       owner_id: t.Optional(t.String()),
     }),
+    response: {
+      201: t.Object({
+        message: t.String(),
+        company: t.Object({
+          cnpj: t.Optional(t.String()),
+          phone: t.Optional(t.String()),
+          state: t.Optional(t.String()),
+          city: t.Optional(t.String()),
+          cep: t.Optional(t.String()),
+          address: t.Optional(t.String()),
+          neighborhood: t.Optional(t.String()),
+          address_number: t.Optional(t.String()),
+          company_name: t.Optional(t.String()),
+          owner_id: t.Optional(t.String()),
+        }),
+      }),
+      400: t.Object({
+        code: t.String(),
+        message: t.String(),
+      }),
+      401: t.Object({
+        code: t.String(),
+        message: t.String(),
+      }),
+    },
+    detail: {
+      description: "Update a company",
+      tags: ["Company"],
+    },
   }
 )

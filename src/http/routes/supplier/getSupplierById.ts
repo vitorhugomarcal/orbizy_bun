@@ -22,20 +22,49 @@ export const getSupplierById = new Elysia().get(
       throw new AuthError("Company not found", "COMPANY_NOT_FOUND", 401)
     }
 
-    const suppliers = await db.supplier.findMany({
+    const supplier = await db.supplier.findUnique({
       where: {
-        supplierUser: {
-          some: {
-            company_id: company.id,
-          },
-        },
+        id: supplierId,
       },
     })
-    return suppliers
+
+    if (!supplier) {
+      throw new AuthError("supplier not found", "SUPPLIERS_NOT_FOUND", 404)
+    }
+
+    return {
+      message: "supplier found successfully",
+      supplier,
+    }
   },
   {
     params: t.Object({
       supplierId: t.String(),
     }),
+    response: {
+      200: t.Object({
+        message: t.String(),
+        supplier: t.Object({
+          id: t.String(),
+          company_name: t.String(),
+          cnpj: t.String(),
+          phone: t.String(),
+          state: t.String(),
+          city: t.String(),
+          cep: t.String(),
+          address_number: t.String(),
+          email_address: t.String(),
+          address: t.String(),
+          neighborhood: t.String(),
+        }),
+      }),
+      401: t.Object({
+        error: t.String(),
+      }),
+    },
+    detail: {
+      description: "Get supplier by ID",
+      tags: ["Supplier"],
+    },
   }
 )

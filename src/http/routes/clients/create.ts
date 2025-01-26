@@ -27,26 +27,9 @@ export const registerClient = new Elysia().post(
       throw new AuthError("Unauthorized", "UNAUTHORIZED", 401)
     }
 
-    if (type === "física" && !cpf) {
-      throw new AuthError(
-        "CPF é obrigatório para clientes físicos",
-        "MISSING_CPF",
-        400
-      )
-    }
-
-    if (type === "jurídica" && (!cnpj || !company_name)) {
-      throw new AuthError(
-        "CNPJ e nome da empresa são obrigatórios para clientes jurídicos",
-        "MISSING_CNPJ_OR_COMPANY_NAME",
-        400
-      )
-    }
-
-    // Verificar se já existe um cliente com este email ou documentos
     const existingClient = await db.client.findFirst({
       where: {
-        company_id: user.Company?.id,
+        company_id: user.company_id,
         OR: [
           { email_address },
           { cpf: cpf || undefined },
@@ -59,10 +42,9 @@ export const registerClient = new Elysia().post(
       throw new AuthError("Cliente já cadastrado", "CLIENT_ALREADY_EXISTS", 400)
     }
 
-    // Criar o novo cliente
     const client = await db.client.create({
       data: {
-        company_id: user.Company?.id,
+        company_id: user.company_id,
         type,
         email_address,
         name,
@@ -89,9 +71,9 @@ export const registerClient = new Elysia().post(
       type: t.String(),
       email_address: t.String(),
       name: t.String(),
-      company_name: t.Optional(t.String()), // Opcional, mas validado na lógica
-      cpf: t.Optional(t.String()), // Opcional, mas validado na lógica
-      cnpj: t.Optional(t.String()), // Opcional, mas validado na lógica
+      company_name: t.Nullable(t.String()),
+      cpf: t.Nullable(t.String()),
+      cnpj: t.Nullable(t.String()),
       phone: t.String(),
       cep: t.String(),
       address: t.String(),
@@ -100,5 +82,37 @@ export const registerClient = new Elysia().post(
       state: t.String(),
       city: t.String(),
     }),
+    response: {
+      201: t.Object({
+        message: t.String(),
+        client: t.Object({
+          type: t.String(),
+          email_address: t.String(),
+          name: t.String(),
+          company_name: t.Nullable(t.String()),
+          cpf: t.Nullable(t.String()),
+          cnpj: t.Nullable(t.String()),
+          phone: t.String(),
+          cep: t.String(),
+          address: t.String(),
+          address_number: t.String(),
+          neighborhood: t.String(),
+          state: t.String(),
+          city: t.String(),
+        }),
+      }),
+      400: t.Object({
+        code: t.String(),
+        message: t.String(),
+      }),
+      401: t.Object({
+        code: t.String(),
+        message: t.String(),
+      }),
+    },
+    detail: {
+      description: "Register a new client (individual or corporate)",
+      tags: ["Clients"],
+    },
   }
 )

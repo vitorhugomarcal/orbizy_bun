@@ -18,10 +18,25 @@ export const removeClient = new Elysia().delete(
         id: clientId,
       },
     })
+    return {
+      message: "Client removed successfully",
+    }
   },
   {
     params: t.Object({
       clientId: t.String(),
     }),
+    response: {
+      204: t.Object({
+        message: t.String(),
+      }),
+      401: t.Object({
+        error: t.String(),
+      }),
+    },
+    detail: {
+      description: "Remove a client",
+      tags: ["Clients"],
+    },
   }
 )

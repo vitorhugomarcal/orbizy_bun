@@ -18,10 +18,26 @@ export const removeEstimate = new Elysia().delete(
         id: estimateId,
       },
     })
+
+    return {
+      message: "Estimate removed successfully",
+    }
   },
   {
     params: t.Object({
       estimateId: t.String(),
     }),
+    response: {
+      204: t.Object({
+        message: t.String(),
+      }),
+      401: t.Object({
+        error: t.String(),
+      }),
+    },
+    detail: {
+      description: "Remove a estimate",
+      tags: ["Estimate"],
+    },
   }
 )

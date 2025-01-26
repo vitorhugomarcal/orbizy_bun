@@ -53,5 +53,24 @@ export const updateEstimate = new Elysia().put(
     params: t.Object({
       estimateId: t.String(),
     }),
+    response: {
+      201: t.Object({
+        message: t.String(),
+        estimate: t.Object({
+          estimate_number: t.Optional(t.String()),
+          status: t.Optional(t.String()),
+          notes: t.Optional(t.String()),
+          sub_total: t.Optional(t.Number()),
+          total: t.Optional(t.Number()),
+        }),
+      }),
+      401: t.Object({
+        error: t.String(),
+      }),
+    },
+    detail: {
+      description: "Update a estimate",
+      tags: ["Estimate"],
+    },
   }
 )

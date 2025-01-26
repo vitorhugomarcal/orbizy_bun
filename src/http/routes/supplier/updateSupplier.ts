@@ -68,5 +68,30 @@ export const updateSupplier = new Elysia().put(
       address: t.Optional(t.String()),
       neighborhood: t.Optional(t.String()),
     }),
+    response: {
+      201: t.Object({
+        message: t.String(),
+        supplier: t.Object({
+          id: t.String(),
+          company_name: t.Optional(t.String()),
+          cnpj: t.Optional(t.String()),
+          phone: t.Optional(t.String()),
+          state: t.Optional(t.String()),
+          city: t.Optional(t.String()),
+          cep: t.Optional(t.String()),
+          address_number: t.Optional(t.String()),
+          email_address: t.Optional(t.String()),
+          address: t.Optional(t.String()),
+          neighborhood: t.Optional(t.String()),
+        }),
+      }),
+      401: t.Object({
+        error: t.String(),
+      }),
+    },
+    detail: {
+      description: "Update a supplier",
+      tags: ["Supplier"],
+    },
   }
 )
