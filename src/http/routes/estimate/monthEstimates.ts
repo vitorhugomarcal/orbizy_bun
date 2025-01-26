@@ -22,6 +22,7 @@ export const monthEstimates = new Elysia().get(
     }
 
     const hasCompany = user.Company
+
     if (!hasCompany) {
       throw new AuthError("Company not found", "COMPANY_NOT_FOUND", 404)
     }
@@ -83,20 +84,19 @@ export const monthEstimates = new Elysia().get(
       }
     }
 
-    const monthlyStats = calculateMonthlyChange(estimates)
+    const { total, percentageChange } = calculateMonthlyChange(estimates)
 
     return {
-      monthlyStats,
+      total,
+      percentageChange,
     }
   },
   {
     response: {
       200: t.Object(
         {
-          monthlyStats: t.Object({
-            total: t.Number(),
-            percentageChange: t.Number(),
-          }),
+          total: t.Number(),
+          percentageChange: t.Number(),
         },
         {
           description: "Estatísticas do mês obtidas com sucesso",
