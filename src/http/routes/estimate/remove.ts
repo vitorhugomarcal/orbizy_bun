@@ -21,6 +21,7 @@ export const removeEstimate = new Elysia().delete(
 
     return {
       message: "Estimate removed successfully",
+      description: "Remove a estimate",
     }
   },
   {
@@ -30,9 +31,11 @@ export const removeEstimate = new Elysia().delete(
     response: {
       204: t.Object({
         message: t.String(),
+        description: t.String(),
       }),
       401: t.Object({
         error: t.String(),
+        description: t.String(),
       }),
     },
     detail: {

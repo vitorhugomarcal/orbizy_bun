@@ -35,6 +35,7 @@ export const createItem = new Elysia().post(
 
     return {
       message: "Item cadastrado com sucesso",
+      description: "Create a new item",
       item,
     }
   },
@@ -48,6 +49,7 @@ export const createItem = new Elysia().post(
     response: {
       201: t.Object({
         message: t.String(),
+        description: t.String(),
         item: t.Object({
           id: t.String(),
           name: t.String(),
@@ -58,6 +60,7 @@ export const createItem = new Elysia().post(
       }),
       401: t.Object({
         error: t.String(),
+        description: t.String(),
       }),
     },
     detail: {

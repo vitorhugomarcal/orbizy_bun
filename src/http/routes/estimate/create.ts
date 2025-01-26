@@ -36,9 +36,16 @@ export const createEstimate = new Elysia().post(
       },
     })
 
+    const formattedEstimate = {
+      ...estimate,
+      sub_total: Number(estimate.sub_total),
+      total: Number(estimate.total),
+    }
+
     return {
       message: "Orçamento cadastrado com sucesso",
-      estimate,
+      description: "Retorna um orçamento",
+      formattedEstimate,
     }
   },
   {
@@ -52,5 +59,31 @@ export const createEstimate = new Elysia().post(
     params: t.Object({
       clientId: t.String(),
     }),
+    response: {
+      201: t.Object({
+        message: t.String(),
+        description: t.String(),
+        formattedEstimate: t.Object({
+          id: t.String(),
+          company_id: t.String(),
+          client_id: t.String(),
+          estimate_number: t.String(),
+          status: t.String(),
+          notes: t.String(),
+          sub_total: t.Number(),
+          total: t.Number(),
+          created_at: t.String(),
+          updated_at: t.String(),
+        }),
+      }),
+      401: t.Object({
+        description: t.String(),
+        error: t.String(),
+      }),
+    },
+    detail: {
+      description: "Create a new estimate",
+      tags: ["Estimate"],
+    },
   }
 )

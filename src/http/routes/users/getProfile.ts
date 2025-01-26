@@ -1,17 +1,18 @@
 import Elysia, { t } from "elysia"
 import { auth, type CookieProps } from "../../authentication"
+import { AuthError } from "../errors/auth-error"
 
 export const getProfile = new Elysia().get(
   "/me",
   async ({ cookie }: CookieProps) => {
     const user = await auth({ cookie })
-
     if (!user) {
-      return { error: "Unauthorized" }
+      throw new AuthError("Unauthorized", "UNAUTHORIZED", 401)
     }
 
     return {
       message: "Profile retrieved successfully",
+      description: "Profile retrieved successfully",
       user,
     }
   },
@@ -19,6 +20,7 @@ export const getProfile = new Elysia().get(
     response: {
       200: t.Object({
         message: t.String(),
+        description: t.String(),
         user: t.Object({
           id: t.String(),
           name: t.Nullable(t.String()),
@@ -46,6 +48,7 @@ export const getProfile = new Elysia().get(
       }),
       401: t.Object({
         error: t.String(),
+        description: t.String(),
       }),
     },
     detail: {

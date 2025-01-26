@@ -23,6 +23,7 @@ export const getUnits = new Elysia().get(
 
     return {
       message: "Unidades encontradas com sucesso",
+      description: "Unidades encontradas com sucesso",
       units: allUnits,
     }
   },
@@ -30,6 +31,7 @@ export const getUnits = new Elysia().get(
     response: {
       200: t.Object({
         message: t.String(),
+        description: t.String(),
         units: t.Array(
           t.Object({
             id: t.String(),
@@ -39,6 +41,7 @@ export const getUnits = new Elysia().get(
       }),
       401: t.Object({
         error: t.String(),
+        description: t.String(),
       }),
     },
     detail: {

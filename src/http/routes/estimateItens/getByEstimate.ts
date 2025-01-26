@@ -44,6 +44,7 @@ export const getByEstimate = new Elysia().get(
 
     return {
       message: "Itens do orçamento",
+      description: "Get estimate items by estimate id",
       formattedItens,
     }
   },
@@ -54,6 +55,7 @@ export const getByEstimate = new Elysia().get(
     response: {
       200: t.Object({
         message: t.String(),
+        description: t.String(),
         formattedItens: t.Array(
           t.Object({
             id: t.Nullable(t.String()),
@@ -68,9 +70,11 @@ export const getByEstimate = new Elysia().get(
       401: t.Object({
         message: t.String(),
         error: t.String(),
+        description: t.String(),
       }),
       404: t.Object({
         message: t.String(),
+        description: t.String(),
         error: t.String(),
       }),
     },

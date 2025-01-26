@@ -37,6 +37,7 @@ export const createUnitByCompany = new Elysia().post(
 
     return {
       message: "Unidade cadastrado com sucesso",
+      description: "Unidade cadastrado com sucesso",
       unit,
     }
   },
@@ -47,12 +48,18 @@ export const createUnitByCompany = new Elysia().post(
     response: {
       201: t.Object({
         message: t.String(),
+        description: t.String(),
         unit: t.Object({
           name: t.String(),
         }),
       }),
       401: t.Object({
         error: t.String(),
+        description: t.String(),
+      }),
+      400: t.Object({
+        error: t.String(),
+        description: t.String(),
       }),
     },
     detail: {

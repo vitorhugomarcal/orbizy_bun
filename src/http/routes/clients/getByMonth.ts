@@ -34,6 +34,7 @@ export const getByMonth = new Elysia().get(
     return {
       total: clients.length,
       new: newClientsCount,
+      description: "Retrieve client count for the current month",
     }
   },
   {
@@ -41,9 +42,11 @@ export const getByMonth = new Elysia().get(
       200: t.Object({
         total: t.Number(),
         new: t.Number(),
+        description: t.String(),
       }),
       401: t.Object({
         error: t.String(),
+        description: t.String(),
       }),
     },
     detail: {

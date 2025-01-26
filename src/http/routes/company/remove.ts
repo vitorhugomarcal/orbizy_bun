@@ -21,6 +21,7 @@ export const removeCompany = new Elysia().delete(
 
     return {
       message: "Company removed successfully",
+      description: "Remove uma empresa",
     }
   },
   {
@@ -30,9 +31,11 @@ export const removeCompany = new Elysia().delete(
     response: {
       204: t.Object({
         message: t.String(),
+        description: t.String(),
       }),
       401: t.Object({
         error: t.String(),
+        description: t.String(),
       }),
     },
     detail: {

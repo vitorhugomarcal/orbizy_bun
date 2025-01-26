@@ -50,6 +50,7 @@ export const createUser = new Elysia().post(
       await db.pendingUser.delete({ where: { email } })
       return {
         message: "Usuário criado com sucesso",
+        description: "Usuário criado com sucesso",
         user: newUser,
       }
     }
@@ -62,6 +63,7 @@ export const createUser = new Elysia().post(
     response: {
       201: t.Object({
         message: t.String(),
+        description: t.String(),
         user: t.Object({
           id: t.String(),
           name: t.String(),
@@ -72,6 +74,7 @@ export const createUser = new Elysia().post(
       }),
       400: t.Object({
         message: t.String(),
+        description: t.String(),
       }),
     },
     detail: {

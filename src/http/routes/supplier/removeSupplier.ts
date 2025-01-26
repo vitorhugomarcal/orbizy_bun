@@ -40,6 +40,7 @@ export const removeSupplier = new Elysia().delete(
 
     return {
       message: "Supplier removed successfully",
+      description: "Supplier removed successfully",
     }
   },
   {
@@ -49,9 +50,19 @@ export const removeSupplier = new Elysia().delete(
     response: {
       204: t.Object({
         message: t.String(),
+        description: t.String(),
       }),
       401: t.Object({
         error: t.String(),
+        description: t.String(),
+      }),
+      404: t.Object({
+        error: t.String(),
+        description: t.String(),
+      }),
+      400: t.Object({
+        error: t.String(),
+        description: t.String(),
       }),
     },
     detail: {

@@ -81,6 +81,7 @@ export const createSupplier = new Elysia().post(
       })
       return {
         message: "Supplier created successfully",
+        description: "Supplier created successfully",
         supplier: newSupplier,
       }
     }
@@ -101,6 +102,7 @@ export const createSupplier = new Elysia().post(
     response: {
       201: t.Object({
         message: t.String(),
+        description: t.String(),
         supplier: t.Object({
           company_name: t.String(),
           cnpj: t.String(),
@@ -116,6 +118,7 @@ export const createSupplier = new Elysia().post(
       }),
       401: t.Object({
         error: t.String(),
+        description: t.String(),
       }),
     },
     detail: {

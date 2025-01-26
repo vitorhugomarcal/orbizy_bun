@@ -18,6 +18,10 @@ export const removeUnit = new Elysia().delete(
         id: unitId,
       },
     })
+    return {
+      message: "Unidade removida com sucesso",
+      description: "Unidade removida com sucesso",
+    }
   },
   {
     params: t.Object({
@@ -26,9 +30,11 @@ export const removeUnit = new Elysia().delete(
     response: {
       204: t.Object({
         message: t.String(),
+        description: t.String(),
       }),
       401: t.Object({
         error: t.String(),
+        description: t.String(),
       }),
     },
     detail: {

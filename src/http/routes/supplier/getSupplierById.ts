@@ -7,10 +7,10 @@ export const getSupplierById = new Elysia().get(
   "/supplier/company/:supplierId",
   async ({ cookie, params }) => {
     const user = await auth({ cookie })
-
     if (!user) {
-      return { error: "Unauthorized" }
+      throw new AuthError("Unauthorized", "UNAUTHORIZED", 401)
     }
+
     const { supplierId } = params
 
     if (!supplierId) {
@@ -19,7 +19,7 @@ export const getSupplierById = new Elysia().get(
 
     const company = user.Company
     if (!company) {
-      throw new AuthError("Company not found", "COMPANY_NOT_FOUND", 401)
+      throw new AuthError("Company not found", "COMPANY_NOT_FOUND", 404)
     }
 
     const supplier = await db.supplier.findUnique({
@@ -34,6 +34,7 @@ export const getSupplierById = new Elysia().get(
 
     return {
       message: "supplier found successfully",
+      description: "supplier found successfully",
       supplier,
     }
   },
@@ -44,6 +45,7 @@ export const getSupplierById = new Elysia().get(
     response: {
       200: t.Object({
         message: t.String(),
+        description: t.String(),
         supplier: t.Object({
           id: t.String(),
           company_name: t.String(),
@@ -58,8 +60,17 @@ export const getSupplierById = new Elysia().get(
           neighborhood: t.String(),
         }),
       }),
+      404: t.Object({
+        error: t.String(),
+        description: t.String(),
+      }),
+      400: t.Object({
+        error: t.String(),
+        description: t.String(),
+      }),
       401: t.Object({
         error: t.String(),
+        description: t.String(),
       }),
     },
     detail: {

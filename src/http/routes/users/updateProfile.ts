@@ -24,6 +24,7 @@ export const updateUser = new Elysia().put(
 
     return {
       message: "Usuario atualizado com sucesso",
+      description: "Usuario atualizado com sucesso",
       userUpdated,
     }
   },
@@ -34,6 +35,7 @@ export const updateUser = new Elysia().put(
     response: {
       201: t.Object({
         message: t.String(),
+        description: t.String(),
         userUpdated: t.Object({
           id: t.Optional(t.String()),
           name: t.Optional(t.String()),
@@ -45,6 +47,7 @@ export const updateUser = new Elysia().put(
       }),
       401: t.Object({
         error: t.String(),
+        description: t.String(),
       }),
     },
     detail: {

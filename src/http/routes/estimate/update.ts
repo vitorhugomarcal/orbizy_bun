@@ -39,6 +39,7 @@ export const updateEstimate = new Elysia().put(
 
     return {
       message: "Orçamento atualizado com sucesso",
+      description: "Update a estimate",
       estimate,
     }
   },
@@ -56,6 +57,7 @@ export const updateEstimate = new Elysia().put(
     response: {
       201: t.Object({
         message: t.String(),
+        description: t.String(),
         estimate: t.Object({
           estimate_number: t.Optional(t.String()),
           status: t.Optional(t.String()),
@@ -66,6 +68,7 @@ export const updateEstimate = new Elysia().put(
       }),
       401: t.Object({
         error: t.String(),
+        description: t.String(),
       }),
     },
     detail: {

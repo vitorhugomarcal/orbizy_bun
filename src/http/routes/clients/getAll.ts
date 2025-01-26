@@ -21,6 +21,7 @@ export const getAll = new Elysia().get(
     })
     return {
       message: "Clients retrieved successfully",
+      description: "Get all clients",
       clients,
     }
   },
@@ -28,6 +29,7 @@ export const getAll = new Elysia().get(
     response: {
       200: t.Object({
         message: t.String(),
+        description: t.String(),
         clients: t.Array(
           t.Object({
             id: t.String(),
@@ -54,6 +56,7 @@ export const getAll = new Elysia().get(
       }),
       401: t.Object({
         error: t.String(),
+        description: t.String(),
       }),
     },
     detail: {

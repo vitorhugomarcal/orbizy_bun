@@ -36,6 +36,7 @@ export const getBy = new Elysia().get(
 
     return {
       message: "Cliente encontrado",
+      description: "Retorna um cliente",
       client,
     }
   },
@@ -47,6 +48,7 @@ export const getBy = new Elysia().get(
     response: {
       200: t.Object({
         message: t.String(),
+        description: t.String(),
         client: t.Object({
           id: t.String(),
           type: t.String(),
@@ -71,6 +73,7 @@ export const getBy = new Elysia().get(
       }),
       401: t.Object({
         error: t.String(),
+        description: t.String(),
       }),
     },
     detail: {

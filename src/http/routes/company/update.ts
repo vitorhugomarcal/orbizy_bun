@@ -71,6 +71,7 @@ export const update = new Elysia().put(
     response: {
       201: t.Object({
         message: t.String(),
+        description: t.String(),
         company: t.Object({
           cnpj: t.Optional(t.String()),
           phone: t.Optional(t.String()),
@@ -86,10 +87,12 @@ export const update = new Elysia().put(
       }),
       400: t.Object({
         code: t.String(),
+        description: t.String(),
         message: t.String(),
       }),
       401: t.Object({
         code: t.String(),
+        description: t.String(),
         message: t.String(),
       }),
     },

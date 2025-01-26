@@ -23,6 +23,7 @@ export const getCompany = new Elysia().get(
 
     return {
       message: "Company found",
+      description: "Get a company",
       company,
     }
   },
@@ -30,6 +31,7 @@ export const getCompany = new Elysia().get(
     response: {
       200: t.Object({
         message: t.String(),
+        description: t.String(),
         company: t.Object({
           id: t.String(),
           cnpj: t.String(),
@@ -47,10 +49,12 @@ export const getCompany = new Elysia().get(
       }),
       400: t.Object({
         code: t.String(),
+        description: t.String(),
         message: t.String(),
       }),
       401: t.Object({
         code: t.String(),
+        description: t.String(),
         message: t.String(),
       }),
     },

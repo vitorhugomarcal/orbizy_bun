@@ -20,6 +20,7 @@ export const removeClient = new Elysia().delete(
     })
     return {
       message: "Client removed successfully",
+      description: "Remove um cliente",
     }
   },
   {
@@ -29,9 +30,11 @@ export const removeClient = new Elysia().delete(
     response: {
       204: t.Object({
         message: t.String(),
+        description: t.String(),
       }),
       401: t.Object({
         error: t.String(),
+        description: t.String(),
       }),
     },
     detail: {

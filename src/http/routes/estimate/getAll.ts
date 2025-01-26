@@ -37,6 +37,7 @@ export const getAllEstimates = new Elysia().get(
     })
     return {
       message: "Orçamentos encontrados",
+      description: "Retorna todos os orçamentos",
       formattedEstimates,
     }
   },
@@ -44,6 +45,7 @@ export const getAllEstimates = new Elysia().get(
     response: {
       200: t.Object({
         message: t.String(),
+        description: t.String(),
         formattedEstimates: t.Array(
           t.Object({
             estimate_number: t.Nullable(t.String()),
@@ -56,6 +58,7 @@ export const getAllEstimates = new Elysia().get(
         ),
       }),
       401: t.Object({
+        description: t.String(),
         error: t.String(),
       }),
     },

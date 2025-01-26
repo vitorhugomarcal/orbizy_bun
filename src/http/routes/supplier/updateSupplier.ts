@@ -53,7 +53,11 @@ export const updateSupplier = new Elysia().put(
       },
     })
 
-    return updatedSuppler
+    return {
+      message: "Supplier updated successfully",
+      description: "Supplier updated successfully",
+      supplier: updatedSuppler,
+    }
   },
   {
     body: t.Object({
@@ -71,6 +75,7 @@ export const updateSupplier = new Elysia().put(
     response: {
       201: t.Object({
         message: t.String(),
+        description: t.String(),
         supplier: t.Object({
           id: t.String(),
           company_name: t.Optional(t.String()),
@@ -87,6 +92,7 @@ export const updateSupplier = new Elysia().put(
       }),
       401: t.Object({
         error: t.String(),
+        description: t.String(),
       }),
     },
     detail: {

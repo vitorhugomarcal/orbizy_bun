@@ -32,6 +32,7 @@ export const getEstimateById = new Elysia().get(
     }
     return {
       message: "Orçamento encontrado",
+      description: "Retorna um orçamento",
       formattedEstimate,
     }
   },
@@ -42,6 +43,7 @@ export const getEstimateById = new Elysia().get(
     response: {
       200: t.Object({
         message: t.String(),
+        description: t.String(),
         formattedEstimate: t.Object({
           estimate_number: t.Nullable(t.String()),
           status: t.Nullable(t.String()),
@@ -52,6 +54,7 @@ export const getEstimateById = new Elysia().get(
         }),
       }),
       401: t.Object({
+        description: t.String(),
         error: t.String(),
       }),
     },

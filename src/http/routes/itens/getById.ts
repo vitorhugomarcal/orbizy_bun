@@ -39,6 +39,7 @@ export const getById = new Elysia().get(
 
     return {
       message: "Item encontrado",
+      description: "Get a item by id",
       formattedItem,
     }
   },
@@ -49,6 +50,7 @@ export const getById = new Elysia().get(
     response: {
       200: t.Object({
         message: t.String(),
+        description: t.String(),
         formattedItem: t.Object({
           id: t.String(),
           name: t.String(),
@@ -59,6 +61,7 @@ export const getById = new Elysia().get(
       }),
       401: t.Object({
         error: t.String(),
+        description: t.String(),
       }),
     },
     detail: {

@@ -63,6 +63,7 @@ export const registerClient = new Elysia().post(
 
     return {
       message: "Cliente cadastrado com sucesso",
+      description: "Cliente cadastrado com sucesso",
       client,
     }
   },
@@ -85,6 +86,7 @@ export const registerClient = new Elysia().post(
     response: {
       201: t.Object({
         message: t.String(),
+        description: t.String(),
         client: t.Object({
           type: t.String(),
           email_address: t.String(),
@@ -104,10 +106,12 @@ export const registerClient = new Elysia().post(
       400: t.Object({
         code: t.String(),
         message: t.String(),
+        description: t.String(),
       }),
       401: t.Object({
         code: t.String(),
         message: t.String(),
+        description: t.String(),
       }),
     },
     detail: {

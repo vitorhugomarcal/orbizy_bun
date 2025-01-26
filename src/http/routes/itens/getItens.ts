@@ -26,6 +26,7 @@ export const getItens = new Elysia().get(
     }))
     return {
       message: "Itens found successfully",
+      description: "Get all itens",
       formattedItens,
     }
   },
@@ -33,6 +34,7 @@ export const getItens = new Elysia().get(
     response: {
       200: t.Object({
         message: t.String(),
+        description: t.String(),
         formattedItens: t.Array(
           t.Object({
             id: t.String(),
@@ -45,6 +47,7 @@ export const getItens = new Elysia().get(
       }),
       401: t.Object({
         error: t.String(),
+        description: t.String(),
       }),
     },
     detail: {

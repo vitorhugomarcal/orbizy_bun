@@ -77,6 +77,7 @@ export const update = new Elysia().put(
 
     return {
       message: "Cliente atualizado com sucesso",
+      description: "Atualiza um cliente",
       client,
     }
   },
@@ -99,6 +100,7 @@ export const update = new Elysia().put(
     response: {
       200: t.Object({
         message: t.String(),
+        description: t.String(),
         client: t.Object({
           type: t.String(),
           email_address: t.String(),
@@ -117,6 +119,7 @@ export const update = new Elysia().put(
       }),
       401: t.Object({
         error: t.String(),
+        description: t.String(),
       }),
     },
     detail: {

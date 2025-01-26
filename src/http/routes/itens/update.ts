@@ -43,6 +43,7 @@ export const updateItem = new Elysia().put(
 
     return {
       message: "Item atualizado com sucesso",
+      description: "Update a item",
       formattedItem,
     }
   },
@@ -56,6 +57,7 @@ export const updateItem = new Elysia().put(
     response: {
       201: t.Object({
         message: t.String(),
+        description: t.String(),
         formattedItem: t.Object({
           name: t.Optional(t.String()),
           price: t.Optional(t.Number()),
@@ -65,6 +67,7 @@ export const updateItem = new Elysia().put(
       }),
       401: t.Object({
         error: t.String(),
+        description: t.String(),
       }),
     },
     detail: {
