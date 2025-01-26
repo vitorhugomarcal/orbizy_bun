@@ -86,6 +86,14 @@ export const monthEstimates = new Elysia().get(
 
     const { total, percentageChange } = calculateMonthlyChange(estimates)
 
+    if (!total || !percentageChange) {
+      throw new AuthError(
+        "Erro ao calcular as estatísticas do mês",
+        "ERROR_CALCULATING_MONTHLY_STATS",
+        500
+      )
+    }
+
     return {
       total,
       percentageChange,
