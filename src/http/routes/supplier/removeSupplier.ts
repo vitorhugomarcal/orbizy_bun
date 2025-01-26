@@ -40,7 +40,6 @@ export const removeSupplier = new Elysia().delete(
 
     return {
       message: "Supplier removed successfully",
-      description: "Supplier removed successfully",
     }
   },
   {
@@ -48,22 +47,38 @@ export const removeSupplier = new Elysia().delete(
       supplierId: t.String(),
     }),
     response: {
-      204: t.Object({
-        message: t.String(),
-        description: t.String(),
-      }),
-      401: t.Object({
-        error: t.String(),
-        description: t.String(),
-      }),
-      404: t.Object({
-        error: t.String(),
-        description: t.String(),
-      }),
-      400: t.Object({
-        error: t.String(),
-        description: t.String(),
-      }),
+      204: t.Object(
+        {
+          message: t.String(),
+        },
+        {
+          description: "Supplier removed successfully",
+        }
+      ),
+      401: t.Object(
+        {
+          message: t.String(),
+        },
+        {
+          description: "Unauthorized",
+        }
+      ),
+      404: t.Object(
+        {
+          message: t.String(),
+        },
+        {
+          description: "Supplier not found or not associated with this user",
+        }
+      ),
+      400: t.Object(
+        {
+          message: t.String(),
+        },
+        {
+          description: "Supplier ID and Company ID is required",
+        }
+      ),
     },
     detail: {
       description: "Remove a supplier",

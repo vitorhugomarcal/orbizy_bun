@@ -13,6 +13,10 @@ export const removeUnit = new Elysia().delete(
 
     const { unitId } = params
 
+    if (!unitId) {
+      throw new AuthError("Unit ID is required", "MISSING_UNIT_ID", 400)
+    }
+
     await db.unitTypeCustom.delete({
       where: {
         id: unitId,
@@ -20,7 +24,6 @@ export const removeUnit = new Elysia().delete(
     })
     return {
       message: "Unidade removida com sucesso",
-      description: "Unidade removida com sucesso",
     }
   },
   {
@@ -28,14 +31,22 @@ export const removeUnit = new Elysia().delete(
       unitId: t.String(),
     }),
     response: {
-      204: t.Object({
-        message: t.String(),
-        description: t.String(),
-      }),
-      401: t.Object({
-        error: t.String(),
-        description: t.String(),
-      }),
+      204: t.Object(
+        {
+          message: t.String(),
+        },
+        {
+          description: "Unit removed successfully",
+        }
+      ),
+      401: t.Object(
+        {
+          message: t.String(),
+        },
+        {
+          description: "Unauthorized",
+        }
+      ),
     },
     detail: {
       description: "Remove a unit",

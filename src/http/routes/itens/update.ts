@@ -15,6 +15,10 @@ export const updateItem = new Elysia().put(
 
     const { itemId } = params
 
+    if (!itemId) {
+      throw new AuthError("Item não encontrado", "ITEM_NOT_FOUND", 404)
+    }
+
     const checkItemExists = await db.item.findUnique({
       where: {
         id: itemId,
@@ -43,7 +47,6 @@ export const updateItem = new Elysia().put(
 
     return {
       message: "Item atualizado com sucesso",
-      description: "Update a item",
       formattedItem,
     }
   },
@@ -55,20 +58,36 @@ export const updateItem = new Elysia().put(
       unit: t.Optional(t.String()),
     }),
     response: {
-      201: t.Object({
-        message: t.String(),
-        description: t.String(),
-        formattedItem: t.Object({
-          name: t.Optional(t.String()),
-          price: t.Optional(t.Number()),
-          description: t.Optional(t.String()),
-          unit: t.Optional(t.String()),
-        }),
-      }),
-      401: t.Object({
-        error: t.String(),
-        description: t.String(),
-      }),
+      201: t.Object(
+        {
+          message: t.String(),
+          formattedItem: t.Object({
+            name: t.String(),
+            price: t.Number(),
+            description: t.String(),
+            unit: t.String(),
+          }),
+        },
+        {
+          description: "Item atualizado com sucesso",
+        }
+      ),
+      401: t.Object(
+        {
+          message: t.String(),
+        },
+        {
+          description: "Unauthorized",
+        }
+      ),
+      404: t.Object(
+        {
+          message: t.String(),
+        },
+        {
+          description: "Item não encontrado",
+        }
+      ),
     },
     detail: {
       description: "Update a item",

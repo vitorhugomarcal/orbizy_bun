@@ -29,7 +29,7 @@ export const update = new Elysia().put(
 
     const existingClient = await db.client.findFirst({
       where: {
-        company_id: user.Company?.id,
+        company_id: user.company_id,
         OR: [
           { email_address },
           { cpf: cpf || undefined },
@@ -44,11 +44,20 @@ export const update = new Elysia().put(
 
     const { clientId } = params
 
+    if (!clientId) {
+      throw new AuthError(
+        "ID do cliente não fornecido",
+        "MISSING_CLIENT_ID",
+        400
+      )
+    }
+
     const clientExists = await db.client.findUnique({
       where: {
         id: clientId,
       },
     })
+
     if (!clientExists) {
       throw new AuthError("Cliente não encontrado", "CLIENT_NOT_FOUND", 404)
     }
@@ -77,7 +86,6 @@ export const update = new Elysia().put(
 
     return {
       message: "Cliente atualizado com sucesso",
-      description: "Atualiza um cliente",
       client,
     }
   },
@@ -98,29 +106,53 @@ export const update = new Elysia().put(
       city: t.Optional(t.String()),
     }),
     response: {
-      200: t.Object({
-        message: t.String(),
-        description: t.String(),
-        client: t.Object({
-          type: t.String(),
-          email_address: t.String(),
-          name: t.String(),
-          company_name: t.Nullable(t.String()),
-          cpf: t.Nullable(t.String()),
-          cnpj: t.Nullable(t.String()),
-          phone: t.String(),
-          cep: t.String(),
-          address: t.String(),
-          address_number: t.String(),
-          neighborhood: t.String(),
-          state: t.String(),
-          city: t.String(),
-        }),
-      }),
-      401: t.Object({
-        error: t.String(),
-        description: t.String(),
-      }),
+      200: t.Object(
+        {
+          message: t.String(),
+          client: t.Object({
+            type: t.String(),
+            email_address: t.String(),
+            name: t.String(),
+            company_name: t.String(),
+            cpf: t.String(),
+            cnpj: t.String(),
+            phone: t.String(),
+            cep: t.String(),
+            address: t.String(),
+            address_number: t.String(),
+            neighborhood: t.String(),
+            state: t.String(),
+            city: t.String(),
+          }),
+        },
+        {
+          description: "Cliente atualizado com sucesso",
+        }
+      ),
+      401: t.Object(
+        {
+          message: t.String(),
+        },
+        {
+          description: "Unauthorized",
+        }
+      ),
+      404: t.Object(
+        {
+          message: t.String(),
+        },
+        {
+          description: "Cliente não encontrado",
+        }
+      ),
+      400: t.Object(
+        {
+          message: t.String(),
+        },
+        {
+          description: "Cliente já cadastrado",
+        }
+      ),
     },
     detail: {
       description: "Update client",

@@ -1,7 +1,7 @@
 import Elysia, { t } from "elysia"
 import { db } from "../../../lib/prisma"
-import { createToken } from "../../../utils/jwt"
 import { setCookie } from "../../../utils/cookie"
+import { createToken } from "../../../utils/jwt"
 
 export const authFromLink = new Elysia().get(
   "/auth/verify",
@@ -14,8 +14,10 @@ export const authFromLink = new Elysia().get(
     })
 
     if (!magicLink || magicLink.expiresAt < new Date()) {
-      set.status = 400
-      return { error: "Invalid or expired magic link" }
+      throw new Response(null, {
+        status: 401,
+        statusText: "Unauthorized",
+      })
     }
 
     const token = createToken({
@@ -40,5 +42,27 @@ export const authFromLink = new Elysia().get(
       code: t.String(),
       redirect: t.String(),
     }),
+    response: {
+      301: t.Object(
+        {
+          message: t.String(),
+        },
+        {
+          description: "Redirecionado com sucesso",
+        }
+      ),
+      401: t.Object(
+        {
+          message: t.String(),
+        },
+        {
+          description: "Link inválido ou expirado",
+        }
+      ),
+    },
+    detail: {
+      description: "Verifica e autentica o link de convite",
+      tags: ["Auth"],
+    },
   }
 )

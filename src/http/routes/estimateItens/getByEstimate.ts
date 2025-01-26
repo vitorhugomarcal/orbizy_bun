@@ -12,6 +12,7 @@ export const getByEstimate = new Elysia().get(
     }
 
     const { estimateId } = params
+
     if (!estimateId) {
       throw new AuthError(
         "ID do orçamento não encontrado",
@@ -44,7 +45,6 @@ export const getByEstimate = new Elysia().get(
 
     return {
       message: "Itens do orçamento",
-      description: "Get estimate items by estimate id",
       formattedItens,
     }
   },
@@ -53,30 +53,40 @@ export const getByEstimate = new Elysia().get(
       estimateId: t.String(),
     }),
     response: {
-      200: t.Object({
-        message: t.String(),
-        description: t.String(),
-        formattedItens: t.Array(
-          t.Object({
-            id: t.Nullable(t.String()),
-            name: t.Nullable(t.String()),
-            quantity: t.Nullable(t.Number()),
-            price: t.Nullable(t.Number()),
-            unit: t.Nullable(t.String()),
-            total: t.Nullable(t.Number()),
-          })
-        ),
-      }),
-      401: t.Object({
-        message: t.String(),
-        error: t.String(),
-        description: t.String(),
-      }),
-      404: t.Object({
-        message: t.String(),
-        description: t.String(),
-        error: t.String(),
-      }),
+      200: t.Object(
+        {
+          message: t.String(),
+          formattedItens: t.Array(
+            t.Object({
+              id: t.String(),
+              name: t.String(),
+              quantity: t.Number(),
+              price: t.Number(),
+              unit: t.String(),
+              total: t.Number(),
+            })
+          ),
+        },
+        {
+          description: "Itens do orçamento",
+        }
+      ),
+      401: t.Object(
+        {
+          message: t.String(),
+        },
+        {
+          description: "Unauthorized",
+        }
+      ),
+      404: t.Object(
+        {
+          message: t.String(),
+        },
+        {
+          description: "Orçamento não encontrado",
+        }
+      ),
     },
     detail: {
       description: "Get all estimate items by estimate ID",

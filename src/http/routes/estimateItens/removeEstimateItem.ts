@@ -13,6 +13,14 @@ export const removeEstimateItem = new Elysia().delete(
 
     const { itemId } = params
 
+    if (!itemId) {
+      throw new AuthError(
+        "Item do orçamento não encontrado",
+        "ITEM_NOT_FOUND",
+        404
+      )
+    }
+
     await db.estimateItems.delete({
       where: {
         id: itemId,
@@ -21,7 +29,6 @@ export const removeEstimateItem = new Elysia().delete(
 
     return {
       message: "Item do orçamento removido com sucesso",
-      description: "Remove an estimate item",
     }
   },
   {
@@ -29,14 +36,30 @@ export const removeEstimateItem = new Elysia().delete(
       itemId: t.String(),
     }),
     response: {
-      204: t.Object({
-        message: t.String(),
-        description: t.String(),
-      }),
-      401: t.Object({
-        error: t.String(),
-        description: t.String(),
-      }),
+      204: t.Object(
+        {
+          message: t.String(),
+        },
+        {
+          description: "Item do orçamento removido com sucesso",
+        }
+      ),
+      401: t.Object(
+        {
+          message: t.String(),
+        },
+        {
+          description: "Unauthorized",
+        }
+      ),
+      404: t.Object(
+        {
+          message: t.String(),
+        },
+        {
+          description: "Item do orçamento não encontrado",
+        }
+      ),
     },
     detail: {
       description: "Remove an estimate item",

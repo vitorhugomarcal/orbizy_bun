@@ -23,11 +23,27 @@ export const sessions = new Elysia().post(
 
     setCookie(cookie.auth, token)
 
-    return (set.status = 200)
+    return {
+      message: "Sessão criada com sucesso",
+    }
   },
   {
     body: t.Object({
       email: t.String(),
     }),
+    response: {
+      201: t.Object(
+        {
+          message: t.String(),
+        },
+        {
+          description: "Sessão criada com sucesso",
+        }
+      ),
+    },
+    detail: {
+      description: "Cria uma sessão para o usuário",
+      tags: ["Auth"],
+    },
   }
 )

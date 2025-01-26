@@ -12,6 +12,7 @@ export const getAllSupplier = new Elysia().get(
     }
 
     const company = user.Company
+
     if (!company) {
       throw new AuthError("Company not found", "COMPANY_NOT_FOUND", 404)
     }
@@ -25,41 +26,57 @@ export const getAllSupplier = new Elysia().get(
         },
       },
     })
+
+    if (!suppliers) {
+      throw new AuthError("Suppliers not found", "SUPPLIERS_NOT_FOUND", 404)
+    }
+
     return {
       message: "Suppliers found successfully",
-      description: "Suppliers found successfully",
       suppliers,
     }
   },
   {
     response: {
-      200: t.Object({
-        message: t.String(),
-        description: t.String(),
-        suppliers: t.Array(
-          t.Object({
-            id: t.String(),
-            company_name: t.String(),
-            cnpj: t.String(),
-            phone: t.String(),
-            state: t.String(),
-            city: t.String(),
-            cep: t.String(),
-            address_number: t.String(),
-            email_address: t.String(),
-            address: t.String(),
-            neighborhood: t.String(),
-          })
-        ),
-      }),
-      401: t.Object({
-        error: t.String(),
-        description: t.String(),
-      }),
-      404: t.Object({
-        error: t.String(),
-        description: t.String(),
-      }),
+      200: t.Object(
+        {
+          message: t.String(),
+          suppliers: t.Array(
+            t.Object({
+              id: t.String(),
+              company_name: t.String(),
+              cnpj: t.String(),
+              phone: t.String(),
+              state: t.String(),
+              city: t.String(),
+              cep: t.String(),
+              address_number: t.String(),
+              email_address: t.String(),
+              address: t.String(),
+              neighborhood: t.String(),
+            })
+          ),
+        },
+        {
+          description: "Suppliers found successfully",
+        }
+      ),
+      401: t.Object(
+        {
+          message: t.String(),
+        },
+        {
+          description: "Unauthorized",
+        }
+      ),
+      404: t.Object(
+        {
+          message: t.String(),
+        },
+        {
+          description: "Company not found",
+        }
+      ),
     },
     detail: {
       description: "Get all suppliers",

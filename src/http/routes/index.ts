@@ -4,6 +4,7 @@ import clientsRoutes from "./clients"
 import companyRoutes from "./company"
 import estimateRoutes from "./estimate"
 import estimateItensRoutes from "./estimateItens"
+import inviteRoutes from "./inviteClient"
 import itemRoutes from "./itens"
 import supplierRoutes from "./supplier"
 import unitRoutes from "./unit"
@@ -19,5 +20,6 @@ const routes = new Elysia()
   .use(supplierRoutes)
   .use(unitRoutes)
   .use(userRoutes)
+  .use(inviteRoutes)
 
 export default routes

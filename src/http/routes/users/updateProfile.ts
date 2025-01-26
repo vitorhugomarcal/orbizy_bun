@@ -24,7 +24,6 @@ export const updateUser = new Elysia().put(
 
     return {
       message: "Usuario atualizado com sucesso",
-      description: "Usuario atualizado com sucesso",
       userUpdated,
     }
   },
@@ -33,22 +32,34 @@ export const updateUser = new Elysia().put(
       name: t.Optional(t.String()),
     }),
     response: {
-      201: t.Object({
-        message: t.String(),
-        description: t.String(),
-        userUpdated: t.Object({
-          id: t.Optional(t.String()),
-          name: t.Optional(t.String()),
-          email: t.Optional(t.String()),
-          company_id: t.Nullable(t.String()),
-          type: t.Optional(t.String()),
-          role: t.Optional(t.String()),
-        }),
-      }),
-      401: t.Object({
-        error: t.String(),
-        description: t.String(),
-      }),
+      201: t.Object(
+        {
+          message: t.String(),
+          userUpdated: t.Object({
+            id: t.String(),
+            name: t.String(),
+            email: t.String(),
+            company_id: t.String(),
+            type: t.String({
+              enum: ["basic", "team", "pro"],
+            }),
+            role: t.String({
+              enum: ["MASTER", "BASIC"],
+            }),
+          }),
+        },
+        {
+          description: "User updated successfully",
+        }
+      ),
+      401: t.Object(
+        {
+          message: t.String(),
+        },
+        {
+          description: "Unauthorized",
+        }
+      ),
     },
     detail: {
       description: "Update the current user's profile",

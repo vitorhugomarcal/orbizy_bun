@@ -31,7 +31,6 @@ export const createUnit = new Elysia().post(
 
     return {
       message: "Unidade cadastrado com sucesso",
-      description: "Unidade cadastrado com sucesso",
       unit,
     }
   },
@@ -40,17 +39,33 @@ export const createUnit = new Elysia().post(
       name: t.String(),
     }),
     response: {
-      201: t.Object({
-        message: t.String(),
-        description: t.String(),
-        unit: t.Object({
-          name: t.String(),
-        }),
-      }),
-      401: t.Object({
-        error: t.String(),
-        description: t.String(),
-      }),
+      201: t.Object(
+        {
+          message: t.String(),
+          unit: t.Object({
+            name: t.String(),
+          }),
+        },
+        {
+          description: "Unit created successfully",
+        }
+      ),
+      401: t.Object(
+        {
+          message: t.String(),
+        },
+        {
+          description: "Unauthorized",
+        }
+      ),
+      400: t.Object(
+        {
+          message: t.String(),
+        },
+        {
+          description: "Item já cadastrado",
+        }
+      ),
     },
     detail: {
       description: "Create a new world unit",

@@ -26,6 +26,10 @@ export const updateSupplier = new Elysia().put(
 
     const { supplierId } = params
 
+    if (!supplierId) {
+      throw new AuthError("Supplier ID is required", "MISSING_SUPPLIER_ID", 400)
+    }
+
     const supplier = await db.supplier.findUnique({
       where: {
         id: supplierId,
@@ -55,7 +59,6 @@ export const updateSupplier = new Elysia().put(
 
     return {
       message: "Supplier updated successfully",
-      description: "Supplier updated successfully",
       supplier: updatedSuppler,
     }
   },
@@ -73,27 +76,51 @@ export const updateSupplier = new Elysia().put(
       neighborhood: t.Optional(t.String()),
     }),
     response: {
-      201: t.Object({
-        message: t.String(),
-        description: t.String(),
-        supplier: t.Object({
-          id: t.String(),
-          company_name: t.Optional(t.String()),
-          cnpj: t.Optional(t.String()),
-          phone: t.Optional(t.String()),
-          state: t.Optional(t.String()),
-          city: t.Optional(t.String()),
-          cep: t.Optional(t.String()),
-          address_number: t.Optional(t.String()),
-          email_address: t.Optional(t.String()),
-          address: t.Optional(t.String()),
-          neighborhood: t.Optional(t.String()),
-        }),
-      }),
-      401: t.Object({
-        error: t.String(),
-        description: t.String(),
-      }),
+      201: t.Object(
+        {
+          message: t.String(),
+          supplier: t.Object({
+            id: t.String(),
+            company_name: t.String(),
+            cnpj: t.String(),
+            phone: t.String(),
+            state: t.String(),
+            city: t.String(),
+            cep: t.String(),
+            address_number: t.String(),
+            email_address: t.String(),
+            address: t.String(),
+            neighborhood: t.String(),
+          }),
+        },
+        {
+          description: "Supplier updated successfully",
+        }
+      ),
+      401: t.Object(
+        {
+          message: t.String(),
+        },
+        {
+          description: "Unauthorized",
+        }
+      ),
+      404: t.Object(
+        {
+          message: t.String(),
+        },
+        {
+          description: "Supplier not found",
+        }
+      ),
+      400: t.Object(
+        {
+          message: t.String(),
+        },
+        {
+          description: "Supplier is already associated with this user",
+        }
+      ),
     },
     detail: {
       description: "Update a supplier",

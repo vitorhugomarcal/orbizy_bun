@@ -18,6 +18,10 @@ export const getByMonth = new Elysia().get(
       },
     })
 
+    if (!clients) {
+      throw new AuthError("Clients not found", "CLIENTS_NOT_FOUND", 404)
+    }
+
     const today = new Date()
     const monthStart = startOfMonth(today)
 
@@ -34,20 +38,39 @@ export const getByMonth = new Elysia().get(
     return {
       total: clients.length,
       new: newClientsCount,
-      description: "Retrieve client count for the current month",
     }
   },
   {
     response: {
-      200: t.Object({
-        total: t.Number(),
-        new: t.Number(),
-        description: t.String(),
-      }),
-      401: t.Object({
-        error: t.String(),
-        description: t.String(),
-      }),
+      200: t.Object(
+        {
+          total: t.Number({
+            description: "Total number of clients",
+          }),
+          new: t.Number({
+            description: "Number of new clients in the current month",
+          }),
+        },
+        {
+          description: "Client count for the current month",
+        }
+      ),
+      401: t.Object(
+        {
+          message: t.String(),
+        },
+        {
+          description: "Unauthorized",
+        }
+      ),
+      404: t.Object(
+        {
+          message: t.String(),
+        },
+        {
+          description: "Clients not found",
+        }
+      ),
     },
     detail: {
       description: "Retrieve client count for the current month",

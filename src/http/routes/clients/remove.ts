@@ -13,14 +13,22 @@ export const removeClient = new Elysia().delete(
 
     const { clientId } = params
 
+    if (!clientId) {
+      throw new AuthError(
+        "ID do cliente não fornecido",
+        "MISSING_CLIENT_ID",
+        400
+      )
+    }
+
     await db.client.delete({
       where: {
         id: clientId,
       },
     })
+
     return {
       message: "Client removed successfully",
-      description: "Remove um cliente",
     }
   },
   {
@@ -28,14 +36,30 @@ export const removeClient = new Elysia().delete(
       clientId: t.String(),
     }),
     response: {
-      204: t.Object({
-        message: t.String(),
-        description: t.String(),
-      }),
-      401: t.Object({
-        error: t.String(),
-        description: t.String(),
-      }),
+      204: t.Object(
+        {
+          message: t.String(),
+        },
+        {
+          description: "Client removed successfully",
+        }
+      ),
+      401: t.Object(
+        {
+          message: t.String(),
+        },
+        {
+          description: "Unauthorized",
+        }
+      ),
+      400: t.Object(
+        {
+          message: t.String(),
+        },
+        {
+          description: "ID do cliente não fornecido",
+        }
+      ),
     },
     detail: {
       description: "Remove a client",

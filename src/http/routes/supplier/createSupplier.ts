@@ -27,6 +27,7 @@ export const createSupplier = new Elysia().post(
     const existingSupplier = await db.supplier.findUnique({ where: { cnpj } })
 
     const company = user.Company
+
     if (!company) {
       throw new AuthError("Unauthorized", "UNAUTHORIZED", 401)
     }
@@ -81,7 +82,6 @@ export const createSupplier = new Elysia().post(
       })
       return {
         message: "Supplier created successfully",
-        description: "Supplier created successfully",
         supplier: newSupplier,
       }
     }
@@ -100,26 +100,42 @@ export const createSupplier = new Elysia().post(
       neighborhood: t.String(),
     }),
     response: {
-      201: t.Object({
-        message: t.String(),
-        description: t.String(),
-        supplier: t.Object({
-          company_name: t.String(),
-          cnpj: t.String(),
-          phone: t.String(),
-          state: t.String(),
-          city: t.String(),
-          cep: t.String(),
-          address_number: t.String(),
-          email_address: t.String(),
-          address: t.String(),
-          neighborhood: t.String(),
-        }),
-      }),
-      401: t.Object({
-        error: t.String(),
-        description: t.String(),
-      }),
+      201: t.Object(
+        {
+          message: t.String(),
+          supplier: t.Object({
+            company_name: t.String(),
+            cnpj: t.String(),
+            phone: t.String(),
+            state: t.String(),
+            city: t.String(),
+            cep: t.String(),
+            address_number: t.String(),
+            email_address: t.String(),
+            address: t.String(),
+            neighborhood: t.String(),
+          }),
+        },
+        {
+          description: "Supplier created successfully",
+        }
+      ),
+      401: t.Object(
+        {
+          message: t.String(),
+        },
+        {
+          description: "Unauthorized",
+        }
+      ),
+      400: t.Object(
+        {
+          message: t.String(),
+        },
+        {
+          description: "Supplier is already associated with this user",
+        }
+      ),
     },
     detail: {
       description: "Create a new supplier",

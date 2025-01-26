@@ -13,6 +13,10 @@ export const getById = new Elysia().get(
 
     const { itemId } = params
 
+    if (!itemId) {
+      throw new AuthError("Item não encontrado", "ITEM_NOT_FOUND", 404)
+    }
+
     const checkItemExists = await db.item.findUnique({
       where: {
         id: itemId,
@@ -39,8 +43,7 @@ export const getById = new Elysia().get(
 
     return {
       message: "Item encontrado",
-      description: "Get a item by id",
-      formattedItem,
+      item: formattedItem,
     }
   },
   {
@@ -48,21 +51,37 @@ export const getById = new Elysia().get(
       itemId: t.String(),
     }),
     response: {
-      200: t.Object({
-        message: t.String(),
-        description: t.String(),
-        formattedItem: t.Object({
-          id: t.String(),
-          name: t.String(),
-          price: t.Number(),
-          description: t.String(),
-          unit: t.String(),
-        }),
-      }),
-      401: t.Object({
-        error: t.String(),
-        description: t.String(),
-      }),
+      200: t.Object(
+        {
+          message: t.String(),
+          item: t.Object({
+            id: t.String(),
+            name: t.String(),
+            price: t.Number(),
+            description: t.String(),
+            unit: t.String(),
+          }),
+        },
+        {
+          description: "Item encontrado",
+        }
+      ),
+      401: t.Object(
+        {
+          message: t.String(),
+        },
+        {
+          description: "Unauthorized",
+        }
+      ),
+      404: t.Object(
+        {
+          message: t.String(),
+        },
+        {
+          description: "Item não encontrado",
+        }
+      ),
     },
     detail: {
       description: "Get a item by id",

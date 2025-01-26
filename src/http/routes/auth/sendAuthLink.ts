@@ -6,7 +6,6 @@ import { db } from "../../../lib/prisma"
 import { AuthError } from "../errors/auth-error"
 
 const RESEND_API = env.RESEND_API
-const JWT_SECRET = env.JWT_SECRET
 const API_BASE_URL = env.API_BASE_URL || "http://192.168.1.80:5173"
 const AUTH_REDIRECT_URL = env.AUTH_REDIRECT_URL || "http://192.168.1.80:5173"
 
@@ -104,19 +103,53 @@ export const sendAuthLink = new Elysia().post(
       },
     })
 
-    // Generate magic link
     const magicLink = new URL("/auth/verify", API_BASE_URL)
     magicLink.searchParams.set("code", authLinkCode)
     magicLink.searchParams.set("redirect", AUTH_REDIRECT_URL)
 
-    // Send email
     await createMagicLinkEmail(email, magicLink)
-
-    console.info(`Magic link sent successfully to ${email}`)
   },
   {
     body: t.Object({
       email: t.String({ format: "email" }),
     }),
+    response: {
+      201: t.Object(
+        {
+          message: t.String(),
+        },
+        {
+          description: "Link de autenticação enviado com sucesso",
+        }
+      ),
+      400: t.Object(
+        {
+          message: t.String(),
+        },
+        {
+          description: "Erro ao enviar link de autenticação",
+        }
+      ),
+      429: t.Object(
+        {
+          message: t.String(),
+        },
+        {
+          description: "Limite de requisições excedido",
+        }
+      ),
+      404: t.Object(
+        {
+          message: t.String(),
+        },
+        {
+          description: "Email não encontrado",
+        }
+      ),
+    },
+    detail: {
+      description: "Send a magic link to the user",
+      tags: ["Auth"],
+    },
   }
 )

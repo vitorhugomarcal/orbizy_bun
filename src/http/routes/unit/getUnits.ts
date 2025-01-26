@@ -17,32 +17,63 @@ export const getUnits = new Elysia().get(
       },
     })
 
+    if (!unitCustom) {
+      throw new AuthError(
+        "Unidades customizadas não encontradas",
+        "CUSTOM_UNITS_NOT_FOUND",
+        404
+      )
+    }
+
     const unitDefault = await db.unitType.findMany()
+
+    if (!unitDefault) {
+      throw new AuthError(
+        "Unidades padrão não encontradas",
+        "DEFAULT_UNITS_NOT_FOUND",
+        404
+      )
+    }
 
     const allUnits = [...unitCustom, ...unitDefault]
 
     return {
       message: "Unidades encontradas com sucesso",
-      description: "Unidades encontradas com sucesso",
       units: allUnits,
     }
   },
   {
     response: {
-      200: t.Object({
-        message: t.String(),
-        description: t.String(),
-        units: t.Array(
-          t.Object({
-            id: t.String(),
-            name: t.String(),
-          })
-        ),
-      }),
-      401: t.Object({
-        error: t.String(),
-        description: t.String(),
-      }),
+      200: t.Object(
+        {
+          message: t.String(),
+          units: t.Array(
+            t.Object({
+              id: t.String(),
+              name: t.String(),
+            })
+          ),
+        },
+        {
+          description: "Units retrieved successfully",
+        }
+      ),
+      401: t.Object(
+        {
+          message: t.String(),
+        },
+        {
+          description: "Unauthorized",
+        }
+      ),
+      404: t.Object(
+        {
+          message: t.String(),
+        },
+        {
+          description: "Not found",
+        }
+      ),
     },
     detail: {
       description: "Get all units",

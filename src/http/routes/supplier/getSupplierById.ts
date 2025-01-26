@@ -18,6 +18,7 @@ export const getSupplierById = new Elysia().get(
     }
 
     const company = user.Company
+
     if (!company) {
       throw new AuthError("Company not found", "COMPANY_NOT_FOUND", 404)
     }
@@ -34,7 +35,6 @@ export const getSupplierById = new Elysia().get(
 
     return {
       message: "supplier found successfully",
-      description: "supplier found successfully",
       supplier,
     }
   },
@@ -43,35 +43,51 @@ export const getSupplierById = new Elysia().get(
       supplierId: t.String(),
     }),
     response: {
-      200: t.Object({
-        message: t.String(),
-        description: t.String(),
-        supplier: t.Object({
-          id: t.String(),
-          company_name: t.String(),
-          cnpj: t.String(),
-          phone: t.String(),
-          state: t.String(),
-          city: t.String(),
-          cep: t.String(),
-          address_number: t.String(),
-          email_address: t.String(),
-          address: t.String(),
-          neighborhood: t.String(),
-        }),
-      }),
-      404: t.Object({
-        error: t.String(),
-        description: t.String(),
-      }),
-      400: t.Object({
-        error: t.String(),
-        description: t.String(),
-      }),
-      401: t.Object({
-        error: t.String(),
-        description: t.String(),
-      }),
+      200: t.Object(
+        {
+          message: t.String(),
+          supplier: t.Object({
+            id: t.String(),
+            company_name: t.String(),
+            cnpj: t.String(),
+            phone: t.String(),
+            state: t.String(),
+            city: t.String(),
+            cep: t.String(),
+            address_number: t.String(),
+            email_address: t.String(),
+            address: t.String(),
+            neighborhood: t.String(),
+          }),
+        },
+        {
+          description: "Supplier found successfully",
+        }
+      ),
+      404: t.Object(
+        {
+          message: t.String(),
+        },
+        {
+          description: "Supplier not found",
+        }
+      ),
+      400: t.Object(
+        {
+          message: t.String(),
+        },
+        {
+          description: "Supplier ID is required",
+        }
+      ),
+      401: t.Object(
+        {
+          message: t.String(),
+        },
+        {
+          description: "Unauthorized",
+        }
+      ),
     },
     detail: {
       description: "Get supplier by ID",

@@ -24,18 +24,25 @@ export const update = new Elysia().put(
       throw new AuthError("Unauthorized", "UNAUTHORIZED", 401)
     }
 
+    const hasCompany = user.Company
+
+    if (!hasCompany) {
+      throw new AuthError("Company not found", "COMPANY_NOT_FOUND", 404)
+    }
+
     const checkCompanyExists = await db.company.findUnique({
       where: {
-        id: user.Company?.id,
+        id: hasCompany.id,
       },
     })
+
     if (!checkCompanyExists) {
       throw new AuthError("Company not found", "COMPANY_NOT_FOUND", 404)
     }
 
     const company = await db.company.update({
       where: {
-        id: user.Company?.id,
+        id: hasCompany.id,
       },
       data: {
         cnpj,
@@ -69,32 +76,50 @@ export const update = new Elysia().put(
       owner_id: t.Optional(t.String()),
     }),
     response: {
-      201: t.Object({
-        message: t.String(),
-        description: t.String(),
-        company: t.Object({
-          cnpj: t.Optional(t.String()),
-          phone: t.Optional(t.String()),
-          state: t.Optional(t.String()),
-          city: t.Optional(t.String()),
-          cep: t.Optional(t.String()),
-          address: t.Optional(t.String()),
-          neighborhood: t.Optional(t.String()),
-          address_number: t.Optional(t.String()),
-          company_name: t.Optional(t.String()),
-          owner_id: t.Optional(t.String()),
-        }),
-      }),
-      400: t.Object({
-        code: t.String(),
-        description: t.String(),
-        message: t.String(),
-      }),
-      401: t.Object({
-        code: t.String(),
-        description: t.String(),
-        message: t.String(),
-      }),
+      201: t.Object(
+        {
+          message: t.String(),
+          company: t.Object({
+            cnpj: t.Optional(t.String()),
+            phone: t.Optional(t.String()),
+            state: t.Optional(t.String()),
+            city: t.Optional(t.String()),
+            cep: t.Optional(t.String()),
+            address: t.Optional(t.String()),
+            neighborhood: t.Optional(t.String()),
+            address_number: t.Optional(t.String()),
+            company_name: t.Optional(t.String()),
+            owner_id: t.Optional(t.String()),
+          }),
+        },
+        {
+          description: "Empresa atualizada com sucesso",
+        }
+      ),
+      400: t.Object(
+        {
+          message: t.String(),
+        },
+        {
+          description: "Invalid request",
+        }
+      ),
+      401: t.Object(
+        {
+          message: t.String(),
+        },
+        {
+          description: "Unauthorized",
+        }
+      ),
+      404: t.Object(
+        {
+          message: t.String(),
+        },
+        {
+          description: "Company not found",
+        }
+      ),
     },
     detail: {
       description: "Update a company",

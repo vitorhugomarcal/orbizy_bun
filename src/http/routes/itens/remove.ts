@@ -13,6 +13,10 @@ export const removeItem = new Elysia().delete(
 
     const { itemId } = params
 
+    if (!itemId) {
+      throw new AuthError("Item não encontrado", "ITEM_NOT_FOUND", 404)
+    }
+
     await db.item.delete({
       where: {
         id: itemId,
@@ -20,7 +24,6 @@ export const removeItem = new Elysia().delete(
     })
     return {
       message: "Item removido com sucesso",
-      description: "Remove a item",
     }
   },
   {
@@ -28,14 +31,30 @@ export const removeItem = new Elysia().delete(
       itemId: t.String(),
     }),
     response: {
-      204: t.Object({
-        message: t.String(),
-        description: t.String(),
-      }),
-      401: t.Object({
-        error: t.String(),
-        description: t.String(),
-      }),
+      204: t.Object(
+        {
+          message: t.String(),
+        },
+        {
+          description: "Item removido com sucesso",
+        }
+      ),
+      401: t.Object(
+        {
+          message: t.String(),
+        },
+        {
+          description: "Unauthorized",
+        }
+      ),
+      404: t.Object(
+        {
+          message: t.String(),
+        },
+        {
+          description: "Item não encontrado",
+        }
+      ),
     },
     detail: {
       description: "Remove a item",

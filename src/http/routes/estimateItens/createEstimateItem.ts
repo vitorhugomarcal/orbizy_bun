@@ -15,11 +15,16 @@ export const createEstimateItem = new Elysia().post(
 
     const { estimateId } = params
 
+    if (!estimateId) {
+      throw new AuthError("Orçamento não encontrado", "ESTIMATE_NOT_FOUND", 404)
+    }
+
     const checkEstimateExists = await db.estimate.findUnique({
       where: {
         id: estimateId,
       },
     })
+
     if (!checkEstimateExists) {
       throw new AuthError("Orçamento não encontrado", "ESTIMATE_NOT_FOUND", 404)
     }
@@ -35,10 +40,16 @@ export const createEstimateItem = new Elysia().post(
       },
     })
 
+    const formattedItem = {
+      ...item,
+      quantity: Number(item.quantity),
+      price: Number(item.price),
+      total: Number(item.total),
+    }
+
     return {
       message: "Item cadastrado com sucesso",
-      description: "Create a new estimate item",
-      item,
+      item: formattedItem,
     }
   },
   {
@@ -53,22 +64,38 @@ export const createEstimateItem = new Elysia().post(
       estimateId: t.String(),
     }),
     response: {
-      201: t.Object({
-        message: t.String(),
-        description: t.String(),
-        item: t.Object({
-          id: t.String(),
-          name: t.String(),
-          quantity: t.Number(),
-          price: t.Number(),
-          unit: t.String(),
-          total: t.Number(),
-        }),
-      }),
-      401: t.Object({
-        error: t.String(),
-        description: t.String(),
-      }),
+      201: t.Object(
+        {
+          message: t.String(),
+          item: t.Object({
+            id: t.String(),
+            name: t.String(),
+            quantity: t.Number(),
+            price: t.Number(),
+            unit: t.String(),
+            total: t.Number(),
+          }),
+        },
+        {
+          description: "Item cadastrado com sucesso",
+        }
+      ),
+      401: t.Object(
+        {
+          message: t.String(),
+        },
+        {
+          description: "Unauthorized",
+        }
+      ),
+      404: t.Object(
+        {
+          message: t.String(),
+        },
+        {
+          description: "Orçamento não encontrado",
+        }
+      ),
     },
     detail: {
       description: "Create a new estimate item",

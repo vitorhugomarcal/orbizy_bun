@@ -12,24 +12,26 @@ export const getProfile = new Elysia().get(
 
     return {
       message: "Profile retrieved successfully",
-      description: "Profile retrieved successfully",
       user,
     }
   },
   {
     response: {
-      200: t.Object({
-        message: t.String(),
-        description: t.String(),
-        user: t.Object({
-          id: t.String(),
-          name: t.Nullable(t.String()),
-          email: t.String(),
-          company_id: t.Nullable(t.String()),
-          type: t.String(),
-          role: t.String(),
-          Company: t.Nullable(
-            t.Object({
+      200: t.Object(
+        {
+          message: t.String(),
+          user: t.Object({
+            id: t.String(),
+            name: t.String(),
+            email: t.String(),
+            company_id: t.String(),
+            type: t.String({
+              enum: ["basic", "team", "pro"],
+            }),
+            role: t.String({
+              enum: ["MASTER", "BASIC"],
+            }),
+            Company: t.Object({
               id: t.String(),
               cnpj: t.String(),
               phone: t.String(),
@@ -41,15 +43,21 @@ export const getProfile = new Elysia().get(
               address_number: t.String(),
               company_name: t.String(),
               owner_id: t.String(),
-              createdAt: t.Date(),
-            })
-          ),
-        }),
-      }),
-      401: t.Object({
-        error: t.String(),
-        description: t.String(),
-      }),
+            }),
+          }),
+        },
+        {
+          description: "Profile retrieved successfully",
+        }
+      ),
+      401: t.Object(
+        {
+          message: t.String(),
+        },
+        {
+          description: "Unauthorized",
+        }
+      ),
     },
     detail: {
       description: "Get user profile",

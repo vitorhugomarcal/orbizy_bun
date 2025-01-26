@@ -13,19 +13,26 @@ export const createItem = new Elysia().post(
       throw new AuthError("Unauthorized", "UNAUTHORIZED", 401)
     }
 
+    const hasCompany = user.Company
+
+    if (!hasCompany) {
+      throw new AuthError("Company not found", "COMPANY_NOT_FOUND", 404)
+    }
+
     const checkItemExists = await db.item.findFirst({
       where: {
         name,
-        company_id: user.company_id,
+        company_id: hasCompany.id,
       },
     })
+
     if (checkItemExists) {
       throw new AuthError("Item já cadastrado", "ITEM_ALREADY_EXISTS", 400)
     }
 
     const item = await db.item.create({
       data: {
-        company_id: user.company_id,
+        company_id: hasCompany.id,
         name,
         price,
         description,
@@ -35,7 +42,6 @@ export const createItem = new Elysia().post(
 
     return {
       message: "Item cadastrado com sucesso",
-      description: "Create a new item",
       item,
     }
   },
@@ -47,21 +53,45 @@ export const createItem = new Elysia().post(
       unit: t.String(),
     }),
     response: {
-      201: t.Object({
-        message: t.String(),
-        description: t.String(),
-        item: t.Object({
-          id: t.String(),
-          name: t.String(),
-          price: t.Number(),
-          description: t.String(),
-          unit: t.String(),
-        }),
-      }),
-      401: t.Object({
-        error: t.String(),
-        description: t.String(),
-      }),
+      201: t.Object(
+        {
+          message: t.String(),
+          item: t.Object({
+            id: t.String(),
+            name: t.String(),
+            price: t.Number(),
+            description: t.String(),
+            unit: t.String(),
+          }),
+        },
+        {
+          description: "Item cadastrado com sucesso",
+        }
+      ),
+      401: t.Object(
+        {
+          message: t.String(),
+        },
+        {
+          description: "Unauthorized",
+        }
+      ),
+      400: t.Object(
+        {
+          message: t.String(),
+        },
+        {
+          description: "Item já cadastrado",
+        }
+      ),
+      404: t.Object(
+        {
+          message: t.String(),
+        },
+        {
+          description: "Company not found",
+        }
+      ),
     },
     detail: {
       description: "Cadastra um novo item",

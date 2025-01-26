@@ -7,12 +7,15 @@ export const updateEstimate = new Elysia().put(
   `/estimate/update/:estimateId`,
   async ({ cookie, body, params }) => {
     const { estimate_number, status, notes, sub_total, total } = body
-
-    const { estimateId } = params
-
     const user = await auth({ cookie })
     if (!user) {
       throw new AuthError("Unauthorized", "UNAUTHORIZED", 401)
+    }
+
+    const { estimateId } = params
+
+    if (!estimateId) {
+      throw new AuthError("Orçamento não encontrado", "ESTIMATE_NOT_FOUND", 404)
     }
 
     const checkEstimateExists = await db.estimate.findUnique({
@@ -20,6 +23,7 @@ export const updateEstimate = new Elysia().put(
         id: estimateId,
       },
     })
+
     if (!checkEstimateExists) {
       throw new AuthError("Orçamento não encontrado", "ESTIMATE_NOT_FOUND", 404)
     }
@@ -37,10 +41,15 @@ export const updateEstimate = new Elysia().put(
       },
     })
 
+    const formattedEstimate = {
+      ...estimate,
+      sub_total: Number(estimate.sub_total),
+      total: Number(estimate.total),
+    }
+
     return {
       message: "Orçamento atualizado com sucesso",
-      description: "Update a estimate",
-      estimate,
+      estimate: formattedEstimate,
     }
   },
   {
@@ -55,21 +64,37 @@ export const updateEstimate = new Elysia().put(
       estimateId: t.String(),
     }),
     response: {
-      201: t.Object({
-        message: t.String(),
-        description: t.String(),
-        estimate: t.Object({
-          estimate_number: t.Optional(t.String()),
-          status: t.Optional(t.String()),
-          notes: t.Optional(t.String()),
-          sub_total: t.Optional(t.Number()),
-          total: t.Optional(t.Number()),
-        }),
-      }),
-      401: t.Object({
-        error: t.String(),
-        description: t.String(),
-      }),
+      201: t.Object(
+        {
+          message: t.String(),
+          estimate: t.Object({
+            estimate_number: t.String(),
+            status: t.String(),
+            notes: t.String(),
+            sub_total: t.Number(),
+            total: t.Number(),
+          }),
+        },
+        {
+          description: "Orçamento atualizado com sucesso",
+        }
+      ),
+      401: t.Object(
+        {
+          message: t.String(),
+        },
+        {
+          description: "Unauthorized",
+        }
+      ),
+      404: t.Object(
+        {
+          message: t.String(),
+        },
+        {
+          description: "Orçamento não encontrado",
+        }
+      ),
     },
     detail: {
       description: "Update a estimate",

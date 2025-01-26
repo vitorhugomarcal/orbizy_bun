@@ -13,27 +13,28 @@ export const getEstimateById = new Elysia().get(
 
     const { estimateId } = params
 
+    if (!estimateId) {
+      throw new AuthError("Orçamento não encontrado", "ESTIMATE_NOT_FOUND", 404)
+    }
+
     const estimate = await db.estimate.findUnique({
       where: {
         id: estimateId,
       },
     })
+
     if (!estimate) {
       throw new AuthError("Orçamento não encontrado", "ESTIMATE_NOT_FOUND", 404)
     }
 
     const formattedEstimate = {
-      estimate_number: estimate.estimate_number,
-      status: estimate.status,
-      notes: estimate.notes,
+      ...estimate,
       sub_total: Number(estimate.sub_total),
       total: Number(estimate.total),
-      client_id: estimate.client_id,
     }
     return {
       message: "Orçamento encontrado",
-      description: "Retorna um orçamento",
-      formattedEstimate,
+      estimate: formattedEstimate,
     }
   },
   {
@@ -41,22 +42,38 @@ export const getEstimateById = new Elysia().get(
       estimateId: t.String(),
     }),
     response: {
-      200: t.Object({
-        message: t.String(),
-        description: t.String(),
-        formattedEstimate: t.Object({
-          estimate_number: t.Nullable(t.String()),
-          status: t.Nullable(t.String()),
-          notes: t.Nullable(t.String()),
-          sub_total: t.Nullable(t.Number()),
-          total: t.Nullable(t.Number()),
-          client_id: t.Nullable(t.String()),
-        }),
-      }),
-      401: t.Object({
-        description: t.String(),
-        error: t.String(),
-      }),
+      200: t.Object(
+        {
+          message: t.String(),
+          estimate: t.Object({
+            estimate_number: t.String(),
+            status: t.String(),
+            notes: t.String(),
+            sub_total: t.Number(),
+            total: t.Number(),
+            client_id: t.String(),
+          }),
+        },
+        {
+          description: "Orçamento encontrado",
+        }
+      ),
+      401: t.Object(
+        {
+          message: t.String(),
+        },
+        {
+          description: "Unauthorized",
+        }
+      ),
+      404: t.Object(
+        {
+          message: t.String(),
+        },
+        {
+          description: "Orçamento não encontrado",
+        }
+      ),
     },
     detail: {
       description: "Get a estimate by ID",

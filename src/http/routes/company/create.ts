@@ -54,7 +54,6 @@ export const registerCompany = new Elysia().post(
 
     return {
       message: "Cliente cadastrado com sucesso",
-      description: "Register a new company",
       company,
     }
   },
@@ -72,34 +71,43 @@ export const registerCompany = new Elysia().post(
       owner_id: t.String(),
     }),
     response: {
-      201: t.Object({
-        message: t.String(),
-        description: t.String(),
-        company: t.Object({
-          id: t.String(),
-          cnpj: t.String(),
-          phone: t.String(),
-          state: t.String(),
-          city: t.String(),
-          cep: t.String(),
-          address: t.String(),
-          neighborhood: t.String(),
-          address_number: t.String(),
-          company_name: t.String(),
-          owner_id: t.String(),
-          createdAt: t.Date(),
-        }),
-      }),
-      400: t.Object({
-        code: t.String(),
-        description: t.String(),
-        message: t.String(),
-      }),
-      401: t.Object({
-        code: t.String(),
-        description: t.String(),
-        message: t.String(),
-      }),
+      201: t.Object(
+        {
+          message: t.String(),
+          company: t.Object({
+            id: t.String(),
+            cnpj: t.String(),
+            phone: t.String(),
+            state: t.String(),
+            city: t.String(),
+            cep: t.String(),
+            address: t.String(),
+            neighborhood: t.String(),
+            address_number: t.String(),
+            company_name: t.String(),
+            owner_id: t.String(),
+          }),
+        },
+        {
+          description: "Cliente cadastrado com sucesso",
+        }
+      ),
+      400: t.Object(
+        {
+          message: t.String(),
+        },
+        {
+          description: "Company already exists",
+        }
+      ),
+      401: t.Object(
+        {
+          message: t.String(),
+        },
+        {
+          description: "Unauthorized",
+        }
+      ),
     },
     detail: {
       description: "Register a new company (individual or corporate)",

@@ -11,9 +11,15 @@ export const getCompany = new Elysia().get(
       throw new AuthError("Unauthorized", "UNAUTHORIZED", 401)
     }
 
+    const hasCompany = user.Company
+
+    if (!hasCompany) {
+      throw new AuthError("Company not found", "COMPANY_NOT_FOUND", 400)
+    }
+
     const company = await db.company.findUnique({
       where: {
-        id: user.Company?.id,
+        id: hasCompany.id,
       },
     })
 
@@ -23,40 +29,48 @@ export const getCompany = new Elysia().get(
 
     return {
       message: "Company found",
-      description: "Get a company",
       company,
     }
   },
   {
     response: {
-      200: t.Object({
-        message: t.String(),
-        description: t.String(),
-        company: t.Object({
-          id: t.String(),
-          cnpj: t.String(),
-          phone: t.String(),
-          state: t.String(),
-          city: t.String(),
-          cep: t.String(),
-          address: t.String(),
-          neighborhood: t.String(),
-          address_number: t.String(),
-          company_name: t.String(),
-          owner_id: t.String(),
-          createdAt: t.Date(),
-        }),
-      }),
-      400: t.Object({
-        code: t.String(),
-        description: t.String(),
-        message: t.String(),
-      }),
-      401: t.Object({
-        code: t.String(),
-        description: t.String(),
-        message: t.String(),
-      }),
+      200: t.Object(
+        {
+          message: t.String(),
+          company: t.Object({
+            id: t.String(),
+            cnpj: t.String(),
+            phone: t.String(),
+            state: t.String(),
+            city: t.String(),
+            cep: t.String(),
+            address: t.String(),
+            neighborhood: t.String(),
+            address_number: t.String(),
+            company_name: t.String(),
+            owner_id: t.String(),
+          }),
+        },
+        {
+          description: "Company found",
+        }
+      ),
+      400: t.Object(
+        {
+          message: t.String(),
+        },
+        {
+          description: "Company not found",
+        }
+      ),
+      401: t.Object(
+        {
+          message: t.String(),
+        },
+        {
+          description: "Unauthorized",
+        }
+      ),
     },
     detail: {
       description: "Get a company",

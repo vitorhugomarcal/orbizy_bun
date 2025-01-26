@@ -19,45 +19,65 @@ export const getAll = new Elysia().get(
         estimate: true,
       },
     })
+
+    if (!clients) {
+      throw new AuthError("Clients not found", "CLIENTS_NOT_FOUND", 404)
+    }
+
     return {
       message: "Clients retrieved successfully",
-      description: "Get all clients",
       clients,
     }
   },
   {
     response: {
-      200: t.Object({
-        message: t.String(),
-        description: t.String(),
-        clients: t.Array(
-          t.Object({
-            id: t.String(),
-            type: t.String(),
-            email_address: t.String(),
-            name: t.String(),
-            company_name: t.Nullable(t.String()),
-            cpf: t.Nullable(t.String()),
-            cnpj: t.Nullable(t.String()),
-            phone: t.String(),
-            cep: t.String(),
-            address: t.String(),
-            address_number: t.String(),
-            neighborhood: t.String(),
-            state: t.String(),
-            city: t.String(),
-            estimate: t.Array(
-              t.Object({
-                id: t.String(),
-              })
-            ),
-          })
-        ),
-      }),
-      401: t.Object({
-        error: t.String(),
-        description: t.String(),
-      }),
+      200: t.Object(
+        {
+          message: t.String(),
+          clients: t.Array(
+            t.Object({
+              id: t.String(),
+              type: t.String(),
+              email_address: t.String(),
+              name: t.String(),
+              company_name: t.String(),
+              cpf: t.String(),
+              cnpj: t.String(),
+              phone: t.String(),
+              cep: t.String(),
+              address: t.String(),
+              address_number: t.String(),
+              neighborhood: t.String(),
+              state: t.String(),
+              city: t.String(),
+              estimate: t.Array(
+                t.Object({
+                  id: t.String(),
+                })
+              ),
+            })
+          ),
+        },
+        {
+          description: "Clients retrieved successfully",
+        }
+      ),
+      401: t.Object(
+        {
+          message: t.String(),
+        },
+        {
+          description: "Unauthorized",
+        }
+      ),
+      404: t.Object(
+        {
+          message: t.String(),
+        },
+        {
+          description: "Clients not found",
+        }
+      ),
     },
     detail: {
       description: "Retrieve all clients",

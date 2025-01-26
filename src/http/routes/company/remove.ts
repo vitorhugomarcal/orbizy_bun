@@ -13,6 +13,10 @@ export const removeCompany = new Elysia().delete(
 
     const { companyId } = params
 
+    if (!companyId) {
+      throw new AuthError("Company ID not provided", "MISSING_COMPANY_ID", 400)
+    }
+
     await db.company.delete({
       where: {
         id: companyId,
@@ -21,7 +25,6 @@ export const removeCompany = new Elysia().delete(
 
     return {
       message: "Company removed successfully",
-      description: "Remove uma empresa",
     }
   },
   {
@@ -29,14 +32,30 @@ export const removeCompany = new Elysia().delete(
       companyId: t.String(),
     }),
     response: {
-      204: t.Object({
-        message: t.String(),
-        description: t.String(),
-      }),
-      401: t.Object({
-        error: t.String(),
-        description: t.String(),
-      }),
+      204: t.Object(
+        {
+          message: t.String(),
+        },
+        {
+          description: "Company removed successfully",
+        }
+      ),
+      401: t.Object(
+        {
+          message: t.String(),
+        },
+        {
+          description: "Unauthorized",
+        }
+      ),
+      400: t.Object(
+        {
+          message: t.String(),
+        },
+        {
+          description: "Company not found",
+        }
+      ),
     },
     detail: {
       description: "Remove a company",

@@ -27,11 +27,11 @@ export const registerInvited = new Elysia().post(
       where: {
         code,
         expiresAt: {
-          gte: new Date(), // Verifica se não expirou
+          gte: new Date(),
         },
       },
       include: {
-        company: true, // Inclui os dados da empresa
+        company: true,
       },
     })
 
@@ -43,23 +43,6 @@ export const registerInvited = new Elysia().post(
       )
     }
 
-    if (type === "física" && !cpf) {
-      throw new AuthError(
-        "CPF é obrigatório para clientes físicos",
-        "MISSING_CPF",
-        400
-      )
-    }
-
-    if (type === "jurídica" && (!cnpj || !company_name)) {
-      throw new AuthError(
-        "CNPJ e nome da empresa são obrigatórios para clientes jurídicos",
-        "MISSING_CNPJ_OR_COMPANY_NAME",
-        400
-      )
-    }
-
-    // Verificar se já existe um cliente com este email ou documentos
     const existingClient = await db.client.findFirst({
       where: {
         company_id: inviteLink.company_id,
@@ -75,7 +58,6 @@ export const registerInvited = new Elysia().post(
       throw new AuthError("Cliente já cadastrado", "CLIENT_ALREADY_EXISTS", 400)
     }
 
-    // Criar o novo cliente
     const client = await db.client.create({
       data: {
         company_id: inviteLink.company_id,
@@ -95,7 +77,6 @@ export const registerInvited = new Elysia().post(
       },
     })
 
-    // Opcional: Marcar o convite como usado
     await db.inviteLinks.delete({
       where: {
         id: inviteLink.id,
@@ -113,9 +94,9 @@ export const registerInvited = new Elysia().post(
       type: t.String(),
       email_address: t.String(),
       name: t.String(),
-      company_name: t.Optional(t.String()), // Opcional, mas validado na lógica
-      cpf: t.Optional(t.String()), // Opcional, mas validado na lógica
-      cnpj: t.Optional(t.String()), // Opcional, mas validado na lógica
+      company_name: t.String(),
+      cpf: t.String(),
+      cnpj: t.String(),
       phone: t.String(),
       cep: t.String(),
       address: t.String(),
@@ -124,5 +105,43 @@ export const registerInvited = new Elysia().post(
       state: t.String(),
       city: t.String(),
     }),
+    response: {
+      201: t.Object(
+        {
+          message: t.String(),
+          client: t.Object({
+            id: t.String(),
+            type: t.String(),
+            email_address: t.String(),
+            name: t.String(),
+            company_name: t.String(),
+            cpf: t.String(),
+            cnpj: t.String(),
+            phone: t.String(),
+            cep: t.String(),
+            address: t.String(),
+            address_number: t.String(),
+            neighborhood: t.String(),
+            state: t.String(),
+            city: t.String(),
+          }),
+        },
+        {
+          description: "Cliente cadastrado com sucesso",
+        }
+      ),
+      400: t.Object(
+        {
+          message: t.String(),
+        },
+        {
+          description: "Cliente já cadastrado",
+        }
+      ),
+    },
+    detail: {
+      description: "Registrar um novo cliente",
+      tags: ["Invite"],
+    },
   }
 )

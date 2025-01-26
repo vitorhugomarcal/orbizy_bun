@@ -50,7 +50,6 @@ export const createUser = new Elysia().post(
       await db.pendingUser.delete({ where: { email } })
       return {
         message: "Usuário criado com sucesso",
-        description: "Usuário criado com sucesso",
         user: newUser,
       }
     }
@@ -61,21 +60,33 @@ export const createUser = new Elysia().post(
       email: t.String(),
     }),
     response: {
-      201: t.Object({
-        message: t.String(),
-        description: t.String(),
-        user: t.Object({
-          id: t.String(),
-          name: t.String(),
-          email: t.String(),
-          type: t.String(),
-          role: t.String(),
-        }),
-      }),
-      400: t.Object({
-        message: t.String(),
-        description: t.String(),
-      }),
+      201: t.Object(
+        {
+          message: t.String(),
+          user: t.Object({
+            id: t.String(),
+            name: t.String(),
+            email: t.String(),
+            type: t.String({
+              enum: ["basic", "team", "pro"],
+            }),
+            role: t.String({
+              enum: ["MASTER", "BASIC"],
+            }),
+          }),
+        },
+        {
+          description: "User created successfully",
+        }
+      ),
+      400: t.Object(
+        {
+          message: t.String(),
+        },
+        {
+          description: "User already exists",
+        }
+      ),
     },
     detail: {
       description: "Create a new user",
