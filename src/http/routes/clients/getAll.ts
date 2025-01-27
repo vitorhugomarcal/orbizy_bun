@@ -44,10 +44,12 @@ export const getAll = new Elysia().get(
 
     const formattedClients = clients.map((client) => ({
       ...client,
+      createdAt: String(client.createdAt),
       estimate: client.estimate.map((est) => ({
         ...est,
         total: Number(est.total),
         sub_total: Number(est.sub_total),
+        createdAt: String(est.createdAt),
       })),
     }))
 
@@ -75,15 +77,15 @@ export const getAll = new Elysia().get(
               neighborhood: t.String(),
               city: t.String(),
               state: t.String(),
-              createdAt: t.Date(),
               company_id: t.Nullable(t.String()),
+              createdAt: t.String(),
               estimate: t.Array(
                 t.Object({
                   id: t.String(),
                   status: t.String(),
                   total: t.Number(),
                   sub_total: t.Number(),
-                  createdAt: t.Date(),
+                  createdAt: t.String(),
                 })
               ),
             })
