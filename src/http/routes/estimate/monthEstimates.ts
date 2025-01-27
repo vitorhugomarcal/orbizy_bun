@@ -28,6 +28,10 @@ export const monthEstimates = new Elysia().get(
     }
 
     const estimates = await db.estimate.findMany({
+      select: {
+        id: true,
+        createdAt: true,
+      },
       where: {
         company_id: hasCompany.id,
       },
@@ -124,6 +128,14 @@ export const monthEstimates = new Elysia().get(
         },
         {
           description: "Orçamentos não encontrados",
+        }
+      ),
+      500: t.Object(
+        {
+          message: t.String(),
+        },
+        {
+          description: "Erro ao calcular as estatísticas do mês",
         }
       ),
     },

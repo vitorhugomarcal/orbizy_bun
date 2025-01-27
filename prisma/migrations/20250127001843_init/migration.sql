@@ -31,6 +31,7 @@ CREATE TABLE "companies" (
     "address_number" TEXT NOT NULL,
     "company_name" TEXT NOT NULL,
     "owner_id" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "companies_pkey" PRIMARY KEY ("id")
 );
@@ -67,6 +68,7 @@ CREATE TABLE "sluppliers" (
     "address_number" TEXT NOT NULL,
     "company_name" TEXT NOT NULL,
     "email_address" TEXT NOT NULL DEFAULT '',
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "sluppliers_pkey" PRIMARY KEY ("id")
 );
@@ -87,6 +89,7 @@ CREATE TABLE "clients" (
     "neighborhood" TEXT NOT NULL,
     "city" TEXT NOT NULL,
     "state" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "company_id" TEXT,
 
     CONSTRAINT "clients_pkey" PRIMARY KEY ("id")
@@ -139,6 +142,36 @@ CREATE TABLE "items" (
 );
 
 -- CreateTable
+CREATE TABLE "estimates" (
+    "id" TEXT NOT NULL,
+    "estimate_number" TEXT,
+    "status" TEXT,
+    "notes" TEXT,
+    "sub_total" DECIMAL(65,30) NOT NULL DEFAULT 0,
+    "total" DECIMAL(65,30) NOT NULL DEFAULT 0,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "company_id" TEXT,
+    "client_id" TEXT,
+
+    CONSTRAINT "estimates_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "estimate_items" (
+    "id" TEXT NOT NULL,
+    "name" TEXT NOT NULL,
+    "price" DECIMAL(65,30) NOT NULL,
+    "quantity" DECIMAL(65,30) NOT NULL,
+    "unit" TEXT NOT NULL,
+    "total" DECIMAL(65,30) NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "estimate_id" TEXT NOT NULL,
+    "estimateSupplierId" TEXT,
+
+    CONSTRAINT "estimate_items_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
 CREATE TABLE "invoices" (
     "id" TEXT NOT NULL,
     "invoice_number" TEXT,
@@ -168,7 +201,7 @@ CREATE TABLE "invoice_items" (
 );
 
 -- CreateTable
-CREATE TABLE "estimates" (
+CREATE TABLE "estimatesSupplier" (
     "id" TEXT NOT NULL,
     "estimate_number" TEXT,
     "status" TEXT,
@@ -177,29 +210,40 @@ CREATE TABLE "estimates" (
     "supplier_id" TEXT NOT NULL,
     "company_id" TEXT,
 
-    CONSTRAINT "estimates_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "estimatesSupplier_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
-CREATE TABLE "estimate_items" (
+CREATE TABLE "estimate_supplier_items" (
     "id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
     "quantity" DECIMAL(65,30) NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "estimate_id" TEXT NOT NULL,
 
-    CONSTRAINT "estimate_items_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "estimate_supplier_items_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
 CREATE TABLE "auth_links" (
     "id" TEXT NOT NULL,
-    "token" TEXT NOT NULL,
+    "code" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "expiresAt" TIMESTAMP(3) NOT NULL,
-    "userId" TEXT NOT NULL,
+    "user_id" TEXT NOT NULL,
 
     CONSTRAINT "auth_links_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "invite_links" (
+    "id" TEXT NOT NULL,
+    "code" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "expiresAt" TIMESTAMP(3) NOT NULL,
+    "company_id" TEXT NOT NULL,
+
+    CONSTRAINT "invite_links_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateIndex
@@ -215,7 +259,10 @@ CREATE UNIQUE INDEX "pending_users_email_key" ON "pending_users"("email");
 CREATE UNIQUE INDEX "sluppliers_cnpj_key" ON "sluppliers"("cnpj");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "auth_links_token_key" ON "auth_links"("token");
+CREATE UNIQUE INDEX "auth_links_code_key" ON "auth_links"("code");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "invite_links_code_key" ON "invite_links"("code");
 
 -- AddForeignKey
 ALTER TABLE "users" ADD CONSTRAINT "users_company_id_fkey" FOREIGN KEY ("company_id") REFERENCES "companies"("id") ON DELETE CASCADE ON UPDATE CASCADE;
@@ -245,6 +292,18 @@ ALTER TABLE "unit_types_custom" ADD CONSTRAINT "unit_types_custom_company_id_fke
 ALTER TABLE "items" ADD CONSTRAINT "items_company_id_fkey" FOREIGN KEY ("company_id") REFERENCES "companies"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
+ALTER TABLE "estimates" ADD CONSTRAINT "estimates_company_id_fkey" FOREIGN KEY ("company_id") REFERENCES "companies"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "estimates" ADD CONSTRAINT "estimates_client_id_fkey" FOREIGN KEY ("client_id") REFERENCES "clients"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "estimate_items" ADD CONSTRAINT "estimate_items_estimate_id_fkey" FOREIGN KEY ("estimate_id") REFERENCES "estimates"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "estimate_items" ADD CONSTRAINT "estimate_items_estimateSupplierId_fkey" FOREIGN KEY ("estimateSupplierId") REFERENCES "estimatesSupplier"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
 ALTER TABLE "invoices" ADD CONSTRAINT "invoices_company_id_fkey" FOREIGN KEY ("company_id") REFERENCES "companies"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
@@ -254,13 +313,16 @@ ALTER TABLE "invoices" ADD CONSTRAINT "invoices_client_id_fkey" FOREIGN KEY ("cl
 ALTER TABLE "invoice_items" ADD CONSTRAINT "invoice_items_invoice_id_fkey" FOREIGN KEY ("invoice_id") REFERENCES "invoices"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "estimates" ADD CONSTRAINT "estimates_supplier_id_fkey" FOREIGN KEY ("supplier_id") REFERENCES "sluppliers"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "estimatesSupplier" ADD CONSTRAINT "estimatesSupplier_supplier_id_fkey" FOREIGN KEY ("supplier_id") REFERENCES "sluppliers"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "estimates" ADD CONSTRAINT "estimates_company_id_fkey" FOREIGN KEY ("company_id") REFERENCES "companies"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "estimatesSupplier" ADD CONSTRAINT "estimatesSupplier_company_id_fkey" FOREIGN KEY ("company_id") REFERENCES "companies"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "estimate_items" ADD CONSTRAINT "estimate_items_estimate_id_fkey" FOREIGN KEY ("estimate_id") REFERENCES "estimates"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "estimate_supplier_items" ADD CONSTRAINT "estimate_supplier_items_estimate_id_fkey" FOREIGN KEY ("estimate_id") REFERENCES "estimatesSupplier"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "auth_links" ADD CONSTRAINT "auth_links_userId_fkey" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "auth_links" ADD CONSTRAINT "auth_links_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "invite_links" ADD CONSTRAINT "invite_links_company_id_fkey" FOREIGN KEY ("company_id") REFERENCES "companies"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
