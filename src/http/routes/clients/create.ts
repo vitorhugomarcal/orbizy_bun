@@ -48,7 +48,7 @@ export const registerClient = new Elysia().post(
       throw new AuthError("Cliente já cadastrado", "CLIENT_ALREADY_EXISTS", 400)
     }
 
-    const client = await db.client.create({
+    await db.client.create({
       data: {
         company_id: hasCompany.id,
         type,
@@ -69,7 +69,6 @@ export const registerClient = new Elysia().post(
 
     return {
       message: "Cliente cadastrado com sucesso",
-      client,
     }
   },
   {
@@ -77,9 +76,9 @@ export const registerClient = new Elysia().post(
       type: t.String(),
       email_address: t.String(),
       name: t.String(),
-      company_name: t.Optional(t.String()),
-      cpf: t.Optional(t.String()),
-      cnpj: t.Optional(t.String()),
+      company_name: t.Nullable(t.String()),
+      cpf: t.Nullable(t.String()),
+      cnpj: t.Nullable(t.String()),
       phone: t.String(),
       cep: t.String(),
       address: t.String(),
@@ -92,21 +91,6 @@ export const registerClient = new Elysia().post(
       201: t.Object(
         {
           message: t.String(),
-          client: t.Object({
-            type: t.String(),
-            email_address: t.String(),
-            name: t.String(),
-            company_name: t.Optional(t.String()),
-            cpf: t.Optional(t.String()),
-            cnpj: t.Optional(t.String()),
-            phone: t.String(),
-            cep: t.String(),
-            address: t.String(),
-            address_number: t.String(),
-            neighborhood: t.String(),
-            state: t.String(),
-            city: t.String(),
-          }),
         },
         {
           description: "Cliente cadastrado com sucesso",
