@@ -27,7 +27,7 @@ export const monthEstimates = new Elysia().get(
       throw new AuthError("Company not found", "COMPANY_NOT_FOUND", 404)
     }
 
-    const estimates = await db.estimate.findMany({
+    const estimates = await db.estimateClient.findMany({
       select: {
         id: true,
         createdAt: true,

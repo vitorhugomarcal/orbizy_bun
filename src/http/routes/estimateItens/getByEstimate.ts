@@ -23,7 +23,7 @@ export const getByEstimate = new Elysia().get(
 
     const item = await db.estimateItems.findMany({
       where: {
-        estimate_id: estimateId,
+        estimate_client_id: estimateId,
       },
     })
 
@@ -35,7 +35,7 @@ export const getByEstimate = new Elysia().get(
       return {
         id: item.id,
         name: item.name,
-        estimate_id: item.estimate_id,
+        estimate_id: item.estimate_client_id,
         unit: item.unit,
         price: Number(item.price),
         quantity: Number(item.quantity),
