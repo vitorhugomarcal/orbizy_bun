@@ -19,6 +19,11 @@ export const estimateChart = new Elysia().get(
     }
 
     const data = await db.estimate.findMany({
+      select: {
+        createdAt: true,
+        status: true,
+        total: true,
+      },
       where: {
         company_id: hasCompany.id,
       },
@@ -39,7 +44,6 @@ export const estimateChart = new Elysia().get(
       const startDate = startOfYear(new Date())
       const endDate = endOfYear(new Date())
 
-      // Filter invoices for current year and APPROVED status
       const yearEstimates = data.filter((estimate) => {
         const estimateDate = new Date(estimate.createdAt)
         return (
@@ -53,7 +57,6 @@ export const estimateChart = new Elysia().get(
         return format(new Date(currentYear, index), "MMMM", { locale: ptBR })
       })
 
-      // Calculate total revenue for each month
       const monthlyRevenue = months.map((month) => {
         const monthEstimates = yearEstimates.filter((estimate) => {
           const estimateDate = new Date(estimate.createdAt)
@@ -62,12 +65,12 @@ export const estimateChart = new Elysia().get(
         })
 
         const totalRevenue = monthEstimates.reduce((acc, estimate) => {
-          return acc + Number(estimate.total) // Convert cents to full currency
+          return acc + Number(estimate.total)
         }, 0)
 
         return {
           month,
-          R$: totalRevenue,
+          monthTotal: totalRevenue,
         }
       })
 
@@ -83,36 +86,21 @@ export const estimateChart = new Elysia().get(
   },
   {
     response: {
-      200: t.Object(
-        {
-          message: t.String(),
-          stats: t.Array(
-            t.Object({
-              month: t.String(),
-              R$: t.Number(),
-            })
-          ),
-        },
-        {
-          description: "Estatísticas do mês obtidas com sucesso",
-        }
-      ),
-      401: t.Object(
-        {
-          message: t.String(),
-        },
-        {
-          description: "Unauthorized",
-        }
-      ),
-      404: t.Object(
-        {
-          message: t.String(),
-        },
-        {
-          description: "Orçamentos não encontrados",
-        }
-      ),
+      200: t.Object({
+        message: t.String(),
+        stats: t.Array(
+          t.Object({
+            month: t.String(),
+            monthTotal: t.Number(),
+          })
+        ),
+      }),
+      401: t.Object({
+        message: t.String(),
+      }),
+      404: t.Object({
+        message: t.String(),
+      }),
     },
     detail: {
       description: "Get monthly chart statistics",
