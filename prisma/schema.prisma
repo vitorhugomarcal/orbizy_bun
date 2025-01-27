@@ -205,10 +205,8 @@ model EstimateItems {
   total     Decimal
   createdAt DateTime @default(now())
 
-  estimate           Estimate          @relation(fields: [estimate_id], references: [id], onDelete: Cascade)
-  estimate_id        String            @map("estimate_id")
-  EstimateSupplier   EstimateSupplier? @relation(fields: [estimateSupplierId], references: [id])
-  estimateSupplierId String?
+  estimate    Estimate @relation(fields: [estimate_id], references: [id], onDelete: Cascade)
+  estimate_id String   @map("estimate_id")
 
   @@map("estimate_items")
 }
@@ -255,8 +253,6 @@ model EstimateSupplier {
   notes           String?
   createdAt       DateTime @default(now())
 
-  estimateItems EstimateItems[]
-
   supplier    Supplier @relation(fields: [supplier_id], references: [id], onDelete: Cascade)
   supplier_id String
 
@@ -273,8 +269,8 @@ model EstimateSupplierItems {
   quantity  Decimal
   createdAt DateTime @default(now())
 
-  estimateSupplier EstimateSupplier @relation(fields: [estimate_id], references: [id], onDelete: Cascade)
-  estimate_id      String           @map("estimate_id")
+  estimateSupplier     EstimateSupplier @relation(fields: [estimate_supplier_id], references: [id], onDelete: Cascade)
+  estimate_supplier_id String           @map("estimate_supplier_id")
 
   @@map("estimate_supplier_items")
 }
