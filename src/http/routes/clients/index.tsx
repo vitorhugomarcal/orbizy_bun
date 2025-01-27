@@ -1,6 +1,6 @@
 import { Elysia } from "elysia"
 
-import { registerClient } from "./create"
+import { createClient } from "./create"
 import { getAll } from "./getAll"
 import { getBy } from "./getBy"
 import { getByMonth } from "./getByMonth"
@@ -11,7 +11,7 @@ const clientsRoutes = new Elysia()
   .use(getBy)
   .use(getAll)
   .use(removeClient)
-  .use(registerClient)
+  .use(createClient)
   .use(update)
   .use(getByMonth)
 
