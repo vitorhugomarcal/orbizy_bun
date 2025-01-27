@@ -64,9 +64,9 @@ export const getAll = new Elysia().get(
               estimate: t.Array(
                 t.Object({
                   id: t.String(),
-                  status: t.String(),
-                  total: t.Number(),
-                  sub_total: t.Number(),
+                  // status: t.String(),
+                  // total: t.Number(),
+                  // sub_total: t.Number(),
                   createdAt: t.Date(),
                 })
               ),
