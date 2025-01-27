@@ -21,6 +21,17 @@ export const getAll = new Elysia().get(
       where: {
         company_id: hasCompany.id,
       },
+      include: {
+        estimate: {
+          select: {
+            id: true,
+            status: true,
+            total: true,
+            sub_total: true,
+            createdAt: true,
+          },
+        },
+      },
     })
 
     console.log(clients)
@@ -45,10 +56,10 @@ export const getAll = new Elysia().get(
             t.Object({
               id: t.String(),
               type: t.String(),
-              // cpf: t.String(),
-              // cnpj: t.String(),
+              cpf: t.Nullable(t.String()),
+              cnpj: t.Nullable(t.String()),
               name: t.String(),
-              // company_name: t.String(),
+              company_name: t.Nullable(t.String()),
               email_address: t.String(),
               phone: t.String(),
               cep: t.String(),
@@ -58,7 +69,17 @@ export const getAll = new Elysia().get(
               city: t.String(),
               state: t.String(),
               createdAt: t.Date(),
-              // company_id: t.String(),
+              estimate: t.Nullable(
+                t.Array(
+                  t.Object({
+                    id: t.String(),
+                    // status: t.Nullable(t.String()),
+                    // total: t.Nullable(t.String()),
+                    // sub_total: t.Nullable(t.String()),
+                    createdAt: t.Date(),
+                  })
+                )
+              ),
             })
           ),
         },
