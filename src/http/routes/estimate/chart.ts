@@ -86,21 +86,36 @@ export const estimateChart = new Elysia().get(
   },
   {
     response: {
-      200: t.Object({
-        message: t.String(),
-        stats: t.Array(
-          t.Object({
-            month: t.String(),
-            monthTotal: t.Number(),
-          })
-        ),
-      }),
-      401: t.Object({
-        message: t.String(),
-      }),
-      404: t.Object({
-        message: t.String(),
-      }),
+      200: t.Object(
+        {
+          message: t.String(),
+          stats: t.Array(
+            t.Object({
+              month: t.String(),
+              monthTotal: t.Number(),
+            })
+          ),
+        },
+        {
+          description: "Success",
+        }
+      ),
+      401: t.Object(
+        {
+          message: t.String(),
+        },
+        {
+          description: "Unauthorized",
+        }
+      ),
+      404: t.Object(
+        {
+          message: t.String(),
+        },
+        {
+          description: "Not Found",
+        }
+      ),
     },
     detail: {
       description: "Get monthly chart statistics",
