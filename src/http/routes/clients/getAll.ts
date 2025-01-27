@@ -23,6 +23,8 @@ export const getAll = new Elysia().get(
       },
     })
 
+    console.log(clients)
+
     if (!clients) {
       throw new AuthError(
         "Clientes não encontrados",
@@ -84,8 +86,8 @@ export const getAll = new Elysia().get(
       ),
     },
     detail: {
-      description: "Get all estimates",
-      tags: ["Estimate"],
+      description: "Get all clients",
+      tags: ["Clients"],
     },
   }
 )
