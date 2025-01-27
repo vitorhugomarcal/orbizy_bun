@@ -21,9 +21,9 @@ export const estimateChart = new Elysia().get(
     const estimates = await db.estimate.findMany({
       select: {
         id: true,
-        total: true,
-        sub_total: true,
         status: true,
+        sub_total: true,
+        total: true,
         createdAt: true,
       },
       where: {
