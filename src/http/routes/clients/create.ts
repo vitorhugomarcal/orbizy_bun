@@ -54,9 +54,9 @@ export const registerClient = new Elysia().post(
         type,
         email_address,
         name,
-        company_name: type === "jurídica" ? company_name : "",
-        cpf: type === "física" ? cpf : "",
-        cnpj: type === "jurídica" ? cnpj : "",
+        company_name,
+        cpf,
+        cnpj,
         phone,
         cep,
         address,
@@ -76,9 +76,9 @@ export const registerClient = new Elysia().post(
       type: t.String(),
       email_address: t.String(),
       name: t.String(),
-      company_name: t.Nullable(t.String()),
-      cpf: t.Nullable(t.String()),
-      cnpj: t.Nullable(t.String()),
+      company_name: t.Optional(t.String()),
+      cpf: t.Optional(t.String()),
+      cnpj: t.Optional(t.String()),
       phone: t.String(),
       cep: t.String(),
       address: t.String(),
@@ -98,7 +98,6 @@ export const registerClient = new Elysia().post(
       ),
       400: t.Object(
         {
-          code: t.String(),
           message: t.String(),
         },
         {
@@ -107,7 +106,6 @@ export const registerClient = new Elysia().post(
       ),
       401: t.Object(
         {
-          code: t.String(),
           message: t.String(),
         },
         {
@@ -116,7 +114,6 @@ export const registerClient = new Elysia().post(
       ),
       404: t.Object(
         {
-          code: t.String(),
           message: t.String(),
         },
         {
