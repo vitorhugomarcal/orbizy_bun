@@ -27,9 +27,15 @@ export const registerClient = new Elysia().post(
       throw new AuthError("Unauthorized", "UNAUTHORIZED", 401)
     }
 
+    const hasCompany = user.Company
+
+    if (!hasCompany) {
+      throw new AuthError("Company not found", "COMPANY_NOT_FOUND", 404)
+    }
+
     const existingClient = await db.client.findFirst({
       where: {
-        company_id: user.company_id,
+        company_id: hasCompany.id,
         OR: [
           { email_address },
           { cpf: cpf || undefined },
@@ -44,7 +50,7 @@ export const registerClient = new Elysia().post(
 
     const client = await db.client.create({
       data: {
-        company_id: user.company_id,
+        company_id: hasCompany.id,
         type,
         email_address,
         name,
@@ -122,6 +128,15 @@ export const registerClient = new Elysia().post(
         },
         {
           description: "Unauthorized",
+        }
+      ),
+      404: t.Object(
+        {
+          code: t.String(),
+          message: t.String(),
+        },
+        {
+          description: "Company not found",
         }
       ),
     },
