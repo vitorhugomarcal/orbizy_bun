@@ -119,7 +119,7 @@ model Client {
   city           String
   state          String
   createdAt      DateTime @default(now())
-  company_id     String?
+  company_id     String
 
   invoice  Invoice[]
   estimate Estimate[]
