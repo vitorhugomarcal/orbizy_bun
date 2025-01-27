@@ -34,7 +34,6 @@ export const getAll = new Elysia().get(
     }
 
     return {
-      message: "Clientes encontrados",
       clients,
     }
   },
@@ -42,15 +41,14 @@ export const getAll = new Elysia().get(
     response: {
       200: t.Object(
         {
-          message: t.String(),
           clients: t.Array(
             t.Object({
               id: t.String(),
               type: t.String(),
-              cpf: t.String(),
-              cnpj: t.String(),
+              // cpf: t.String(),
+              // cnpj: t.String(),
               name: t.String(),
-              company_name: t.String(),
+              // company_name: t.String(),
               email_address: t.String(),
               phone: t.String(),
               cep: t.String(),
@@ -59,8 +57,8 @@ export const getAll = new Elysia().get(
               neighborhood: t.String(),
               city: t.String(),
               state: t.String(),
-              createdAt: t.String(),
-              company_id: t.String(),
+              createdAt: t.Date(),
+              // company_id: t.String(),
             })
           ),
         },
