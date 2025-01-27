@@ -26,7 +26,7 @@ export const getBy = new Elysia().get(
         id: clientId,
       },
       include: {
-        estimateClient: true,
+        estimate: true,
       },
     })
 

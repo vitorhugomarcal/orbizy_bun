@@ -12,9 +12,14 @@ export const getByMonth = new Elysia().get(
       throw new AuthError("Unauthorized", "UNAUTHORIZED", 401)
     }
 
+    const hasCompany = user.Company
+    if (!hasCompany) {
+      throw new AuthError("Company not found", "COMPANY_NOT_FOUND", 401)
+    }
+
     const clients = await db.client.findMany({
       where: {
-        company_id: user.company_id,
+        company_id: hasCompany.id,
       },
     })
 

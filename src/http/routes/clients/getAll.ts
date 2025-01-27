@@ -22,7 +22,7 @@ export const getAll = new Elysia().get(
         company_id: hasCompany.id,
       },
       include: {
-        estimateClient: true,
+        estimate: true,
       },
     })
 

@@ -42,7 +42,7 @@ export const updateEstimateItem = new Elysia().put(
         id: itemInvoiceId,
       },
       data: {
-        estimate_client_id: itemInvoiceId,
+        estimate_id: itemInvoiceId,
         name,
         quantity,
         price,

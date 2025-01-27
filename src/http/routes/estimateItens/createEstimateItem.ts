@@ -19,7 +19,7 @@ export const createEstimateItem = new Elysia().post(
       throw new AuthError("Orçamento não encontrado", "ESTIMATE_NOT_FOUND", 404)
     }
 
-    const checkEstimateExists = await db.estimateClient.findUnique({
+    const checkEstimateExists = await db.estimate.findUnique({
       where: {
         id: estimateId,
       },
@@ -31,7 +31,7 @@ export const createEstimateItem = new Elysia().post(
 
     const item = await db.estimateItems.create({
       data: {
-        estimate_client_id: estimateId,
+        estimate_id: estimateId,
         name,
         quantity,
         price,

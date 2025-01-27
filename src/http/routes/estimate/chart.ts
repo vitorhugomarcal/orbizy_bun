@@ -54,7 +54,7 @@ export const estimateChart = new Elysia().get(
     const startDate = startOfYear(new Date())
     const endDate = endOfYear(new Date())
 
-    const estimates = await db.estimateClient.findMany({
+    const estimates = await db.estimate.findMany({
       select: {
         id: true,
         createdAt: true,

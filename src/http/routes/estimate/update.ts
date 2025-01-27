@@ -18,7 +18,7 @@ export const updateEstimate = new Elysia().put(
       throw new AuthError("Orçamento não encontrado", "ESTIMATE_NOT_FOUND", 404)
     }
 
-    const checkEstimateExists = await db.estimateClient.findUnique({
+    const checkEstimateExists = await db.estimate.findUnique({
       where: {
         id: estimateId,
       },
@@ -28,7 +28,7 @@ export const updateEstimate = new Elysia().put(
       throw new AuthError("Orçamento não encontrado", "ESTIMATE_NOT_FOUND", 404)
     }
 
-    const estimate = await db.estimateClient.update({
+    const estimate = await db.estimate.update({
       where: {
         id: estimateId,
       },

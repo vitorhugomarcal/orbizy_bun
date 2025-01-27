@@ -35,7 +35,7 @@ export const createEstimate = new Elysia().post(
       throw new AuthError("Client not found", "CLIENT_NOT_FOUND", 404)
     }
 
-    const estimate = await db.estimateClient.create({
+    const estimate = await db.estimate.create({
       data: {
         company_id: hasCompany.id,
         client_id: clientId,

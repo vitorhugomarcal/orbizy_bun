@@ -17,7 +17,7 @@ export const removeEstimate = new Elysia().delete(
       throw new AuthError("Orçamento não encontrado", "ESTIMATE_NOT_FOUND", 404)
     }
 
-    await db.estimateClient.delete({
+    await db.estimate.delete({
       where: {
         id: estimateId,
       },
