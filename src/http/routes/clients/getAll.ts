@@ -76,6 +76,7 @@ export const getAll = new Elysia().get(
               city: t.String(),
               state: t.String(),
               createdAt: t.Date(),
+              company_id: t.Nullable(t.String()),
               estimate: t.Array(
                 t.Object({
                   id: t.String(),
