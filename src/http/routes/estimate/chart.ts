@@ -5,6 +5,38 @@ import { db } from "../../../lib/prisma"
 import { auth } from "../../authentication"
 import { AuthError } from "../errors/auth-error"
 
+interface MonthlyRevenue {
+  month: string
+  monthTotal: number
+}
+
+const calculateMonthlyRevenue = (
+  estimates: any[],
+  currentYear: number
+): MonthlyRevenue[] => {
+  const months = Array.from({ length: 12 }, (_, index) =>
+    format(new Date(currentYear, index), "MMMM", { locale: ptBR })
+  )
+
+  return months.map((month) => {
+    const monthEstimates = estimates.filter((estimate) => {
+      const estimateDate = new Date(estimate.createdAt)
+      const monthDate = parse(month, "MMMM", new Date(), { locale: ptBR })
+      return isSameMonth(estimateDate, monthDate)
+    })
+
+    const totalRevenue = monthEstimates.reduce(
+      (acc, estimate) => acc + Number(estimate.total),
+      0
+    )
+
+    return {
+      month,
+      monthTotal: totalRevenue,
+    }
+  })
+}
+
 export const estimateChart = new Elysia().get(
   "/estimate/chart",
   async ({ cookie }) => {
@@ -18,18 +50,26 @@ export const estimateChart = new Elysia().get(
       throw new AuthError("Company not found", "COMPANY_NOT_FOUND", 404)
     }
 
-    const data = await db.estimate.findMany({
+    const currentYear = new Date().getFullYear()
+    const startDate = startOfYear(new Date())
+    const endDate = endOfYear(new Date())
+
+    const estimates = await db.estimate.findMany({
       select: {
         createdAt: true,
         status: true,
         total: true,
       },
       where: {
-        company_id: hasCompany.id,
+        AND: [
+          { company_id: hasCompany.id },
+          { status: "APPROVED" },
+          { createdAt: { gte: startDate, lte: endDate } },
+        ],
       },
     })
 
-    if (!data) {
+    if (!estimates?.length) {
       throw new AuthError(
         "Orçamentos não encontrados",
         "ESTIMATES_NOT_FOUND",
@@ -37,51 +77,11 @@ export const estimateChart = new Elysia().get(
       )
     }
 
-    const getMonthlyApprovedInvoices = () => {
-      if (!data) return []
-
-      const currentYear = new Date().getFullYear()
-      const startDate = startOfYear(new Date())
-      const endDate = endOfYear(new Date())
-
-      const yearEstimates = data.filter((estimate) => {
-        const estimateDate = new Date(estimate.createdAt)
-        return (
-          estimateDate >= startDate &&
-          estimateDate <= endDate &&
-          estimate.status === "APPROVED"
-        )
-      })
-
-      const months = Array.from({ length: 12 }, (_, index) => {
-        return format(new Date(currentYear, index), "MMMM", { locale: ptBR })
-      })
-
-      const monthlyRevenue = months.map((month) => {
-        const monthEstimates = yearEstimates.filter((estimate) => {
-          const estimateDate = new Date(estimate.createdAt)
-          const monthDate = parse(month, "MMMM", new Date(), { locale: ptBR })
-          return isSameMonth(estimateDate, monthDate)
-        })
-
-        const totalRevenue = monthEstimates.reduce((acc, estimate) => {
-          return acc + Number(estimate.total)
-        }, 0)
-
-        return {
-          month,
-          monthTotal: totalRevenue,
-        }
-      })
-
-      return monthlyRevenue
-    }
-
-    const chartData = getMonthlyApprovedInvoices()
+    const stats = calculateMonthlyRevenue(estimates, currentYear)
 
     return {
-      message: "Contagem dos messes finalizadas obtidas com sucesso",
-      stats: chartData,
+      message: "Contagem dos meses finalizada obtida com sucesso",
+      stats,
     }
   },
   {
@@ -97,7 +97,7 @@ export const estimateChart = new Elysia().get(
           ),
         },
         {
-          description: "Success",
+          description: "Estatísticas dos meses obtidas com sucesso",
         }
       ),
       401: t.Object(
@@ -113,7 +113,7 @@ export const estimateChart = new Elysia().get(
           message: t.String(),
         },
         {
-          description: "Not Found",
+          description: "Orçamentos não encontrados",
         }
       ),
     },
