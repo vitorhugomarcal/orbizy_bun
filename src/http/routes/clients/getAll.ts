@@ -4,7 +4,7 @@ import { auth } from "../../authentication"
 import { AuthError } from "../errors/auth-error"
 
 export const getAll = new Elysia().get(
-  "/clients",
+  "/clients/all",
   async ({ cookie }) => {
     const user = await auth({ cookie })
     if (!user) {
@@ -14,7 +14,7 @@ export const getAll = new Elysia().get(
     const hasCompany = user.Company
 
     if (!hasCompany) {
-      throw new AuthError("Company not found", "COMPANY_NOT_FOUND", 401)
+      throw new AuthError("Company not found", "COMPANY_NOT_FOUND", 404)
     }
 
     const clients = await db.client.findMany({
@@ -24,11 +24,15 @@ export const getAll = new Elysia().get(
     })
 
     if (!clients) {
-      throw new AuthError("Clients not found", "CLIENTS_NOT_FOUND", 404)
+      throw new AuthError(
+        "Clientes não encontrados",
+        "ESTIMATES_NOT_FOUND",
+        404
+      )
     }
 
     return {
-      message: "Clients retrieved successfully",
+      message: "Clientes encontrados",
       clients,
     }
   },
@@ -41,23 +45,25 @@ export const getAll = new Elysia().get(
             t.Object({
               id: t.String(),
               type: t.String(),
-              email_address: t.String(),
-              name: t.String(),
-              company_name: t.String(),
               cpf: t.String(),
               cnpj: t.String(),
+              name: t.String(),
+              company_name: t.String(),
+              email_address: t.String(),
               phone: t.String(),
               cep: t.String(),
               address: t.String(),
               address_number: t.String(),
               neighborhood: t.String(),
-              state: t.String(),
               city: t.String(),
+              state: t.String(),
+              createdAt: t.String(),
+              company_id: t.String(),
             })
           ),
         },
         {
-          description: "Client count for the current month",
+          description: "Orçamentos encontrados",
         }
       ),
       401: t.Object(
@@ -73,13 +79,13 @@ export const getAll = new Elysia().get(
           message: t.String(),
         },
         {
-          description: "Clients not found",
+          description: "Orçamentos não encontrados",
         }
       ),
     },
     detail: {
-      description: "Retrieve all clients",
-      tags: ["Clients"],
+      description: "Get all estimates",
+      tags: ["Estimate"],
     },
   }
 )
