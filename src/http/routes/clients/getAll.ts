@@ -41,28 +41,19 @@ export const getAll = new Elysia().get(
             t.Object({
               id: t.String(),
               type: t.String(),
-              email_address: t.String(),
-              name: t.String(),
-              company_name: t.String(),
               cpf: t.String(),
               cnpj: t.String(),
+              name: t.String(),
+              company_name: t.String(),
+              email_address: t.String(),
               phone: t.String(),
               cep: t.String(),
               address: t.String(),
               address_number: t.String(),
               neighborhood: t.String(),
-              state: t.String(),
               city: t.String(),
-              company_id: t.String(),
-              created_at: t.String(),
-              estimate: t.Array(
-                t.Object({
-                  id: t.String(),
-                  status: t.String(),
-                  sub_total: t.Number(),
-                  total: t.Number(),
-                })
-              ),
+              state: t.String(),
+              createdAt: t.String(),
             })
           ),
         },
