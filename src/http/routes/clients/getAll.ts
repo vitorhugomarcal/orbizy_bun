@@ -74,17 +74,13 @@ export const getAll = new Elysia().get(
         {
           message: t.String(),
         },
-        {
-          description: "Unauthorized",
-        }
+        { description: "Invalid credentials" }
       ),
       404: t.Object(
         {
           message: t.String(),
         },
-        {
-          description: "Clients not found",
-        }
+        { description: "No clients found" }
       ),
     },
     detail: {
