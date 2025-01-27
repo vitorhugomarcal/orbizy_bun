@@ -3,14 +3,13 @@ import { db } from "../../../lib/prisma"
 import { auth } from "../../authentication"
 import { AuthError } from "../errors/auth-error"
 
-export const registerClient = new Elysia().post(
-  `/client/register`,
+export const createClient = new Elysia().post(
+  `/client/create`,
   async ({ cookie, body }) => {
     const {
       type,
       email_address,
       name,
-      company_name,
       cpf,
       cnpj,
       phone,
@@ -54,9 +53,6 @@ export const registerClient = new Elysia().post(
         type,
         email_address,
         name,
-        company_name,
-        cpf,
-        cnpj,
         phone,
         cep,
         address,
