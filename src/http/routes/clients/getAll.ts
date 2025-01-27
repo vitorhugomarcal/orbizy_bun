@@ -41,37 +41,40 @@ export const getAll = new Elysia().get(
             t.Object({
               id: t.String(),
               type: t.String(),
-              cpf: t.String(),
-              cnpj: t.String(),
+              email_address: t.String(),
               name: t.String(),
               company_name: t.String(),
-              email_address: t.String(),
+              cpf: t.String(),
+              cnpj: t.String(),
               phone: t.String(),
               cep: t.String(),
               address: t.String(),
               address_number: t.String(),
               neighborhood: t.String(),
-              city: t.String(),
               state: t.String(),
-              createdAt: t.String(),
+              city: t.String(),
             })
           ),
         },
         {
-          description: "Clients retrieved successfully",
+          description: "Client count for the current month",
         }
       ),
       401: t.Object(
         {
           message: t.String(),
         },
-        { description: "Invalid credentials" }
+        {
+          description: "Unauthorized",
+        }
       ),
       404: t.Object(
         {
           message: t.String(),
         },
-        { description: "No clients found" }
+        {
+          description: "Clients not found",
+        }
       ),
     },
     detail: {
