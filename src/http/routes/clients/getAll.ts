@@ -16,7 +16,7 @@ export const getAll = new Elysia().get(
         company_id: user.company_id,
       },
       include: {
-        estimate: true,
+        estimateClient: true,
       },
     })
 
@@ -50,9 +50,14 @@ export const getAll = new Elysia().get(
               neighborhood: t.String(),
               state: t.String(),
               city: t.String(),
+              company_id: t.String(),
+              created_at: t.String(),
               estimate: t.Array(
                 t.Object({
                   id: t.String(),
+                  status: t.String(),
+                  sub_total: t.Number(),
+                  total: t.Number(),
                 })
               ),
             })
