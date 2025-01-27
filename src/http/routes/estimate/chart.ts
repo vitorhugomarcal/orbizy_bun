@@ -19,6 +19,13 @@ export const estimateChart = new Elysia().get(
     }
 
     const estimates = await db.estimate.findMany({
+      select: {
+        id: true,
+        total: true,
+        sub_total: true,
+        status: true,
+        createdAt: true,
+      },
       where: {
         company_id: hasCompany.id,
       },
@@ -55,14 +62,14 @@ export const estimateChart = new Elysia().get(
 
       // Calculate total revenue for each month
       const monthlyRevenue = months.map((month) => {
-        const monthInvoices = yearEstimates.filter((invoice) => {
-          const invoiceDate = new Date(invoice.createdAt)
+        const monthEstimates = yearEstimates.filter((estimate) => {
+          const estimateDate = new Date(estimate.createdAt)
           const monthDate = parse(month, "MMMM", new Date(), { locale: ptBR })
-          return isSameMonth(invoiceDate, monthDate)
+          return isSameMonth(estimateDate, monthDate)
         })
 
-        const totalRevenue = monthInvoices.reduce((acc, invoice) => {
-          return acc + Number(invoice.total) // Convert cents to full currency
+        const totalRevenue = monthEstimates.reduce((acc, estimate) => {
+          return acc + Number(estimate.total) // Convert cents to full currency
         }, 0)
 
         return {
