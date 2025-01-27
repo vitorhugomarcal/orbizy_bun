@@ -22,19 +22,9 @@ export const getAll = new Elysia().get(
         company_id: hasCompany.id,
       },
       include: {
-        estimate: {
-          select: {
-            id: true,
-            status: true,
-            total: true,
-            sub_total: true,
-            createdAt: true,
-          },
-        },
+        estimate: true,
       },
     })
-
-    console.log(clients)
 
     if (!clients) {
       throw new AuthError(
@@ -43,6 +33,8 @@ export const getAll = new Elysia().get(
         404
       )
     }
+
+    console.log(clients[0].estimate)
 
     return {
       clients,
@@ -69,16 +61,14 @@ export const getAll = new Elysia().get(
               city: t.String(),
               state: t.String(),
               createdAt: t.Date(),
-              estimate: t.Nullable(
-                t.Array(
-                  t.Object({
-                    id: t.String(),
-                    // status: t.Nullable(t.String()),
-                    // total: t.Nullable(t.String()),
-                    // sub_total: t.Nullable(t.String()),
-                    createdAt: t.Date(),
-                  })
-                )
+              estimate: t.Array(
+                t.Object({
+                  id: t.String(),
+                  status: t.String(),
+                  total: t.Number(),
+                  sub_total: t.Number(),
+                  createdAt: t.Date(),
+                })
               ),
             })
           ),
