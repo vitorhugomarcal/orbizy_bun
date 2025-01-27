@@ -49,7 +49,7 @@ model Company {
   inviteLinks  InviteLinks[]
 
   invoice          Invoice[]
-  estimateClient   EstimateClient[]
+  estimate         Estimate[]
   estimateSupplier EstimateSupplier[]
 
   unitTypeCustom    UnitTypeCustom[]
@@ -121,8 +121,8 @@ model Client {
   createdAt      DateTime @default(now())
   company_id     String?
 
-  invoice        Invoice[]
-  estimateClient EstimateClient[]
+  invoice  Invoice[]
+  estimate Estimate[]
 
   company Company? @relation(fields: [company_id], references: [id], onDelete: Cascade)
 
@@ -176,7 +176,7 @@ model Item {
   @@map("items")
 }
 
-model EstimateClient {
+model Estimate {
   id              String   @id @default(uuid())
   estimate_number String?
   status          String?
@@ -193,7 +193,7 @@ model EstimateClient {
   client    Client? @relation(fields: [client_id], references: [id], onDelete: Cascade)
   client_id String? @map("client_id")
 
-  @@map("estimates_clients")
+  @@map("estimates")
 }
 
 model EstimateItems {
@@ -205,8 +205,8 @@ model EstimateItems {
   total     Decimal
   createdAt DateTime @default(now())
 
-  estimateClient     EstimateClient @relation(fields: [estimate_client_id], references: [id])
-  estimate_client_id String
+  estimate    Estimate @relation(fields: [estimate_id], references: [id])
+  estimate_id String
 
   @@map("estimate_items")
 }
