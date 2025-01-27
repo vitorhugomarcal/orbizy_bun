@@ -18,13 +18,13 @@ export const estimateChart = new Elysia().get(
       throw new AuthError("Company not found", "COMPANY_NOT_FOUND", 404)
     }
 
-    const estimates = await db.estimate.findMany({
+    const data = await db.estimate.findMany({
       where: {
         company_id: hasCompany.id,
       },
     })
 
-    if (!estimates) {
+    if (!data) {
       throw new AuthError(
         "Orçamentos não encontrados",
         "ESTIMATES_NOT_FOUND",
@@ -33,14 +33,14 @@ export const estimateChart = new Elysia().get(
     }
 
     const getMonthlyApprovedInvoices = () => {
-      if (!estimates) return []
+      if (!data) return []
 
       const currentYear = new Date().getFullYear()
       const startDate = startOfYear(new Date())
       const endDate = endOfYear(new Date())
 
       // Filter invoices for current year and APPROVED status
-      const yearEstimates = estimates.filter((estimate) => {
+      const yearEstimates = data.filter((estimate) => {
         const estimateDate = new Date(estimate.createdAt)
         return (
           estimateDate >= startDate &&

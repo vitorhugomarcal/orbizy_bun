@@ -181,8 +181,8 @@ model Estimate {
   estimate_number String?
   status          String?
   notes           String?
-  sub_total       Decimal  @default(0)
-  total           Decimal  @default(0)
+  sub_total       Decimal?
+  total           Decimal?
   createdAt       DateTime @default(now())
 
   estimateItems EstimateItems[]
@@ -247,11 +247,11 @@ model InvoiceItems {
 }
 
 model EstimateSupplier {
-  id              String   @id @default(uuid())
-  estimate_number String?
-  status          String?
-  notes           String?
-  createdAt       DateTime @default(now())
+  id                       String   @id @default(uuid())
+  estimate_supplier_number String?
+  status                   String?
+  notes                    String?
+  createdAt                DateTime @default(now())
 
   supplier    Supplier @relation(fields: [supplier_id], references: [id], onDelete: Cascade)
   supplier_id String
