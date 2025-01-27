@@ -22,7 +22,15 @@ export const getAll = new Elysia().get(
         company_id: hasCompany.id,
       },
       include: {
-        estimate: true,
+        estimate: {
+          select: {
+            id: true,
+            status: true,
+            total: true,
+            sub_total: true,
+            createdAt: true,
+          },
+        },
       },
     })
 
@@ -34,10 +42,17 @@ export const getAll = new Elysia().get(
       )
     }
 
-    console.log(clients[0].estimate)
+    const formattedClients = clients.map((client) => ({
+      ...client,
+      estimate: client.estimate.map((est) => ({
+        ...est,
+        total: Number(est.total),
+        sub_total: Number(est.sub_total),
+      })),
+    }))
 
     return {
-      clients,
+      clients: formattedClients,
     }
   },
   {
@@ -64,9 +79,9 @@ export const getAll = new Elysia().get(
               estimate: t.Array(
                 t.Object({
                   id: t.String(),
-                  // status: t.String(),
-                  // total: t.Number(),
-                  // sub_total: t.Number(),
+                  status: t.String(),
+                  total: t.Number(),
+                  sub_total: t.Number(),
                   createdAt: t.Date(),
                 })
               ),
