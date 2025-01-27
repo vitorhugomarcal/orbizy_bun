@@ -56,6 +56,7 @@ export const estimateChart = new Elysia().get(
 
     const estimates = await db.estimate.findMany({
       select: {
+        id: true,
         createdAt: true,
         status: true,
         total: true,
@@ -69,6 +70,8 @@ export const estimateChart = new Elysia().get(
       },
     })
 
+    console.log("Estimates:", estimates)
+
     if (!estimates?.length) {
       throw new AuthError(
         "Orçamentos não encontrados",
@@ -77,7 +80,11 @@ export const estimateChart = new Elysia().get(
       )
     }
 
-    const stats = calculateMonthlyRevenue(estimates, currentYear)
+    const filteredEstimates = estimates.filter(
+      (estimate) => estimate.total !== null
+    )
+
+    const stats = calculateMonthlyRevenue(filteredEstimates, currentYear)
 
     return {
       message: "Contagem dos meses finalizada obtida com sucesso",
