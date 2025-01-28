@@ -52,6 +52,8 @@ export const createClient = new Elysia().post(
         company_id: hasCompany.id,
         type,
         email_address,
+        company_name: cpf,
+        cnpj,
         name,
         phone,
         cep,
