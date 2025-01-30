@@ -37,7 +37,7 @@ export const monthEstimates = new Elysia().get(
       },
     })
 
-    if (estimates.length) {
+    if (!estimates.length) {
       return { total: 0, percentageChange: 0 }
     }
 
