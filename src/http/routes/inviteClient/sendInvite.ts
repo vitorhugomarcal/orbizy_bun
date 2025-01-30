@@ -52,7 +52,7 @@ export const sendInviteLink = new Elysia().post(
       },
     })
 
-    const inviteLink = new URL("/invite/validate", AUTH_REDIRECT_URL)
+    const inviteLink = new URL("/invitedClient", AUTH_REDIRECT_URL)
     inviteLink.searchParams.set("code", authLinkCode)
 
     return inviteLink
