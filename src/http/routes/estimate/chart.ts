@@ -70,8 +70,6 @@ export const estimateChart = new Elysia().get(
       },
     })
 
-    console.log("Estimates:", estimates)
-
     if (!estimates?.length) {
       throw new AuthError(
         "Orçamentos não encontrados",

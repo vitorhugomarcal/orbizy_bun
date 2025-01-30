@@ -2,17 +2,22 @@ import Elysia, { t } from "elysia"
 import { db } from "../../../lib/prisma"
 import { AuthError } from "../errors/auth-error"
 
+const ResponseTypes = {
+  200: t.Object({ message: t.String() }, { description: "Convite válido" }),
+  400: t.Object(
+    { message: t.String() },
+    { description: "Código do convite é obrigatório" }
+  ),
+  429: t.Object(
+    { message: t.String() },
+    { description: "Por favor solicite um novo link de convite" }
+  ),
+}
+
 export const inviteValidate = new Elysia().get(
   `/invite/validate/:code`,
   async ({ params }) => {
     const { code } = params
-    if (!code) {
-      throw new AuthError(
-        "Código de convite é obrigatório",
-        "MISSING_CODE",
-        400
-      )
-    }
 
     const isValid = await db.inviteLinks.findFirst({
       where: {
@@ -37,33 +42,7 @@ export const inviteValidate = new Elysia().get(
     params: t.Object({
       code: t.String(),
     }),
-    response: {
-      200: t.Object(
-        {
-          message: t.String(),
-          isValid: t.Boolean(),
-        },
-        {
-          description: "Código de convite válido",
-        }
-      ),
-      400: t.Object(
-        {
-          message: t.String(),
-        },
-        {
-          description: "Código de convite inválido",
-        }
-      ),
-      429: t.Object(
-        {
-          message: t.String(),
-        },
-        {
-          description: "Solicite um novo link de convite",
-        }
-      ),
-    },
+    response: ResponseTypes,
     detail: {
       description: "Verifica se o código de convite é válido",
       tags: ["Invite"],
