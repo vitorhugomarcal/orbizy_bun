@@ -32,7 +32,7 @@ const calculateMonthlyRevenue = (
 
     return {
       month,
-      monthTotal: totalRevenue,
+      monthTotal: totalRevenue || 0,
     }
   })
 }
@@ -69,14 +69,6 @@ export const estimateChart = new Elysia().get(
         ],
       },
     })
-
-    if (!estimates?.length) {
-      throw new AuthError(
-        "Orçamentos não encontrados",
-        "ESTIMATES_NOT_FOUND",
-        404
-      )
-    }
 
     const filteredEstimates = estimates.filter(
       (estimate) => estimate.total !== null

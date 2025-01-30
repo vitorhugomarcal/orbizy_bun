@@ -37,19 +37,11 @@ export const monthEstimates = new Elysia().get(
       },
     })
 
-    if (!estimates) {
-      throw new AuthError(
-        "Orçamentos não encontrados",
-        "ESTIMATES_NOT_FOUND",
-        404
-      )
+    if (estimates.length) {
+      return { total: 0, percentageChange: 0 }
     }
 
     const calculateMonthlyChange = (estimates: Estimate[]): MonthlyStats => {
-      if (!estimates?.length) {
-        return { total: 0, percentageChange: 0 }
-      }
-
       const today = new Date()
       const currentMonthStart = new Date(
         today.getFullYear(),
