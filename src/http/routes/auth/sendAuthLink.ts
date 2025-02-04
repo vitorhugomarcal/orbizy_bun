@@ -6,8 +6,8 @@ import { db } from "../../../lib/prisma"
 import { AuthError } from "../errors/auth-error"
 
 const RESEND_API = env.RESEND_API
-const API_BASE_URL = env.API_BASE_URL || "http://192.168.1.80:5173"
-const AUTH_REDIRECT_URL = env.AUTH_REDIRECT_URL || "http://192.168.1.80:5173"
+const API_BASE_URL = env.API_BASE_URL || "http://192.168.1.81:5173"
+const AUTH_REDIRECT_URL = env.AUTH_REDIRECT_URL || "http://192.168.1.81:5173"
 
 const MAGIC_LINK_EXPIRATION = 15 * 60 * 1000 // 15 minutes in milliseconds
 
