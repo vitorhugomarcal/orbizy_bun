@@ -3,17 +3,17 @@ import { db } from "../../../lib/prisma"
 import { auth } from "../../authentication"
 import { AuthError } from "../errors/auth-error"
 
-export const getAllSupplier = new Elysia().get(
-  "/supplier/company",
+export const getAllByCompany = new Elysia().get(
+  "/supplier/all/company",
   async ({ cookie }) => {
     const user = await auth({ cookie })
     if (!user) {
       throw new AuthError("Unauthorized", "UNAUTHORIZED", 401)
     }
 
-    const company = user.Company
+    const hasCompany = user.Company
 
-    if (!company) {
+    if (!hasCompany) {
       throw new AuthError("Company not found", "COMPANY_NOT_FOUND", 404)
     }
 
@@ -21,7 +21,7 @@ export const getAllSupplier = new Elysia().get(
       where: {
         supplierUser: {
           some: {
-            company_id: company.id,
+            company_id: hasCompany.id,
           },
         },
       },
@@ -31,16 +31,19 @@ export const getAllSupplier = new Elysia().get(
       throw new AuthError("Suppliers not found", "SUPPLIERS_NOT_FOUND", 404)
     }
 
+    const formattedSuppliers = suppliers.map((supplier) => ({
+      ...supplier,
+      createdAt: String(supplier.createdAt),
+    }))
+
     return {
-      message: "Suppliers found successfully",
-      suppliers,
+      suppliers: formattedSuppliers,
     }
   },
   {
     response: {
       200: t.Object(
         {
-          message: t.String(),
           suppliers: t.Array(
             t.Object({
               id: t.String(),
@@ -54,6 +57,7 @@ export const getAllSupplier = new Elysia().get(
               email_address: t.String(),
               address: t.String(),
               neighborhood: t.String(),
+              createdAt: t.String(),
             })
           ),
         },

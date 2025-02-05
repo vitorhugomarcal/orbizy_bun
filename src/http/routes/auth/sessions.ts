@@ -5,7 +5,7 @@ import { createToken } from "../../../utils/jwt"
 
 export const sessions = new Elysia().post(
   "/sessions",
-  async ({ cookie, set, body }) => {
+  async ({ cookie, body }) => {
     const { email } = body as { email: string }
 
     const user = await db.user.findUnique({

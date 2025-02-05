@@ -3,8 +3,37 @@ import { db } from "../../../lib/prisma"
 import { auth } from "../../authentication"
 import { AuthError } from "../errors/auth-error"
 
+const SupplierCreateBody = t.Object({
+  email_address: t.String(),
+  company_name: t.String(),
+  cnpj: t.String(),
+  phone: t.String(),
+  cep: t.String(),
+  address: t.String(),
+  address_number: t.String(),
+  neighborhood: t.String(),
+  state: t.String(),
+  city: t.String(),
+})
+
+const ResponseTypes = {
+  201: t.Object(
+    { message: t.String() },
+    { description: "Fornecedor criado com sucesso" }
+  ),
+  400: t.Object(
+    { message: t.String() },
+    { description: "Dados inválidos ou fornecedor já existe" }
+  ),
+  401: t.Object({ message: t.String() }, { description: "Não autorizado" }),
+  404: t.Object(
+    { message: t.String() },
+    { description: "Empresa não encontrada" }
+  ),
+}
+
 export const createSupplier = new Elysia().post(
-  `/supplier/register`,
+  `/supplier/create`,
   async ({ cookie, body }) => {
     const {
       company_name,
@@ -21,7 +50,7 @@ export const createSupplier = new Elysia().post(
 
     const user = await auth({ cookie })
     if (!user) {
-      throw new AuthError("Unauthorized", "UNAUTHORIZED", 401)
+      throw new AuthError("Não autorizado", "UNAUTHORIZED", 401)
     }
 
     const existingSupplier = await db.supplier.findUnique({ where: { cnpj } })
@@ -47,13 +76,14 @@ export const createSupplier = new Elysia().post(
           "SUPPLIER_ALREADY_EXISTS",
           400
         )
+      } else {
+        await db.supplierUser.create({
+          data: {
+            supplier_id: existingSupplier.id,
+            company_id: company.id,
+          },
+        })
       }
-      await db.supplierUser.create({
-        data: {
-          supplier_id: existingSupplier.id,
-          company_id: company.id,
-        },
-      })
       return {
         message: "Supplier is already associated with this user",
         supplier: existingSupplier,
@@ -87,56 +117,8 @@ export const createSupplier = new Elysia().post(
     }
   },
   {
-    body: t.Object({
-      company_name: t.String(),
-      cnpj: t.String(),
-      phone: t.String(),
-      state: t.String(),
-      city: t.String(),
-      cep: t.String(),
-      address_number: t.String(),
-      email_address: t.String(),
-      address: t.String(),
-      neighborhood: t.String(),
-    }),
-    response: {
-      201: t.Object(
-        {
-          message: t.String(),
-          supplier: t.Object({
-            company_name: t.String(),
-            cnpj: t.String(),
-            phone: t.String(),
-            state: t.String(),
-            city: t.String(),
-            cep: t.String(),
-            address_number: t.String(),
-            email_address: t.String(),
-            address: t.String(),
-            neighborhood: t.String(),
-          }),
-        },
-        {
-          description: "Supplier created successfully",
-        }
-      ),
-      401: t.Object(
-        {
-          message: t.String(),
-        },
-        {
-          description: "Unauthorized",
-        }
-      ),
-      400: t.Object(
-        {
-          message: t.String(),
-        },
-        {
-          description: "Supplier is already associated with this user",
-        }
-      ),
-    },
+    body: SupplierCreateBody,
+    response: ResponseTypes,
     detail: {
       description: "Create a new supplier",
       tags: ["Supplier"],
