@@ -3,8 +3,8 @@ import { db } from "../../../lib/prisma"
 import { auth } from "../../authentication"
 import { AuthError } from "../errors/auth-error"
 
-export const getAllEstimates = new Elysia().get(
-  "/estimate",
+export const getAllSupplierEstimates = new Elysia().get(
+  "/supplier/estimate",
   async ({ cookie }) => {
     const user = await auth({ cookie })
     if (!user) {
@@ -17,12 +17,13 @@ export const getAllEstimates = new Elysia().get(
       throw new AuthError("Company not found", "COMPANY_NOT_FOUND", 404)
     }
 
-    const estimates = await db.estimate.findMany({
+    const estimates = await db.estimateSupplier.findMany({
       where: {
         company_id: hasCompany.id,
       },
       include: {
-        client: true,
+        supplier: true,
+        EstimateSupplierItems: true,
       },
     })
 
@@ -38,8 +39,6 @@ export const getAllEstimates = new Elysia().get(
       return {
         ...estimate,
         createdAt: String(estimate.createdAt),
-        sub_total: Number(estimate.sub_total),
-        total: Number(estimate.total),
       }
     })
     return {
@@ -55,16 +54,13 @@ export const getAllEstimates = new Elysia().get(
           estimates: t.Array(
             t.Object({
               id: t.String(),
-              estimate_number: t.String(),
+              estimate_supplier_number: t.String(),
               status: t.String(),
               notes: t.String(),
-              sub_total: t.Number(),
-              total: t.Number(),
-              client_id: t.String(),
+              supplier_id: t.String(),
+              company_id: t.String(),
               createdAt: t.String(),
-              client: t.Object({
-                id: t.String(),
-                name: t.String(),
+              supplier: t.Object({
                 company_name: t.String(),
                 email_address: t.String(),
                 phone: t.String(),
@@ -76,6 +72,12 @@ export const getAllEstimates = new Elysia().get(
                 state: t.String(),
                 city: t.String(),
               }),
+              EstimateSupplierItems: t.Array(
+                t.Object({
+                  name: t.String(),
+                  quantity: t.Number(),
+                })
+              ),
             })
           ),
         },
@@ -102,7 +104,7 @@ export const getAllEstimates = new Elysia().get(
     },
     detail: {
       description: "Get all estimates",
-      tags: ["Estimate"],
+      tags: ["SupplierEstimate"],
     },
   }
 )

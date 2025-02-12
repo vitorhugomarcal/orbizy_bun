@@ -248,13 +248,13 @@ model InvoiceItems {
 
 model EstimateSupplier {
   id                       String   @id @default(uuid())
-  estimate_supplier_number String?
-  status                   String?
+  estimate_supplier_number String
+  status                   String
   notes                    String?
   createdAt                DateTime @default(now())
 
-  supplier    Supplier @relation(fields: [supplier_id], references: [id], onDelete: Cascade)
-  supplier_id String
+  supplier    Supplier? @relation(fields: [supplier_id], references: [id], onDelete: Cascade)
+  supplier_id String?
 
   company               Company?                @relation(fields: [company_id], references: [id], onDelete: Cascade)
   company_id            String?                 @map("company_id")

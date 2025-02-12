@@ -53,20 +53,20 @@ export const createSupplier = new Elysia().post(
       throw new AuthError("Não autorizado", "UNAUTHORIZED", 401)
     }
 
-    const existingSupplier = await db.supplier.findUnique({ where: { cnpj } })
+    const hasCompany = user.Company
 
-    const company = user.Company
-
-    if (!company) {
-      throw new AuthError("Unauthorized", "UNAUTHORIZED", 401)
+    if (!hasCompany) {
+      throw new AuthError("Empresa não encontrada", "COMPANY_NOT_FOUND", 404)
     }
+
+    const existingSupplier = await db.supplier.findUnique({ where: { cnpj } })
 
     if (existingSupplier) {
       const supplierUserExists = await db.supplierUser.findUnique({
         where: {
           supplier_id_company_id: {
             supplier_id: existingSupplier.id,
-            company_id: company.id,
+            company_id: hasCompany.id,
           },
         },
       })
@@ -80,7 +80,7 @@ export const createSupplier = new Elysia().post(
         await db.supplierUser.create({
           data: {
             supplier_id: existingSupplier.id,
-            company_id: company.id,
+            company_id: hasCompany.id,
           },
         })
       }
@@ -107,7 +107,7 @@ export const createSupplier = new Elysia().post(
       await db.supplierUser.create({
         data: {
           supplier_id: newSupplier.id,
-          company_id: company.id,
+          company_id: hasCompany.id,
         },
       })
       return {

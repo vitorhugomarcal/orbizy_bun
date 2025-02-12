@@ -15,8 +15,9 @@ app.use(
     origin: (request) => {
       const allowedOrigins =
         env.NODE_ENV === "dev"
-          ? ["http://192.168.1.81:5173"]
-          : ["https://www.orbizy.app", "https://orbizy.app"]
+          ? ["http://192.168.1.127:5173"]
+          : ["https://my.orbizy.app"]
+      // : ["https://www.orbizy.app", "https://orbizy.app"]
 
       const origin = request.headers.get("origin")
 
