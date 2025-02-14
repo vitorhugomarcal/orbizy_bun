@@ -22,6 +22,7 @@ export const registerCompany = new Elysia().post(
     if (!user) {
       throw new AuthError("Unauthorized", "UNAUTHORIZED", 401)
     }
+    console.log(user)
 
     const checkCompanyExists = await db.company.findUnique({
       where: {
