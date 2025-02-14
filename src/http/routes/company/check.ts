@@ -20,11 +20,9 @@ export const checkCompany = new Elysia().get(
     })
 
     if (checkCompanyExists) {
-      throw new AuthError(
-        "Company already exists",
-        "COMPANY_ALREADY_EXISTS",
-        500
-      )
+      return {
+        message: "Company already exists",
+      }
     } else {
       return {
         message: "Company not found",
@@ -44,7 +42,7 @@ export const checkCompany = new Elysia().get(
           description: "Company not found",
         }
       ),
-      500: t.Object(
+      400: t.Object(
         {
           message: t.String(),
         },
