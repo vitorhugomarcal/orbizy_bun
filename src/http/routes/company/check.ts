@@ -23,7 +23,7 @@ export const checkCompany = new Elysia().get(
       throw new AuthError(
         "Company already exists",
         "COMPANY_ALREADY_EXISTS",
-        400
+        500
       )
     } else {
       return {
@@ -44,7 +44,7 @@ export const checkCompany = new Elysia().get(
           description: "Company not found",
         }
       ),
-      400: t.Object(
+      500: t.Object(
         {
           message: t.String(),
         },
