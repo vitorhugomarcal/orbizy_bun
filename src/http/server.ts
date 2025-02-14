@@ -2,7 +2,6 @@ import cors from "@elysiajs/cors"
 import Elysia from "elysia"
 
 import swagger from "@elysiajs/swagger"
-import { env } from "../env"
 import routes from "./routes"
 
 const app = new Elysia()
@@ -12,20 +11,22 @@ app.use(
     credentials: true,
     allowedHeaders: ["content-type"],
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "HEAD", "OPTIONS"],
-    origin: (request) => {
-      const allowedOrigins =
-        env.NODE_ENV === "dev"
-          ? ["http://192.168.1.127:5173"]
-          : ["https://my.orbizy.app"]
-      // : ["https://www.orbizy.app", "https://orbizy.app"]
 
-      const origin = request.headers.get("origin")
+    origin: "*",
+    // origin: (request) => {
+    //   const allowedOrigins =
+    //     env.NODE_ENV === "dev"
+    //       ? ["http://192.168.1.127:5173"]
+    //       : ["https://my.orbizy.app"]
+    //   // : ["https://www.orbizy.app", "https://orbizy.app"]
 
-      if (origin && allowedOrigins.includes(origin)) {
-        return true
-      }
-      return false
-    },
+    //   const origin = request.headers.get("origin")
+
+    //   if (origin && allowedOrigins.includes(origin)) {
+    //     return true
+    //   }
+    //   return false
+    // },
   })
 )
 
