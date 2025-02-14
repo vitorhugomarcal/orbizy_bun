@@ -27,7 +27,6 @@ export const sessions = new Elysia().post(
 
     return {
       message: "Sessão criada com sucesso",
-      user,
       token,
     }
   },
@@ -35,23 +34,11 @@ export const sessions = new Elysia().post(
     body: t.Object({
       email: t.String(),
       token: t.String(),
-      user: t.Object({
-        id: t.String(),
-        name: t.String(),
-        email: t.String(),
-        company_id: t.String(),
-      }),
     }),
     response: {
       201: t.Object(
         {
           message: t.String(),
-          user: t.Object({
-            id: t.String(),
-            name: t.String(),
-            email: t.String(),
-            company_id: t.String(),
-          }),
           token: t.String(),
         },
         {
