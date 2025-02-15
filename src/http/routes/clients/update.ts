@@ -32,21 +32,6 @@ export const update = new Elysia().put(
       throw new AuthError("Company not found", "COMPANY_NOT_FOUND", 401)
     }
 
-    const existingClient = await db.client.findFirst({
-      where: {
-        company_id: hasCompany.id,
-        OR: [
-          { email_address },
-          { cpf: cpf || undefined },
-          { cnpj: cnpj || undefined },
-        ],
-      },
-    })
-
-    if (existingClient) {
-      throw new AuthError("Cliente já cadastrado", "CLIENT_ALREADY_EXISTS", 400)
-    }
-
     const { clientId } = params
 
     if (!clientId) {
@@ -67,7 +52,6 @@ export const update = new Elysia().put(
       throw new AuthError("Cliente não encontrado", "CLIENT_NOT_FOUND", 404)
     }
 
-    // Criar o novo cliente
     const client = await db.client.update({
       where: {
         id: clientId,
