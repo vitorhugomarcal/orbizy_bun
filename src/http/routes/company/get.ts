@@ -49,23 +49,25 @@ export const getCompany = new Elysia().get(
             address_number: t.String(),
             company_name: t.String(),
             owner_id: t.String(),
-            client: t.Array(
-              t.Object({
-                id: t.String(),
-                type: t.String(),
-                email_address: t.String(),
-                name: t.String(),
-                company_name: t.Optional(t.String()),
-                cpf: t.Optional(t.String()),
-                cnpj: t.Optional(t.String()),
-                phone: t.String(),
-                cep: t.String(),
-                address: t.String(),
-                address_number: t.String(),
-                neighborhood: t.String(),
-                state: t.String(),
-                city: t.String(),
-              })
+            client: t.Optional(
+              t.Array(
+                t.Object({
+                  id: t.String(),
+                  type: t.String(),
+                  email_address: t.String(),
+                  name: t.String(),
+                  company_name: t.Optional(t.String()),
+                  cpf: t.Optional(t.String()),
+                  cnpj: t.Optional(t.String()),
+                  phone: t.String(),
+                  cep: t.String(),
+                  address: t.String(),
+                  address_number: t.String(),
+                  neighborhood: t.String(),
+                  state: t.String(),
+                  city: t.String(),
+                })
+              )
             ),
           }),
         },
