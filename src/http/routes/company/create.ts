@@ -68,7 +68,6 @@ export const registerCompany = new Elysia().post(
       neighborhood: t.String(),
       address_number: t.String(),
       company_name: t.String(),
-      owner_id: t.String(),
     }),
     response: {
       201: t.Object(
