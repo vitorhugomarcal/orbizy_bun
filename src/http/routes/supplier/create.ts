@@ -4,6 +4,7 @@ import { auth } from "../../authentication"
 import { AuthError } from "../errors/auth-error"
 
 const SupplierCreateBody = t.Object({
+  email_address: t.String(),
   company_name: t.String(),
   cnpj: t.String(),
   phone: t.String(),
@@ -42,6 +43,7 @@ export const createSupplier = new Elysia().post(
       city,
       cep,
       address_number,
+      email_address,
       address,
       neighborhood,
     } = body
@@ -96,6 +98,7 @@ export const createSupplier = new Elysia().post(
           city,
           cep,
           address_number,
+          email_address,
           address,
           neighborhood,
         },
