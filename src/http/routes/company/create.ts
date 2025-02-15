@@ -52,6 +52,15 @@ export const registerCompany = new Elysia().post(
       },
     })
 
+    await db.user.update({
+      where: {
+        id: user.id,
+      },
+      data: {
+        company_id: company.id,
+      },
+    })
+
     return {
       message: "Cliente cadastrado com sucesso",
       company,
