@@ -23,7 +23,11 @@ export const getCompany = new Elysia().get(
       },
       include: {
         client: true,
-        supplierUser: true,
+        supplierUser: {
+          include: {
+            supplier: true,
+          },
+        },
       },
     })
 
@@ -55,17 +59,19 @@ export const getCompany = new Elysia().get(
             owner_id: t.String(),
             supplierUser: t.Array(
               t.Object({
-                id: t.String(),
-                company_name: t.String(),
-                cnpj: t.String(),
-                email_address: t.String(),
-                phone: t.String(),
-                address: t.String(),
-                address_number: t.String(),
-                cep: t.String(),
-                city: t.String(),
-                state: t.String(),
-                neighborhood: t.String(),
+                supplier: t.Object({
+                  id: t.String(),
+                  cnpj: t.String(),
+                  company_name: t.String(),
+                  phone: t.String(),
+                  cep: t.String(),
+                  address: t.String(),
+                  address_number: t.String(),
+                  neighborhood: t.String(),
+                  city: t.String(),
+                  state: t.String(),
+                  email_address: t.String(),
+                }),
               })
             ),
             client: t.Array(
