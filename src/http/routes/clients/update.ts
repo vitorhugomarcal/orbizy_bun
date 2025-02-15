@@ -47,7 +47,7 @@ export const update = new Elysia().put(
       throw new AuthError("Cliente não encontrado", "CLIENT_NOT_FOUND", 404)
     }
 
-    const client = await db.client.updateMany({
+    const client = await db.client.update({
       where: {
         id: clientId,
       },
