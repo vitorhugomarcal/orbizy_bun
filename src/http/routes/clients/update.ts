@@ -27,11 +27,6 @@ export const update = new Elysia().put(
       throw new AuthError("Unauthorized", "UNAUTHORIZED", 401)
     }
 
-    const hasCompany = user.Company
-    if (!hasCompany) {
-      throw new AuthError("Company not found", "COMPANY_NOT_FOUND", 401)
-    }
-
     const { clientId } = params
 
     if (!clientId) {
@@ -52,7 +47,7 @@ export const update = new Elysia().put(
       throw new AuthError("Cliente não encontrado", "CLIENT_NOT_FOUND", 404)
     }
 
-    const client = await db.client.update({
+    const client = await db.client.updateMany({
       where: {
         id: clientId,
       },
@@ -102,9 +97,9 @@ export const update = new Elysia().put(
             type: t.String(),
             email_address: t.String(),
             name: t.String(),
-            company_name: t.String(),
-            cpf: t.String(),
-            cnpj: t.String(),
+            company_name: t.Nullable(t.String()),
+            cpf: t.Nullable(t.String()),
+            cnpj: t.Nullable(t.String()),
             phone: t.String(),
             cep: t.String(),
             address: t.String(),
