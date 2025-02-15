@@ -21,6 +21,9 @@ export const getCompany = new Elysia().get(
       where: {
         id: hasCompany.id,
       },
+      include: {
+        client: true,
+      },
     })
 
     if (!company) {
