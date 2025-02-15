@@ -55,6 +55,10 @@ export const getCompany = new Elysia().get(
             client: t.Array(
               t.Object({
                 id: t.String(),
+                type: t.String(),
+                name: t.String(),
+                company_name: t.String(),
+                address: t.String(),
               })
             ),
           }),
