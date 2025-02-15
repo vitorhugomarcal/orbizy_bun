@@ -57,7 +57,7 @@ export const getCompany = new Elysia().get(
                 id: t.String(),
                 type: t.String(),
                 name: t.String(),
-                company_name: t.String(),
+                // company_name: t.Nullable(t.String()),
                 address: t.String(),
               })
             ),
