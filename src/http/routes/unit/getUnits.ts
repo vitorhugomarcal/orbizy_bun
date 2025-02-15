@@ -51,6 +51,7 @@ export const getUnits = new Elysia().get(
             t.Object({
               id: t.String(),
               name: t.String(),
+              company_id: t.Optional(t.String()),
             })
           ),
         },
