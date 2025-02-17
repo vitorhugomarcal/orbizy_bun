@@ -54,14 +54,6 @@ export const createEstimate = new Elysia().post(
           message: t.String(),
           estimate: t.Object({
             id: t.String(),
-            company_id: t.String(),
-            client_id: t.String(),
-            estimate_number: t.String(),
-            status: t.String(),
-            notes: t.String(),
-            sub_total: t.Number(),
-            total: t.Number(),
-            createdAt: t.String(),
           }),
         },
         {
