@@ -27,12 +27,13 @@ export const createEstimate = new Elysia().post(
         id: clientId,
       },
     })
+    console.log("checkClient", checkClientExists)
 
     if (!checkClientExists) {
       throw new AuthError("Client not found", "CLIENT_NOT_FOUND", 404)
     }
 
-    console.log(clientId)
+    console.log("Id cliente => ", clientId)
 
     const estimate = await db.estimate.create({
       data: {
