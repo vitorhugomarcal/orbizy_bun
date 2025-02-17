@@ -178,11 +178,11 @@ model Item {
 
 model Estimate {
   id              String   @id @default(uuid())
-  estimate_number String
-  status          String
+  estimate_number String?
+  status          String?
   notes           String?
-  sub_total       Decimal
-  total           Decimal
+  sub_total       Decimal?
+  total           Decimal?
   createdAt       DateTime @default(now())
 
   EstimateItems EstimateItems[]

@@ -1,0 +1,5 @@
+-- AlterTable
+ALTER TABLE "estimates" ALTER COLUMN "estimate_number" DROP NOT NULL,
+ALTER COLUMN "status" DROP NOT NULL,
+ALTER COLUMN "sub_total" DROP NOT NULL,
+ALTER COLUMN "total" DROP NOT NULL;

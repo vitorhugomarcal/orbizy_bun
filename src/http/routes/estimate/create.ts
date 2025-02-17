@@ -5,8 +5,8 @@ import { AuthError } from "../errors/auth-error"
 
 export const createEstimate = new Elysia().post(
   `/estimate/create/:clientId`,
-  async ({ cookie, body, params }) => {
-    const { estimate_number, status, notes, sub_total, total } = body
+  async ({ cookie, params }) => {
+    // const { estimate_number, status, notes, sub_total, total } = body
 
     const user = await auth({ cookie })
     if (!user) {
@@ -39,33 +39,15 @@ export const createEstimate = new Elysia().post(
       data: {
         company_id: hasCompany.id,
         client_id: clientId,
-        estimate_number,
-        status,
-        notes,
-        sub_total,
-        total,
       },
     })
 
-    const formattedEstimate = {
-      ...estimate,
-      sub_total: Number(estimate.sub_total),
-      total: Number(estimate.total),
-    }
-
     return {
       message: "Orçamento cadastrado com sucesso",
-      estimate: formattedEstimate,
+      estimate,
     }
   },
   {
-    body: t.Object({
-      estimate_number: t.String(),
-      status: t.String(),
-      notes: t.String(),
-      sub_total: t.Number(),
-      total: t.Number(),
-    }),
     params: t.Object({
       clientId: t.String(),
     }),

@@ -21,6 +21,10 @@ export const getSupplierEstimateById = new Elysia().get(
       where: {
         id: estimateId,
       },
+      include: {
+        EstimateSupplierItems: true,
+        supplier: true,
+      },
     })
 
     if (!estimate) {
@@ -50,6 +54,24 @@ export const getSupplierEstimateById = new Elysia().get(
             sub_total: t.Number(),
             total: t.Number(),
             client_id: t.String(),
+            supplier: t.Object({
+              cnpj: t.String(),
+              phone: t.String(),
+              state: t.String(),
+              city: t.String(),
+              address: t.String(),
+              neighborhood: t.String(),
+              address_number: t.String(),
+              company_name: t.String(),
+              cep: t.String(),
+              email_address: t.String(),
+            }),
+            EstimateSupplierItems: t.Array(
+              t.Object({
+                name: t.String(),
+                quantity: t.Number(),
+              })
+            ),
           }),
         },
         {
