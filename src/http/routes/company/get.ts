@@ -28,6 +28,12 @@ export const getCompany = new Elysia().get(
             supplier: true,
           },
         },
+        // item: true,
+        // paymentModeCustom: true,
+        // unitTypeCustom: true,
+        // estimate: true,
+        pendingUsers: true,
+        user: true,
       },
     })
 
@@ -89,6 +95,23 @@ export const getCompany = new Elysia().get(
                 city: t.String(),
                 state: t.String(),
                 neighborhood: t.String(),
+              })
+            ),
+            pendingUsers: t.Array(
+              t.Object({
+                email: t.String(),
+                company_id: t.String(),
+                invited_by: t.String(),
+              })
+            ),
+            user: t.Array(
+              t.Object({
+                id: t.String(),
+                name: t.Nullable(t.String()),
+                email: t.String(),
+                role: t.String(),
+                type: t.String(),
+                company_id: t.Nullable(t.String()),
               })
             ),
           }),
