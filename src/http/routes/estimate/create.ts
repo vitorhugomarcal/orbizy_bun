@@ -6,13 +6,10 @@ import { AuthError } from "../errors/auth-error"
 export const createEstimate = new Elysia().post(
   `/estimate/create/:clientId`,
   async ({ cookie, params }) => {
-    // const { estimate_number, status, notes, sub_total, total } = body
-
     const user = await auth({ cookie })
     if (!user) {
       throw new AuthError("Unauthorized", "UNAUTHORIZED", 401)
     }
-
     const hasCompany = user.Company
 
     if (!hasCompany) {
