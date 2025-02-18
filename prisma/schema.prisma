@@ -8,52 +8,45 @@ datasource db {
 }
 
 model User {
-  id         String  @id @default(uuid())
-  name       String?
-  email      String  @unique
-  role       Role    @default(BASIC)
-  type       Type    @default(basic)
-  company_id String?
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt @map("updated_at")
-
-  Company Company? @relation(fields: [company_id], references: [id], onDelete: Cascade)
-
-  PendingUserInvites PendingUser[]
+  id                 String        @id @default(uuid())
+  name               String?
+  email              String        @unique
+  role               Role          @default(BASIC)
+  type               Type          @default(basic)
+  company_id         String?
+  createdAt          DateTime      @default(now())
+  updatedAt          DateTime      @updatedAt @map("updated_at")
   AuthLinks          AuthLinks[]
+  PendingUserInvites PendingUser[]
+  Company            Company?      @relation(fields: [company_id], references: [id], onDelete: Cascade)
 
   @@map("users")
 }
 
 model Company {
-  id             String   @id @default(uuid())
-  cnpj           String   @unique
-  phone          String
-  state          String
-  city           String
-  cep            String
-  address        String
-  neighborhood   String
-  address_number String
-  company_name   String
-  owner_id       String
-  createdAt      DateTime @default(now())
-
-  user         User[]
-  client       Client[]
-  item         Item[]
-  supplierUser SupplierUser[]
-
-  pendingUsers PendingUser[]
-  inviteLinks  InviteLinks[]
-
-  invoice          Invoice[]
-  estimate         Estimate[]
-  estimateSupplier EstimateSupplier[]
-
-  unitTypeCustom    UnitTypeCustom[]
+  id                String              @id @default(uuid())
+  cnpj              String              @unique
+  phone             String
+  state             String
+  city              String
+  cep               String
+  address           String
+  neighborhood      String
+  address_number    String
+  company_name      String
+  owner_id          String
+  createdAt         DateTime            @default(now())
+  supplierUser      SupplierUser[]
+  client            Client[]
+  estimate          Estimate[]
+  estimateSupplier  EstimateSupplier[]
+  inviteLinks       InviteLinks[]
+  invoice           Invoice[]
+  item              Item[]
   paymentModeCustom PaymentModeCustom[]
+  pendingUsers      PendingUser[]
+  unitTypeCustom    UnitTypeCustom[]
+  user              User[]
 
   @@map("companies")
 }
@@ -64,10 +57,8 @@ model PendingUser {
   company_id String
   invited_by String
   createdAt  DateTime @default(now())
-
-  invitedBy User @relation(fields: [invited_by], references: [id], onDelete: Cascade)
-
-  company Company @relation(fields: [company_id], references: [id], onDelete: Cascade)
+  company    Company  @relation(fields: [company_id], references: [id], onDelete: Cascade)
+  invitedBy  User     @relation(fields: [invited_by], references: [id], onDelete: Cascade)
 
   @@map("pending_users")
 }
@@ -75,28 +66,25 @@ model PendingUser {
 model SupplierUser {
   supplier_id String
   company_id  String
-
-  supplier Supplier @relation(fields: [supplier_id], references: [id], onDelete: Cascade)
-
-  Company Company? @relation(fields: [company_id], references: [id], onDelete: Cascade)
+  Company     Company  @relation(fields: [company_id], references: [id], onDelete: Cascade)
+  supplier    Supplier @relation(fields: [supplier_id], references: [id], onDelete: Cascade)
 
   @@id([supplier_id, company_id])
 }
 
 model Supplier {
-  id             String   @id @default(uuid())
-  cnpj           String   @unique
-  phone          String
-  state          String
-  city           String
-  cep            String
-  address        String
-  neighborhood   String
-  address_number String
-  company_name   String
-  email_address  String   @default("")
-  createdAt      DateTime @default(now())
-
+  id               String             @id @default(uuid())
+  cnpj             String             @unique
+  phone            String
+  state            String
+  city             String
+  cep              String
+  address          String
+  neighborhood     String
+  address_number   String
+  company_name     String
+  email_address    String             @default("")
+  createdAt        DateTime           @default(now())
   supplierUser     SupplierUser[]
   estimateSupplier EstimateSupplier[]
 
@@ -104,7 +92,7 @@ model Supplier {
 }
 
 model Client {
-  id             String   @id @default(uuid())
+  id             String     @id @default(uuid())
   type           String
   cpf            String?
   cnpj           String?
@@ -118,13 +106,11 @@ model Client {
   neighborhood   String
   city           String
   state          String
-  createdAt      DateTime @default(now())
+  createdAt      DateTime   @default(now())
   company_id     String
-
-  invoice  Invoice[]
-  estimate Estimate[]
-
-  company Company? @relation(fields: [company_id], references: [id], onDelete: Cascade)
+  company        Company    @relation(fields: [company_id], references: [id], onDelete: Cascade)
+  estimate       Estimate[]
+  invoice        Invoice[]
 
   @@map("clients")
 }
@@ -137,11 +123,10 @@ model PaymentMode {
 }
 
 model PaymentModeCustom {
-  id   String @id @default(uuid())
-  name String
-
-  company    Company? @relation(fields: [company_id], references: [id], onDelete: Cascade)
+  id         String   @id @default(uuid())
+  name       String
   company_id String?  @map("company_id")
+  company    Company? @relation(fields: [company_id], references: [id], onDelete: Cascade)
 
   @@map("payments_mode_custom")
 }
@@ -154,123 +139,110 @@ model UnitType {
 }
 
 model UnitTypeCustom {
-  id   String @id @default(uuid())
-  name String
-
-  company    Company? @relation(fields: [company_id], references: [id], onDelete: Cascade)
+  id         String   @id @default(uuid())
+  name       String
   company_id String?  @map("company_id")
+  company    Company? @relation(fields: [company_id], references: [id], onDelete: Cascade)
 
   @@map("unit_types_custom")
 }
 
 model Item {
-  id          String  @id @default(uuid())
+  id          String   @id @default(uuid())
   name        String
   price       Decimal
   description String
   unit        String
-
-  company    Company? @relation(fields: [company_id], references: [id], onDelete: Cascade)
-  company_id String?  @map("company_id")
+  company_id  String?  @map("company_id")
+  company     Company? @relation(fields: [company_id], references: [id], onDelete: Cascade)
 
   @@map("items")
 }
 
 model Estimate {
-  id              String   @id @default(uuid())
+  id              String          @id @default(uuid())
   estimate_number String?
   status          String?
   notes           String?
   sub_total       Decimal?
   total           Decimal?
-  createdAt       DateTime @default(now())
-
-  EstimateItems EstimateItems[]
-
-  company    Company? @relation(fields: [company_id], references: [id], onDelete: Cascade)
-  company_id String?  @map("company_id")
-
-  client    Client? @relation(fields: [client_id], references: [id], onDelete: Cascade)
-  client_id String? @map("client_id")
+  createdAt       DateTime        @default(now())
+  company_id      String?         @map("company_id")
+  client_id       String?         @map("client_id")
+  EstimateItems   EstimateItems[]
+  client          Client?         @relation(fields: [client_id], references: [id], onDelete: Cascade)
+  company         Company?        @relation(fields: [company_id], references: [id], onDelete: Cascade)
 
   @@map("estimates")
 }
 
 model EstimateItems {
-  id        String   @id @default(uuid())
-  name      String
-  price     Decimal
-  quantity  Decimal
-  unit      String
-  total     Decimal
-  createdAt DateTime @default(now())
-
-  estimate    Estimate @relation(fields: [estimate_id], references: [id])
+  id          String   @id @default(uuid())
+  name        String
+  price       Decimal
+  quantity    Decimal
+  unit        String
+  total       Decimal
+  createdAt   DateTime @default(now())
   estimate_id String
+  estimate    Estimate @relation(fields: [estimate_id], references: [id])
 
   @@map("estimate_items")
 }
 
 model Invoice {
-  id             String   @id @default(uuid())
+  id             String         @id @default(uuid())
   invoice_number String?
   status         String?
   notes          String?
   sub_total      Decimal?
   total          Decimal?
-  createdAt      DateTime @default(now())
-
-  invoiceItems InvoiceItems[]
-
-  company    Company? @relation(fields: [company_id], references: [id], onDelete: Cascade)
-  company_id String?  @map("company_id")
-
-  client    Client? @relation(fields: [client_id], references: [id], onDelete: Cascade)
-  client_id String? @map("client_id")
+  createdAt      DateTime       @default(now())
+  company_id     String?        @map("company_id")
+  client_id      String?        @map("client_id")
+  invoiceItems   InvoiceItems[]
+  client         Client?        @relation(fields: [client_id], references: [id], onDelete: Cascade)
+  company        Company?       @relation(fields: [company_id], references: [id], onDelete: Cascade)
 
   @@map("invoices")
 }
 
 model InvoiceItems {
-  id        String   @id @default(uuid())
-  name      String
-  price     Decimal
-  quantity  Decimal
-  unit      String
-  total     Decimal
-  createdAt DateTime @default(now())
-
-  invoice    Invoice @relation(fields: [invoice_id], references: [id], onDelete: Cascade)
-  invoice_id String  @map("invoice_id")
+  id         String   @id @default(uuid())
+  name       String
+  price      Decimal
+  quantity   Decimal
+  unit       String
+  total      Decimal
+  createdAt  DateTime @default(now())
+  invoice_id String   @map("invoice_id")
+  invoice    Invoice  @relation(fields: [invoice_id], references: [id], onDelete: Cascade)
 
   @@map("invoice_items")
 }
 
 model EstimateSupplier {
-  id                       String   @id @default(uuid())
-  estimate_supplier_number String
+  id                       String                  @id @default(uuid())
   status                   String
   notes                    String?
-  createdAt                DateTime @default(now())
-
-  supplier    Supplier? @relation(fields: [supplier_id], references: [id], onDelete: Cascade)
-  supplier_id String?
-
-  company               Company?                @relation(fields: [company_id], references: [id], onDelete: Cascade)
-  company_id            String?                 @map("company_id")
-  EstimateSupplierItems EstimateSupplierItems[]
+  createdAt                DateTime                @default(now())
+  supplier_id              String?
+  company_id               String?                 @map("company_id")
+  estimate_supplier_number String
+  EstimateSupplierItems    EstimateSupplierItems[]
+  company                  Company?                @relation(fields: [company_id], references: [id], onDelete: Cascade)
+  supplier                 Supplier?               @relation(fields: [supplier_id], references: [id], onDelete: Cascade)
 
   @@map("estimatesSupplier")
 }
 
 model EstimateSupplierItems {
-  id        String   @id @default(uuid())
-  name      String
-  quantity  Decimal
-  createdAt DateTime @default(now())
-
-  estimateSupplier     EstimateSupplier @relation(fields: [estimate_supplier_id], references: [id], onDelete: Cascade)
+  id                   String           @id @default(uuid())
+  name                 String
+  quantity             Decimal
+  createdAt            DateTime         @default(now())
   estimate_supplier_id String           @map("estimate_supplier_id")
+  estimateSupplier     EstimateSupplier @relation(fields: [estimate_supplier_id], references: [id], onDelete: Cascade)
 
   @@map("estimate_supplier_items")
 }
@@ -280,21 +252,19 @@ model AuthLinks {
   code      String   @unique
   createdAt DateTime @default(now())
   expiresAt DateTime
-
-  user    User   @relation(fields: [user_id], references: [id])
-  user_id String
+  user_id   String
+  user      User     @relation(fields: [user_id], references: [id])
 
   @@map("auth_links")
 }
 
 model InviteLinks {
-  id        String   @id @default(uuid())
-  code      String   @unique
-  createdAt DateTime @default(now())
-  expiresAt DateTime
-
-  company    Company @relation(fields: [company_id], references: [id])
+  id         String   @id @default(uuid())
+  code       String   @unique
+  createdAt  DateTime @default(now())
+  expiresAt  DateTime
   company_id String
+  company    Company  @relation(fields: [company_id], references: [id])
 
   @@map("invite_links")
 }
