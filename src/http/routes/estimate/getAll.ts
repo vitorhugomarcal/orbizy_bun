@@ -55,13 +55,13 @@ export const getAllEstimates = new Elysia().get(
           estimates: t.Array(
             t.Object({
               id: t.String(),
-              estimate_number: t.String(),
-              status: t.String(),
-              notes: t.String(),
-              sub_total: t.Number(),
-              total: t.Number(),
-              client_id: t.String(),
-              createdAt: t.String(),
+              estimate_number: t.Nullable(t.String()),
+              status: t.Nullable(t.String()),
+              notes: t.Nullable(t.String()),
+              sub_total: t.Nullable(t.Number()),
+              total: t.Nullable(t.Number()),
+              client_id: t.Nullable(t.String()),
+              createdAt: t.Nullable(t.String()),
               client: t.Object({
                 id: t.String(),
                 name: t.String(),
