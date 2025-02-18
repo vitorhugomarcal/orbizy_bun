@@ -28,7 +28,6 @@ export const getCompany = new Elysia().get(
             supplier: true,
           },
         },
-        // item: true,
         // paymentModeCustom: true,
         // unitTypeCustom: true,
         estimate: {
@@ -37,6 +36,7 @@ export const getCompany = new Elysia().get(
             client: true,
           },
         },
+        item: true,
         pendingUsers: true,
         user: true,
       },
@@ -53,6 +53,12 @@ export const getCompany = new Elysia().get(
           ...estimate,
           sub_total: Number(estimate.sub_total),
           total: Number(estimate.total),
+        }
+      }),
+      item: company.item.map((item) => {
+        return {
+          ...item,
+          price: Number(item.price),
         }
       }),
     }
@@ -153,6 +159,14 @@ export const getCompany = new Elysia().get(
                   state: t.String(),
                   neighborhood: t.String(),
                 }),
+              })
+            ),
+            item: t.Array(
+              t.Object({
+                name: t.String(),
+                price: t.Number(),
+                description: t.Nullable(t.String()),
+                unit: t.String(),
               })
             ),
           }),

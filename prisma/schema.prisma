@@ -151,7 +151,7 @@ model Item {
   id          String   @id @default(uuid())
   name        String
   price       Decimal
-  description String
+  description String?
   unit        String
   company_id  String?  @map("company_id")
   company     Company? @relation(fields: [company_id], references: [id], onDelete: Cascade)
