@@ -31,7 +31,12 @@ export const getCompany = new Elysia().get(
         // item: true,
         // paymentModeCustom: true,
         // unitTypeCustom: true,
-        // estimate: true,
+        estimate: {
+          include: {
+            EstimateItems: true,
+            client: true,
+          },
+        },
         pendingUsers: true,
         user: true,
       },
@@ -41,9 +46,20 @@ export const getCompany = new Elysia().get(
       throw new AuthError("Company not found", "COMPANY_NOT_FOUND", 400)
     }
 
+    const formattedCompany = {
+      ...company,
+      estimate: company.estimate.map((estimate) => {
+        return {
+          ...estimate,
+          sub_total: Number(estimate.sub_total),
+          total: Number(estimate.total),
+        }
+      }),
+    }
+
     return {
       message: "Company found",
-      company,
+      company: formattedCompany,
     }
   },
   {
@@ -112,6 +128,31 @@ export const getCompany = new Elysia().get(
                 role: t.String(),
                 type: t.String(),
                 company_id: t.Nullable(t.String()),
+              })
+            ),
+            estimate: t.Array(
+              t.Object({
+                id: t.String(),
+                estimate_number: t.Nullable(t.String()),
+                status: t.Nullable(t.String()),
+                notes: t.Nullable(t.String()),
+                sub_total: t.Nullable(t.Number()),
+                total: t.Nullable(t.Number()),
+                client: t.Object({
+                  id: t.String(),
+                  type: t.String(),
+                  name: t.String(),
+                  company_name: t.Nullable(t.String()),
+                  cpf: t.Nullable(t.String()),
+                  cnpj: t.Nullable(t.String()),
+                  phone: t.String(),
+                  address: t.String(),
+                  address_number: t.String(),
+                  cep: t.String(),
+                  city: t.String(),
+                  state: t.String(),
+                  neighborhood: t.String(),
+                }),
               })
             ),
           }),
