@@ -10,11 +10,6 @@ export const createEstimate = new Elysia().post(
     if (!user) {
       throw new AuthError("Unauthorized", "UNAUTHORIZED", 401)
     }
-    const hasCompany = user.Company
-
-    if (!hasCompany) {
-      throw new AuthError("Company not found", "COMPANY_NOT_FOUND", 404)
-    }
 
     const { clientId } = params
 
@@ -36,7 +31,7 @@ export const createEstimate = new Elysia().post(
 
     const estimate = await db.estimate.create({
       data: {
-        company_id: hasCompany.id,
+        // company_id: user.company_id,
         client_id: checkClientExists.id,
       },
     })
