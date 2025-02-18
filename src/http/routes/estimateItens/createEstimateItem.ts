@@ -55,7 +55,7 @@ export const createEstimateItem = new Elysia().post(
   {
     body: t.Object({
       name: t.String(),
-      description: t.String(),
+      description: t.Nullable(t.String()),
       quantity: t.Number(),
       price: t.Number(),
       unit: t.String(),
