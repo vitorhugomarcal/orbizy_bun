@@ -31,7 +31,7 @@ export const createEstimate = new Elysia().post(
 
     const estimate = await db.estimate.create({
       data: {
-        // company_id: user.company_id,
+        company_id: user.company_id,
         client_id: checkClientExists.id,
       },
     })
