@@ -121,6 +121,7 @@ export const getCompany = new Elysia().get(
             ),
             pendingUsers: t.Array(
               t.Object({
+                id: t.String(),
                 email: t.String(),
                 company_id: t.String(),
                 invited_by: t.String(),
