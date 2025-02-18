@@ -50,11 +50,11 @@ export const getEstimateById = new Elysia().get(
         {
           message: t.String(),
           estimate: t.Object({
-            estimate_number: t.String(),
-            status: t.String(),
-            notes: t.String(),
-            sub_total: t.Number(),
-            total: t.Number(),
+            estimate_number: t.Nullable(t.String()),
+            status: t.Nullable(t.String()),
+            notes: t.Nullable(t.String()),
+            sub_total: t.Nullable(t.Number()),
+            total: t.Nullable(t.Number()),
             client_id: t.String(),
             client: t.Object({
               type: t.String(),
