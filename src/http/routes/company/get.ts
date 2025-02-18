@@ -163,6 +163,7 @@ export const getCompany = new Elysia().get(
             ),
             item: t.Array(
               t.Object({
+                id: t.String(),
                 name: t.String(),
                 price: t.Number(),
                 description: t.Nullable(t.String()),

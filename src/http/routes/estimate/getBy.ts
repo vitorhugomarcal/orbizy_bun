@@ -73,6 +73,7 @@ export const getEstimateById = new Elysia().get(
             }),
             EstimateItems: t.Array(
               t.Object({
+                id: t.String(),
                 name: t.String(),
                 description: t.Nullable(t.String()),
                 price: t.Number(),
