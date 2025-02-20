@@ -36,6 +36,8 @@ export const getEstimateById = new Elysia().get(
       sub_total: Number(estimate.sub_total),
       total: Number(estimate.total),
     }
+
+    console.log("estimate", JSON.stringify(formattedEstimate, null, 2))
     return {
       message: "Orçamento encontrado",
       estimate: formattedEstimate,
