@@ -34,11 +34,20 @@ export const getBy = new Elysia().get(
       throw new AuthError("Cliente não encontrado", "CLIENT_NOT_FOUND", 404)
     }
 
+    const formattedClients = {
+      ...client,
+      estimate: client.estimate.map((est) => ({
+        ...est,
+        total: Number(est.total),
+        sub_total: Number(est.sub_total),
+      })),
+    }
+
     console.log("client", JSON.stringify(client, null, 2))
 
     return {
       message: "Cliente encontrado",
-      client,
+      client: formattedClients,
     }
   },
 
