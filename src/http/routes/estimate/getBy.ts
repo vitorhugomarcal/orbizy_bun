@@ -22,7 +22,7 @@ export const getEstimateById = new Elysia().get(
         id: estimateId,
       },
       include: {
-        EstimateItems: true,
+        // EstimateItems: true,
         client: true,
       },
     })
@@ -35,14 +35,14 @@ export const getEstimateById = new Elysia().get(
       ...estimate,
       sub_total: Number(estimate.sub_total),
       total: Number(estimate.total),
-      EstimateItems: estimate.EstimateItems.map((item) => {
-        return {
-          ...item,
-          price: Number(item.price),
-          quantity: Number(item.quantity),
-          total: Number(item.total),
-        }
-      }),
+      // EstimateItems: estimate.EstimateItems.map((item) => {
+      //   return {
+      //     ...item,
+      //     price: Number(item.price),
+      //     quantity: Number(item.quantity),
+      //     total: Number(item.total),
+      //   }
+      // }),
     }
 
     console.log("estimate", JSON.stringify(formattedEstimate, null, 2))
@@ -83,17 +83,17 @@ export const getEstimateById = new Elysia().get(
               state: t.String(),
               city: t.String(),
             }),
-            EstimateItems: t.Array(
-              t.Object({
-                id: t.String(),
-                name: t.String(),
-                description: t.Nullable(t.String()),
-                price: t.Number(),
-                quantity: t.Number(),
-                unit: t.String(),
-                total: t.Number(),
-              })
-            ),
+            // EstimateItems: t.Array(
+            //   t.Object({
+            //     id: t.String(),
+            //     name: t.String(),
+            //     description: t.Nullable(t.String()),
+            //     price: t.Number(),
+            //     quantity: t.Number(),
+            //     unit: t.String(),
+            //     total: t.Number(),
+            //   })
+            // ),
           }),
         },
         {
