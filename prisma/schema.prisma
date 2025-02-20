@@ -185,7 +185,7 @@ model EstimateItems {
   total       Decimal
   createdAt   DateTime @default(now())
   estimate_id String
-  estimate    Estimate @relation(fields: [estimate_id], references: [id])
+  estimate    Estimate @relation(fields: [estimate_id], references: [id], onDelete: Cascade)
 
   @@map("estimate_items")
 }
