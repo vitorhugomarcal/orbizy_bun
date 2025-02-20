@@ -145,7 +145,7 @@ export const getCompany = new Elysia().get(
                 notes: t.Nullable(t.String()),
                 sub_total: t.Nullable(t.Number()),
                 total: t.Nullable(t.Number()),
-                created_at: t.String(),
+                createdAt: t.String(),
                 client: t.Object({
                   id: t.String(),
                   type: t.String(),
