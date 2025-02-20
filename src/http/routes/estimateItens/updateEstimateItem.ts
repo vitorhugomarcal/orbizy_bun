@@ -39,10 +39,9 @@ export const updateEstimateItem = new Elysia().put(
 
     const item = await db.estimateItems.update({
       where: {
-        id: itemInvoiceId,
+        id: checkItemExists.id,
       },
       data: {
-        estimate_id: itemInvoiceId,
         name,
         quantity,
         price,
