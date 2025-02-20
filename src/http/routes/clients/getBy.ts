@@ -68,10 +68,12 @@ export const getBy = new Elysia().get(
             estimate: t.Array(
               t.Object({
                 id: t.String(),
+                estimate_number: t.Nullable(t.String()),
                 status: t.Nullable(t.String()),
-                total: t.Nullable(t.Number()),
+                notes: t.Nullable(t.String()),
                 sub_total: t.Nullable(t.Number()),
-                createdAt: t.String(),
+                total: t.Nullable(t.Number()),
+                createdAt: t.Date(),
               })
             ),
           }),
