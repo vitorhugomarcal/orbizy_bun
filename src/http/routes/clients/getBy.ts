@@ -34,6 +34,8 @@ export const getBy = new Elysia().get(
       throw new AuthError("Cliente não encontrado", "CLIENT_NOT_FOUND", 404)
     }
 
+    console.log("client", JSON.stringify(client, null, 2))
+
     return {
       message: "Cliente encontrado",
       client,

@@ -35,6 +35,14 @@ export const getEstimateById = new Elysia().get(
       ...estimate,
       sub_total: Number(estimate.sub_total),
       total: Number(estimate.total),
+      EstimateItems: estimate.EstimateItems.map((item) => {
+        return {
+          ...item,
+          price: Number(item.price),
+          quantity: Number(item.quantity),
+          total: Number(item.total),
+        }
+      }),
     }
 
     console.log("estimate", JSON.stringify(formattedEstimate, null, 2))
