@@ -80,6 +80,8 @@ export const getCompany = new Elysia().get(
       }),
     }
 
+    console.log(formattedCompany)
+
     return {
       message: "Company found",
       company: formattedCompany,
@@ -157,7 +159,7 @@ export const getCompany = new Elysia().get(
             estimateSupplier: t.Array(
               t.Object({
                 id: t.String(),
-                estimate_number: t.Nullable(t.String()),
+                estimate_supplier_number: t.Nullable(t.String()),
                 status: t.Nullable(t.String()),
                 notes: t.Nullable(t.String()),
                 createdAt: t.Date(),
