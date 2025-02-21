@@ -59,9 +59,14 @@ export const getSupplierEstimateById = new Elysia().get(
         {
           message: t.String(),
           estimate: t.Object({
-            estimate_number: t.Nullable(t.String()),
+            id: t.String(),
             status: t.Nullable(t.String()),
             notes: t.Nullable(t.String()),
+            createdAt: t.Date(),
+            supplier_id: t.Nullable(t.String()),
+            company_id: t.Nullable(t.String()),
+            estimate_supplier_number: t.Nullable(t.String()),
+
             supplier: t.Object({
               cnpj: t.String(),
               phone: t.String(),
