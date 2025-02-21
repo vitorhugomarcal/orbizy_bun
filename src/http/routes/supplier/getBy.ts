@@ -70,6 +70,13 @@ export const getSupplierById = new Elysia().get(
                 company_id: t.Nullable(t.String()),
                 estimate_supplier_number: t.Nullable(t.String()),
                 createdAt: t.Date(),
+                EstimateSupplierItems: t.Array(
+                  t.Object({
+                    id: t.String(),
+                    name: t.String(),
+                    quantity: t.Number(),
+                  })
+                ),
               })
             ),
           }),
