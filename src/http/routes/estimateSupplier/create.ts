@@ -5,9 +5,7 @@ import { AuthError } from "../errors/auth-error"
 
 export const createSupplierEstimate = new Elysia().post(
   `/supplier/estimate/create/:supplierId`,
-  async ({ cookie, body, params }) => {
-    const { estimate_supplier_number, status, notes } = body
-
+  async ({ cookie, params }) => {
     const user = await auth({ cookie })
     if (!user) {
       throw new AuthError("Unauthorized", "UNAUTHORIZED", 401)
@@ -38,10 +36,7 @@ export const createSupplierEstimate = new Elysia().post(
     const estimate = await db.estimateSupplier.create({
       data: {
         company_id: hasCompany.id,
-        supplier_id: supplierId,
-        estimate_supplier_number,
-        status,
-        notes,
+        supplier_id: checkSupplierExists.id,
       },
     })
 
@@ -51,13 +46,6 @@ export const createSupplierEstimate = new Elysia().post(
     }
   },
   {
-    body: t.Object({
-      estimate_supplier_number: t.String(),
-      company_id: t.String(),
-      supplier_id: t.String(),
-      status: t.String(),
-      notes: t.String(),
-    }),
     params: t.Object({
       supplierId: t.String(),
     }),
@@ -67,12 +55,6 @@ export const createSupplierEstimate = new Elysia().post(
           message: t.String(),
           estimate: t.Object({
             id: t.String(),
-            company_id: t.String(),
-            supplier_id: t.String(),
-            estimate_supplier_number: t.String(),
-            status: t.String(),
-            notes: t.String(),
-            createdAt: t.String(),
           }),
         },
         {

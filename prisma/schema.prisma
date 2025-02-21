@@ -223,12 +223,12 @@ model InvoiceItems {
 
 model EstimateSupplier {
   id                       String                  @id @default(uuid())
-  status                   String
+  status                   String?
   notes                    String?
   createdAt                DateTime                @default(now())
   supplier_id              String?
   company_id               String?                 @map("company_id")
-  estimate_supplier_number String
+  estimate_supplier_number String?
   EstimateSupplierItems    EstimateSupplierItems[]
   company                  Company?                @relation(fields: [company_id], references: [id], onDelete: Cascade)
   supplier                 Supplier?               @relation(fields: [supplier_id], references: [id], onDelete: Cascade)

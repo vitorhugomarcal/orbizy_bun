@@ -23,8 +23,6 @@ export const createEstimate = new Elysia().post(
       },
     })
 
-    console.log("checkClient", checkClientExists)
-
     if (!checkClientExists) {
       throw new AuthError("Client not found", "CLIENT_NOT_FOUND", 404)
     }
@@ -35,8 +33,6 @@ export const createEstimate = new Elysia().post(
         client_id: checkClientExists.id,
       },
     })
-
-    console.log("estimate", estimate)
 
     return {
       message: "Orçamento cadastrado com sucesso",
