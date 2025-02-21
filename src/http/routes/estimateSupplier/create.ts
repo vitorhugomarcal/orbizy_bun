@@ -11,12 +11,6 @@ export const createSupplierEstimate = new Elysia().post(
       throw new AuthError("Unauthorized", "UNAUTHORIZED", 401)
     }
 
-    const hasCompany = user.Company
-
-    if (!hasCompany) {
-      throw new AuthError("Company not found", "COMPANY_NOT_FOUND", 404)
-    }
-
     const { supplierId } = params
 
     if (!supplierId) {
@@ -35,14 +29,14 @@ export const createSupplierEstimate = new Elysia().post(
 
     const estimate = await db.estimateSupplier.create({
       data: {
-        company_id: hasCompany.id,
+        company_id: user.company_id,
         supplier_id: checkSupplierExists.id,
       },
     })
 
     return {
       message: "Orçamento cadastrado com sucesso",
-      estimate: estimate,
+      estimate,
     }
   },
   {
