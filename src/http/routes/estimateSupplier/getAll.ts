@@ -38,9 +38,19 @@ export const getAllSupplierEstimates = new Elysia().get(
     const formattedEstimates = estimates.map((estimate) => {
       return {
         ...estimate,
-        createdAt: String(estimate.createdAt),
+        formattedEstimateSupplierItems: estimate.EstimateSupplierItems.map(
+          (item) => {
+            return {
+              ...item,
+              quantity: Number(item.quantity),
+            }
+          }
+        ),
       }
     })
+
+    console.log(formattedEstimates)
+
     return {
       message: "Orçamentos encontrados",
       estimates: formattedEstimates,
