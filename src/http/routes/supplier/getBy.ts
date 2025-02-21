@@ -27,6 +27,9 @@ export const getSupplierById = new Elysia().get(
       where: {
         id: supplierId,
       },
+      include: {
+        estimateSupplier: true,
+      },
     })
 
     if (!supplier) {
@@ -58,6 +61,17 @@ export const getSupplierById = new Elysia().get(
             email_address: t.String(),
             address: t.String(),
             neighborhood: t.String(),
+            estimateSupplier: t.Array(
+              t.Object({
+                id: t.String(),
+                status: t.String(),
+                notes: t.Nullable(t.String()),
+                supplier_id: t.Nullable(t.String()),
+                company_id: t.Nullable(t.String()),
+                estimate_supplier_number: t.String(),
+                createdAt: t.Date(),
+              })
+            ),
           }),
         },
         {
