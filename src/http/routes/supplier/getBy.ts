@@ -28,7 +28,11 @@ export const getSupplierById = new Elysia().get(
         id: supplierId,
       },
       include: {
-        estimateSupplier: true,
+        estimateSupplier: {
+          include: {
+            EstimateSupplierItems: true,
+          },
+        },
       },
     })
 
