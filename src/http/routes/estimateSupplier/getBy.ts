@@ -33,7 +33,18 @@ export const getSupplierEstimateById = new Elysia().get(
 
     const formattedEstimate = {
       ...estimate,
+      formattedEstimateSupplierItems: estimate.EstimateSupplierItems.map(
+        (item) => {
+          return {
+            ...item,
+            quantity: Number(item.quantity),
+          }
+        }
+      ),
     }
+
+    console.log(formattedEstimate)
+
     return {
       message: "Orçamento encontrado",
       estimate: formattedEstimate,
