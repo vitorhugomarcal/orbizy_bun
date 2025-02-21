@@ -5,6 +5,7 @@ import companyRoutes from "./company"
 import estimateRoutes from "./estimate"
 import estimateItensRoutes from "./estimateItens"
 import estimateSupplierRoutes from "./estimateSupplier"
+import estimateSupplierItensRoutes from "./estimateSupplierItens"
 import inviteRoutes from "./inviteClient"
 import itemRoutes from "./itens"
 import supplierRoutes from "./supplier"
@@ -23,5 +24,6 @@ const routes = new Elysia()
   .use(supplierRoutes)
   .use(estimateItensRoutes)
   .use(estimateSupplierRoutes)
+  .use(estimateSupplierItensRoutes)
 
 export default routes
