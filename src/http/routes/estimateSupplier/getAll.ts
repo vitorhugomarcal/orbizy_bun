@@ -64,11 +64,11 @@ export const getAllSupplierEstimates = new Elysia().get(
           estimates: t.Array(
             t.Object({
               id: t.String(),
-              estimate_supplier_number: t.String(),
-              status: t.String(),
-              notes: t.String(),
-              supplier_id: t.String(),
-              company_id: t.String(),
+              estimate_supplier_number: t.Nullable(t.String()),
+              status: t.Nullable(t.String()),
+              notes: t.Nullable(t.String()),
+              supplier_id: t.Nullable(t.String()),
+              company_id: t.Nullable(t.String()),
               createdAt: t.String(),
               supplier: t.Object({
                 company_name: t.String(),
