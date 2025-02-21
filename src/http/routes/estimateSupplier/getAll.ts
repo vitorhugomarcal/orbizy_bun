@@ -69,7 +69,7 @@ export const getAllSupplierEstimates = new Elysia().get(
               notes: t.Nullable(t.String()),
               supplier_id: t.Nullable(t.String()),
               company_id: t.Nullable(t.String()),
-              createdAt: t.String(),
+              createdAt: t.Date(),
               supplier: t.Object({
                 company_name: t.String(),
                 email_address: t.String(),
