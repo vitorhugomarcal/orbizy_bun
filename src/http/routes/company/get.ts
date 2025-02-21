@@ -25,7 +25,16 @@ export const getCompany = new Elysia().get(
         client: true,
         supplierUser: {
           include: {
-            supplier: true,
+            supplier: {
+              include: {
+                estimateSupplier: {
+                  include: {
+                    supplier: true,
+                    EstimateSupplierItems: true,
+                  },
+                },
+              },
+            },
           },
         },
         // paymentModeCustom: true,
@@ -34,12 +43,6 @@ export const getCompany = new Elysia().get(
           include: {
             EstimateItems: true,
             client: true,
-          },
-        },
-        estimateSupplier: {
-          include: {
-            supplier: true,
-            EstimateSupplierItems: true,
           },
         },
         item: true,
@@ -54,15 +57,27 @@ export const getCompany = new Elysia().get(
 
     const formattedCompany = {
       ...company,
-      estimateSupplier: company.estimateSupplier.map((estimate) => {
+      supplierUser: company.supplierUser.map((supplier) => {
         return {
-          ...estimate,
-          EstimateSupplierItems: estimate.EstimateSupplierItems.map((item) => {
-            return {
-              ...item,
-              quantity: Number(item.quantity),
-            }
-          }),
+          ...supplier,
+          supplier: {
+            ...supplier.supplier,
+            estimateSupplier: supplier.supplier.estimateSupplier.map(
+              (estimate) => {
+                return {
+                  ...estimate,
+                  EstimateSupplierItems: estimate.EstimateSupplierItems.map(
+                    (item) => {
+                      return {
+                        ...item,
+                        quantity: Number(item.quantity),
+                      }
+                    }
+                  ),
+                }
+              }
+            ),
+          },
         }
       }),
       estimate: company.estimate.map((estimate) => {
@@ -118,6 +133,34 @@ export const getCompany = new Elysia().get(
                   city: t.String(),
                   state: t.String(),
                   email_address: t.String(),
+                  estimateSupplier: t.Array(
+                    t.Object({
+                      id: t.String(),
+                      estimate_supplier_number: t.Nullable(t.String()),
+                      status: t.Nullable(t.String()),
+                      notes: t.Nullable(t.String()),
+                      createdAt: t.Date(),
+                      supplier: t.Object({
+                        id: t.String(),
+                        company_name: t.String(),
+                        cnpj: t.String(),
+                        phone: t.String(),
+                        address: t.String(),
+                        address_number: t.String(),
+                        cep: t.String(),
+                        city: t.String(),
+                        state: t.String(),
+                        neighborhood: t.String(),
+                      }),
+                      EstimateSupplierItems: t.Array(
+                        t.Object({
+                          id: t.String(),
+                          name: t.String(),
+                          quantity: t.Number(),
+                        })
+                      ),
+                    })
+                  ),
                 }),
               })
             ),
@@ -156,34 +199,7 @@ export const getCompany = new Elysia().get(
                 company_id: t.Nullable(t.String()),
               })
             ),
-            estimateSupplier: t.Array(
-              t.Object({
-                id: t.String(),
-                estimate_supplier_number: t.Nullable(t.String()),
-                status: t.Nullable(t.String()),
-                notes: t.Nullable(t.String()),
-                createdAt: t.Date(),
-                supplier: t.Object({
-                  id: t.String(),
-                  company_name: t.Nullable(t.String()),
-                  cnpj: t.Nullable(t.String()),
-                  phone: t.String(),
-                  address: t.String(),
-                  address_number: t.String(),
-                  cep: t.String(),
-                  city: t.String(),
-                  state: t.String(),
-                  neighborhood: t.String(),
-                }),
-                EstimateSupplierItems: t.Array(
-                  t.Object({
-                    id: t.String(),
-                    name: t.String(),
-                    quantity: t.Number(),
-                  })
-                ),
-              })
-            ),
+
             estimate: t.Array(
               t.Object({
                 id: t.String(),
