@@ -48,6 +48,7 @@ export const getCompany = new Elysia().get(
         item: true,
         pendingUsers: true,
         user: true,
+        unitTypeCustom: true,
       },
     })
 
@@ -199,7 +200,6 @@ export const getCompany = new Elysia().get(
                 company_id: t.Nullable(t.String()),
               })
             ),
-
             estimate: t.Array(
               t.Object({
                 id: t.String(),
@@ -233,6 +233,13 @@ export const getCompany = new Elysia().get(
                 price: t.Number(),
                 description: t.Nullable(t.String()),
                 unit: t.String(),
+              })
+            ),
+            unitTypeCustom: t.Array(
+              t.Object({
+                id: t.String(),
+                name: t.String(),
+                company_id: t.Nullable(t.String()),
               })
             ),
           }),
