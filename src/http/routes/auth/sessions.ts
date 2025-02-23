@@ -16,8 +16,6 @@ export const sessions = new Elysia().post(
       return null
     }
 
-    console.log(user)
-
     const token = createToken({
       sub: user.id,
       companyId: user.company_id || "",
