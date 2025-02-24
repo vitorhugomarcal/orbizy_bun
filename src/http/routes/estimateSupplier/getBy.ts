@@ -76,6 +76,7 @@ export const getSupplierEstimateById = new Elysia().get(
             }),
             EstimateSupplierItems: t.Array(
               t.Object({
+                id: t.String(),
                 name: t.String(),
                 quantity: t.Number(),
               })
