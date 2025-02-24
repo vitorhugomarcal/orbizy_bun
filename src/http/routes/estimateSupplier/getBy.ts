@@ -33,14 +33,12 @@ export const getSupplierEstimateById = new Elysia().get(
 
     const formattedEstimate = {
       ...estimate,
-      formattedEstimateSupplierItems: estimate.EstimateSupplierItems.map(
-        (item) => {
-          return {
-            ...item,
-            quantity: Number(item.quantity),
-          }
+      EstimateSupplierItems: estimate.EstimateSupplierItems.map((item) => {
+        return {
+          ...item,
+          quantity: Number(item.quantity),
         }
-      ),
+      }),
     }
 
     return {
@@ -61,10 +59,7 @@ export const getSupplierEstimateById = new Elysia().get(
             status: t.Nullable(t.String()),
             notes: t.Nullable(t.String()),
             createdAt: t.Date(),
-            supplier_id: t.Nullable(t.String()),
-            company_id: t.Nullable(t.String()),
             estimate_supplier_number: t.Nullable(t.String()),
-
             supplier: t.Object({
               cnpj: t.String(),
               phone: t.String(),
