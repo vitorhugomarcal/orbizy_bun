@@ -45,7 +45,6 @@ export const getEstimateById = new Elysia().get(
       }),
     }
 
-    console.log("estimate", JSON.stringify(formattedEstimate, null, 2))
     return {
       message: "Orçamento encontrado",
       estimate: formattedEstimate,

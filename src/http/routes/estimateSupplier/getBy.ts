@@ -41,8 +41,6 @@ export const getSupplierEstimateById = new Elysia().get(
       }),
     }
 
-    console.log(formattedEstimate)
-
     return {
       message: "Orçamento encontrado",
       estimate: formattedEstimate,

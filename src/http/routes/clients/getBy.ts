@@ -43,8 +43,6 @@ export const getBy = new Elysia().get(
       })),
     }
 
-    console.log("client", JSON.stringify(client, null, 2))
-
     return {
       message: "Cliente encontrado",
       client: formattedClients,
