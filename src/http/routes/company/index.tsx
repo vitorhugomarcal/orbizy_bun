@@ -5,6 +5,7 @@ import { getCompany } from "./get"
 import { getCompanyById } from "./getBy"
 import { inviteToCompany } from "./invite"
 import { removeCompany } from "./remove"
+import { removeInviteToCompany } from "./removeInvite"
 import { update } from "./update"
 
 const companyRoutes = new Elysia()
@@ -15,5 +16,6 @@ const companyRoutes = new Elysia()
   .use(update)
   .use(checkCompany)
   .use(inviteToCompany)
+  .use(removeInviteToCompany)
 
 export default companyRoutes
