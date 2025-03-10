@@ -61,6 +61,8 @@ export const getCompanyById = new Elysia().get(
       },
     })
 
+    console.log(company)
+
     if (!company) {
       throw new AuthError("Company not found", "COMPANY_NOT_FOUND", 400)
     }
