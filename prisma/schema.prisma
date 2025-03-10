@@ -47,6 +47,7 @@ model Company {
   pendingUsers      PendingUser[]
   unitTypeCustom    UnitTypeCustom[]
   user              User[]
+  schedule          Schedule[]
 
   @@map("companies")
 }
@@ -111,6 +112,7 @@ model Client {
   company        Company    @relation(fields: [company_id], references: [id], onDelete: Cascade)
   estimate       Estimate[]
   invoice        Invoice[]
+  Schedule       Schedule[]
 
   @@map("clients")
 }
@@ -256,6 +258,22 @@ model AuthLinks {
   user      User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
 
   @@map("auth_links")
+}
+
+model Schedule {
+  id   String   @id @default(uuid())
+  date DateTime
+
+  created_at DateTime @default(now())
+  updated_at DateTime @default(now())
+
+  company_id String
+  client_id  String
+
+  company Company @relation(fields: [company_id], references: [id], onDelete: Cascade)
+  client  Client  @relation(fields: [client_id], references: [id], onDelete: Cascade)
+
+  @@map("schedules")
 }
 
 model InviteLinks {

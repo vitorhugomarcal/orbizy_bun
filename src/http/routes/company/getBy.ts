@@ -53,6 +53,11 @@ export const getCompanyById = new Elysia().get(
         pendingUsers: true,
         user: true,
         unitTypeCustom: true,
+        schedule: {
+          include: {
+            client: true,
+          },
+        },
       },
     })
 
@@ -175,6 +180,7 @@ export const getCompanyById = new Elysia().get(
                 id: t.String(),
                 type: t.String(),
                 name: t.String(),
+                email_address: t.String(),
                 company_name: t.Nullable(t.String()),
                 cpf: t.Nullable(t.String()),
                 cnpj: t.Nullable(t.String()),
@@ -245,6 +251,19 @@ export const getCompanyById = new Elysia().get(
                 id: t.String(),
                 name: t.String(),
                 company_id: t.Nullable(t.String()),
+              })
+            ),
+            schedule: t.Array(
+              t.Object({
+                id: t.String(),
+                date: t.Date(),
+                client: t.Object({
+                  id: t.String(),
+                  name: t.String(),
+                  email_address: t.String(),
+                  company_name: t.Nullable(t.String()),
+                  phone: t.String(),
+                }),
               })
             ),
           }),
