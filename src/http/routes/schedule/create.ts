@@ -6,7 +6,7 @@ import { AuthError } from "../errors/auth-error"
 export const createSchedule = new Elysia().post(
   `/schedule/create/:clientId`,
   async ({ cookie, body, params }) => {
-    const { date } = body
+    const { date, deviceEventId } = body
     const { clientId } = params
 
     const user = await auth({ cookie })
@@ -39,6 +39,7 @@ export const createSchedule = new Elysia().post(
         client_id: client.id,
         company_id: hasCompany.id,
         date,
+        deviceEventId,
       },
     })
 
@@ -50,6 +51,7 @@ export const createSchedule = new Elysia().post(
   {
     body: t.Object({
       date: t.Date(),
+      deviceEventId: t.Nullable(t.String()),
     }),
     params: t.Object({
       clientId: t.String(),
@@ -61,6 +63,7 @@ export const createSchedule = new Elysia().post(
           schedule: t.Object({
             id: t.String(),
             date: t.Date(),
+            deviceEventId: t.Nullable(t.String()),
           }),
         },
         {

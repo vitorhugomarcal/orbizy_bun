@@ -261,8 +261,9 @@ model AuthLinks {
 }
 
 model Schedule {
-  id   String   @id @default(uuid())
-  date DateTime
+  id            String   @id @default(uuid())
+  date          DateTime
+  deviceEventId String?
 
   created_at DateTime @default(now())
   updated_at DateTime @default(now())

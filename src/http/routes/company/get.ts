@@ -252,6 +252,7 @@ export const getCompany = new Elysia().get(
               t.Object({
                 id: t.String(),
                 date: t.Date(),
+                deviceEventId: t.Nullable(t.String()),
                 client: t.Object({
                   id: t.String(),
                   name: t.String(),

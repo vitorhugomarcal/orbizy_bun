@@ -6,7 +6,7 @@ import { AuthError } from "../errors/auth-error"
 export const updateSchedule = new Elysia().put(
   `/schedule/update/:scheduleId`,
   async ({ cookie, body, params }) => {
-    const { date } = body
+    const { date, deviceEventId } = body
 
     const user = await auth({ cookie })
     if (!user) {
@@ -43,6 +43,7 @@ export const updateSchedule = new Elysia().put(
       },
       data: {
         date,
+        deviceEventId,
       },
     })
 
@@ -54,6 +55,7 @@ export const updateSchedule = new Elysia().put(
   {
     body: t.Object({
       date: t.Optional(t.Date()),
+      deviceEventId: t.Optional(t.String()),
     }),
     response: {
       201: t.Object(
@@ -62,6 +64,7 @@ export const updateSchedule = new Elysia().put(
           schedule: t.Object({
             id: t.String(),
             date: t.Date(),
+            deviceEventId: t.Nullable(t.String()),
           }),
         },
         {

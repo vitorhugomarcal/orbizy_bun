@@ -46,6 +46,7 @@ export const getById = new Elysia().get(
           schedule: t.Object({
             id: t.String(),
             date: t.Date(),
+            deviceEventId: t.Nullable(t.String()),
             client: t.Object({
               id: t.String(),
               name: t.String(),
