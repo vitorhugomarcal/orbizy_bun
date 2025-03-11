@@ -43,6 +43,8 @@ export const createSchedule = new Elysia().post(
       },
     })
 
+    console.log(schedule)
+
     return {
       message: "Agendamento cadastrado com sucesso",
       schedule,
@@ -51,7 +53,7 @@ export const createSchedule = new Elysia().post(
   {
     body: t.Object({
       date: t.Date(),
-      deviceEventId: t.Nullable(t.String()),
+      deviceEventId: t.String(),
     }),
     params: t.Object({
       clientId: t.String(),
