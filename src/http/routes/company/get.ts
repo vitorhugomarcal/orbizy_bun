@@ -45,6 +45,15 @@ export const getCompany = new Elysia().get(
             client: true,
           },
         },
+        invoice: {
+          include: {
+            estimate: {
+              include: {
+                client: true,
+              },
+            },
+          },
+        },
         item: true,
         pendingUsers: true,
         user: true,
@@ -93,6 +102,12 @@ export const getCompany = new Elysia().get(
           total: Number(estimate.total),
         }
       }),
+      invoice: company.invoice.map((invoice) => {
+        return {
+          ...invoice,
+          total: Number(invoice.total),
+        }
+      }),
       item: company.item.map((item) => {
         return {
           ...item,
@@ -100,6 +115,8 @@ export const getCompany = new Elysia().get(
         }
       }),
     }
+
+    console.log(formattedCompany)
 
     return {
       message: "Company found",
@@ -227,6 +244,41 @@ export const getCompany = new Elysia().get(
                   city: t.String(),
                   state: t.String(),
                   neighborhood: t.String(),
+                }),
+              })
+            ),
+            invoice: t.Array(
+              t.Object({
+                id: t.String(),
+                invoice_number: t.Nullable(t.String()),
+                payment_mode: t.Nullable(t.String()),
+                status: t.Nullable(t.String()),
+                notes: t.Nullable(t.String()),
+                total: t.Nullable(t.Number()),
+                createdAt: t.Date(),
+                estimate: t.Object({
+                  id: t.String(),
+                  estimate_number: t.Nullable(t.String()),
+                  status: t.Nullable(t.String()),
+                  notes: t.Nullable(t.String()),
+                  sub_total: t.Nullable(t.Number()),
+                  total: t.Nullable(t.Number()),
+                  createdAt: t.Date(),
+                  client: t.Object({
+                    id: t.String(),
+                    type: t.String(),
+                    name: t.String(),
+                    company_name: t.Nullable(t.String()),
+                    cpf: t.Nullable(t.String()),
+                    cnpj: t.Nullable(t.String()),
+                    phone: t.String(),
+                    address: t.String(),
+                    address_number: t.String(),
+                    cep: t.String(),
+                    city: t.String(),
+                    state: t.String(),
+                    neighborhood: t.String(),
+                  }),
                 }),
               })
             ),

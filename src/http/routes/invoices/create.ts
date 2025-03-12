@@ -58,8 +58,6 @@ export const createInvoice = new Elysia().post(
       },
     })
 
-    console.log(invoice)
-
     return {
       message: "Fatura cadastrada com sucesso",
       invoice,
