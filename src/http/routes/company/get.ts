@@ -102,6 +102,11 @@ export const getCompany = new Elysia().get(
         return {
           ...invoice,
           total: Number(invoice.total),
+          estimate: {
+            ...invoice.estimate,
+            sub_total: Number(invoice.estimate.sub_total),
+            total: Number(invoice.estimate.total),
+          },
         }
       }),
       item: company.item.map((item) => {
