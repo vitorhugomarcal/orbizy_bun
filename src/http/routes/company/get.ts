@@ -47,11 +47,7 @@ export const getCompany = new Elysia().get(
         },
         invoice: {
           include: {
-            estimate: {
-              include: {
-                client: true,
-              },
-            },
+            estimate: true,
           },
         },
         item: true,
