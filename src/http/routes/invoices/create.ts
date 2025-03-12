@@ -47,8 +47,6 @@ export const createInvoice = new Elysia().post(
         : checkEstimateExists.client?.name
     }`
 
-    console.log(countAllInvoices)
-
     const invoice = await db.invoice.create({
       data: {
         company_id: user.company_id,
@@ -59,6 +57,8 @@ export const createInvoice = new Elysia().post(
         invoice_number: invoiceNumber,
       },
     })
+
+    console.log(invoice)
 
     return {
       message: "Fatura cadastrada com sucesso",
