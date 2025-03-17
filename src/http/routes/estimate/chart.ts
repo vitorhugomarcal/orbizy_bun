@@ -64,7 +64,7 @@ export const estimateChart = new Elysia().get(
       where: {
         AND: [
           { company_id: hasCompany.id },
-          { status: "APPROVED" },
+          { status: "BILLED" },
           { createdAt: { gte: startDate, lte: endDate } },
         ],
       },
