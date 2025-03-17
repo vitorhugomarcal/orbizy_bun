@@ -1,4 +1,5 @@
 import { Elysia } from "elysia"
+import { invoiceChart } from "./chart"
 import { createInvoice } from "./create"
 import { getAllInvoices } from "./getAll"
 import { getInvoiceById } from "./getBy"
@@ -11,5 +12,6 @@ const invoiceRoutes = new Elysia()
   .use(removeInvoice)
   .use(getAllInvoices)
   .use(getInvoiceById)
+  .use(invoiceChart)
 
 export default invoiceRoutes
