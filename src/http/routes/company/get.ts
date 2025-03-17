@@ -47,6 +47,7 @@ export const getCompany = new Elysia().get(
         },
         invoice: {
           include: {
+            client: true,
             estimate: {
               include: {
                 client: true,
@@ -260,6 +261,21 @@ export const getCompany = new Elysia().get(
                 status: t.Nullable(t.String()),
                 notes: t.Nullable(t.String()),
                 total: t.Number(),
+                client: t.Object({
+                  id: t.String(),
+                  type: t.String(),
+                  name: t.String(),
+                  company_name: t.Nullable(t.String()),
+                  cpf: t.Nullable(t.String()),
+                  cnpj: t.Nullable(t.String()),
+                  phone: t.String(),
+                  address: t.String(),
+                  address_number: t.String(),
+                  cep: t.String(),
+                  city: t.String(),
+                  state: t.String(),
+                  neighborhood: t.String(),
+                }),
                 estimate: t.Object({
                   id: t.String(),
                   estimate_number: t.String(),
