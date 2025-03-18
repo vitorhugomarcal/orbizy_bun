@@ -17,6 +17,7 @@ export const update = new Elysia().put(
       address_number,
       company_name,
       owner_id,
+      stripeAccountId,
     } = body
 
     const user = await auth({ cookie })
@@ -54,6 +55,7 @@ export const update = new Elysia().put(
         neighborhood,
         address_number,
         company_name,
+        stripeAccountId,
       },
     })
 
@@ -74,6 +76,7 @@ export const update = new Elysia().put(
       address_number: t.Optional(t.String()),
       company_name: t.Optional(t.String()),
       owner_id: t.Optional(t.String()),
+      stripeAccountId: t.Optional(t.String()),
     }),
     response: {
       201: t.Object(
@@ -90,6 +93,7 @@ export const update = new Elysia().put(
             address_number: t.Optional(t.String()),
             company_name: t.Optional(t.String()),
             owner_id: t.Optional(t.String()),
+            stripeAccountId: t.Optional(t.String()),
           }),
         },
         {
