@@ -35,6 +35,8 @@ export const createInvoice = new Elysia().post(
       },
     })
 
+    console.log(invoice)
+
     if (!invoice || !hasCompany) {
       throw new AuthError("Fatura não encontrada", "INVOICE_NOT_FOUND", 404)
     }
@@ -57,23 +59,12 @@ export const createInvoice = new Elysia().post(
       }
     )
 
-    const invoiceItem = await stripe.invoiceItems.create(
-      {
-        customer: stripeCustomer.id,
-        amount: Number(invoice.total) * 100, // Stripe usa centavos
-        currency: "brl",
-        description: `Invoice ${invoice.invoice_number}`,
-      },
-      {
-        stripeAccount: hasCompany.stripeAccountId,
-      }
-    )
-
     const stripeInvoice = await stripe.invoices.create(
       {
         customer: stripeCustomer.id,
         collection_method: "send_invoice",
         days_until_due: 30, // Ajuste conforme necessário
+        auto_advance: false, // Impede que a invoice seja finalizada automaticamente
         metadata: {
           invoiceId: invoice.id,
         },
@@ -83,26 +74,45 @@ export const createInvoice = new Elysia().post(
       }
     )
 
-    await stripe.invoices.finalizeInvoice(stripeInvoice.id, {
-      stripeAccount: hasCompany.stripeAccountId,
-    })
+    await stripe.invoiceItems.create(
+      {
+        customer: stripeCustomer.id,
+        amount: Math.round(Number(invoice.total) * 100), // Stripe usa centavos, arredondamos para evitar problemas com decimais
+        currency: "brl",
+        description: `Invoice ${invoice.invoice_number}`,
+        invoice: stripeInvoice.id,
+      },
+      {
+        stripeAccount: hasCompany.stripeAccountId,
+      }
+    )
+
+    const finalizedInvoice = await stripe.invoices.finalizeInvoice(
+      stripeInvoice.id,
+      {
+        auto_advance: true, // Isso permite que a invoice seja enviada imediatamente
+      },
+      {
+        stripeAccount: hasCompany.stripeAccountId,
+      }
+    )
 
     await db.invoice.update({
       where: { id: invoiceId },
       data: {
-        stripeInvoiceId: stripeInvoice.id,
+        stripeInvoiceId: finalizedInvoice.id,
         status: "PENDING",
-        paymentUrl: stripeInvoice.hosted_invoice_url,
+        paymentUrl: finalizedInvoice.hosted_invoice_url,
       },
     })
 
     return {
       message: "Fatura cadastrada com sucesso",
       stripeInvoice: {
-        id: stripeInvoice.id,
-        amount: stripeInvoice.amount_due,
-        status: stripeInvoice.status,
-        paymentUrl: stripeInvoice.hosted_invoice_url,
+        id: finalizedInvoice.id,
+        amount: finalizedInvoice.amount_due,
+        status: finalizedInvoice.status,
+        paymentUrl: finalizedInvoice.hosted_invoice_url,
       },
     }
   },
