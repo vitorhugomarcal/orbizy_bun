@@ -42,7 +42,7 @@ export const getProfile = new Elysia().get(
               neighborhood: t.String(),
               address_number: t.String(),
               company_name: t.String(),
-              stripeAccountId: t.String(),
+              stripeAccountId: t.Nullable(t.String()),
               owner_id: t.String(),
             }),
           }),

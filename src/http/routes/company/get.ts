@@ -73,7 +73,6 @@ export const getCompany = new Elysia().get(
 
     const formattedCompany = {
       ...company,
-      stripeAccountId: company.stripeAccountId || "",
       supplierUser: company.supplierUser.map((supplier) => {
         return {
           ...supplier,
