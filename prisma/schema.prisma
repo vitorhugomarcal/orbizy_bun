@@ -35,6 +35,7 @@ model Company {
   address_number    String
   company_name      String
   owner_id          String
+  stripeAccountId   String?
   createdAt         DateTime            @default(now())
   supplierUser      SupplierUser[]
   client            Client[]

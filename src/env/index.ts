@@ -9,6 +9,7 @@ const envSchema = z.object({
   AUTH_REDIRECT_URL: z.string(),
   API_BASE_URL: z.string(),
   STRIPE_PUBLISHABLE_KEY: z.string(),
+  STRIPE_SECRET_KEY: z.string(),
 })
 
 const _env = envSchema.safeParse(process.env)

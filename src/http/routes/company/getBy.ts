@@ -61,8 +61,6 @@ export const getCompanyById = new Elysia().get(
       },
     })
 
-    console.log(company)
-
     if (!company) {
       throw new AuthError("Company not found", "COMPANY_NOT_FOUND", 400)
     }
@@ -122,6 +120,7 @@ export const getCompanyById = new Elysia().get(
           message: t.String(),
           company: t.Object({
             id: t.String(),
+            stripeAccountId: t.String(),
             cnpj: t.String(),
             phone: t.String(),
             state: t.String(),

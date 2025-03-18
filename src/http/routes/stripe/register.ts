@@ -8,7 +8,7 @@ import { AuthError } from "../errors/auth-error"
 export const registerCompany = new Elysia().post(
   `/stripe/create/:companyId`,
   async ({ cookie, body, params }) => {
-    const stripe = new Stripe(env.STRIPE_PUBLISHABLE_KEY)
+    const stripe = new Stripe(env.STRIPE_SECRET_KEY)
 
     const { name, email, taxId } = body
     const { companyId } = params
@@ -28,56 +28,80 @@ export const registerCompany = new Elysia().post(
       throw new AuthError("Unauthorized", "UNAUTHORIZED", 401)
     }
 
-    const checkUnitExists = await db.unitType.findFirst({
-      where: {
-        name,
-      },
-    })
+    const cleanTaxId = taxId.replace(/[^\d]/g, "")
+    const isIndividual = cleanTaxId.length === 11
+    const isCompany = cleanTaxId.length === 14
 
-    if (checkUnitExists) {
-      throw new AuthError("Item já cadastrado", "ITEM_ALREADY_EXISTS", 400)
+    if (!isIndividual && !isCompany) {
+      throw new AuthError("CPF ou CNPJ inválido", "INVALID_TAX_ID", 400)
     }
 
-    const account = await stripe.accounts.create({
+    if (isIndividual && !isValidCPF(cleanTaxId)) {
+      throw new AuthError("CPF inválido", "INVALID_CPF", 400)
+    } else if (isCompany && !isValidCNPJ(cleanTaxId)) {
+      throw new AuthError("CNPJ inválido", "INVALID_CNPJ", 400)
+    }
+
+    let accountParams: Stripe.AccountCreateParams = {
       type: "express",
       country: "BR",
       email,
-      business_type: "company",
-      business_profile: {
-        url: "https://orbizy.app",
-      },
-      company: {
-        name,
-        tax_id: taxId,
-      },
       capabilities: {
-        card_payments: {
-          requested: true,
-        },
-        transfers: {
-          requested: true,
-        },
+        card_payments: { requested: true },
+        transfers: { requested: true },
       },
-    })
+    }
+
+    if (isIndividual) {
+      accountParams = {
+        ...accountParams,
+        business_type: "individual",
+        individual: {
+          first_name: name.split(" ")[0],
+          last_name: name.split(" ").slice(1).join(" "),
+          email: email,
+          id_number: cleanTaxId,
+        },
+      }
+    } else {
+      accountParams = {
+        ...accountParams,
+        business_type: "company",
+        company: {
+          name,
+          tax_id: cleanTaxId,
+        },
+        business_profile: {
+          url: "https://my.orbizy.app",
+        },
+      }
+    }
+
+    const account = await stripe.accounts.create(accountParams)
 
     const accountLink = await stripe.accountLinks.create({
       account: account.id,
-      refresh_url: "https://orbizy.app/dashboard/settings",
-      return_url: "https://orbizy.app/dashboard/settings",
+      refresh_url: "https://my.orbizy.app/reauth",
+      return_url: "https://my.orbizy.app/return",
       type: "account_onboarding",
     })
 
-    await db.company.update({
+    const company = await db.company.update({
       where: {
         id: myCompany?.id,
       },
       data: {
-        // stripeAccountId: account.id,
+        stripeAccountId: account.id,
       },
     })
 
     return {
-      message: "Unidade cadastrado com sucesso",
+      message: isIndividual
+        ? "Pessoa física cadastrada com sucesso"
+        : "Empresa cadastrada com sucesso",
+      companyId: company.id,
+      stripeAccountId: account.id,
+      onboardingUrl: accountLink.url,
     }
   },
   {
@@ -90,6 +114,9 @@ export const registerCompany = new Elysia().post(
       201: t.Object(
         {
           message: t.String(),
+          companyId: t.String(),
+          stripeAccountId: t.String(),
+          onboardingUrl: t.String(),
         },
         {
           description: "Stripe Company created successfully",
@@ -118,3 +145,18 @@ export const registerCompany = new Elysia().post(
     },
   }
 )
+
+// Funções de validação (implemente a lógica completa)
+function isValidCPF(cpf: string): boolean {
+  cpf = cpf.replace(/[^\d]/g, "")
+  if (cpf.length !== 11) return false
+  // Implementar lógica completa de validação de CPF
+  return true
+}
+
+function isValidCNPJ(cnpj: string): boolean {
+  cnpj = cnpj.replace(/[^\d]/g, "")
+  if (cnpj.length !== 14) return false
+  // Implementar lógica completa de validação de CNPJ
+  return true
+}

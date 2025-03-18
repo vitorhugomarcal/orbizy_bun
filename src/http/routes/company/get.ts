@@ -122,8 +122,6 @@ export const getCompany = new Elysia().get(
       }),
     }
 
-    console.log(formattedCompany)
-
     return {
       message: "Company found",
       company: formattedCompany,
@@ -136,6 +134,7 @@ export const getCompany = new Elysia().get(
           message: t.String(),
           company: t.Object({
             id: t.String(),
+            stripeAccountId: t.String(),
             cnpj: t.String(),
             phone: t.String(),
             state: t.String(),
