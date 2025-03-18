@@ -137,7 +137,7 @@ export const getCompany = new Elysia().get(
           message: t.String(),
           company: t.Object({
             id: t.String(),
-            stripeAccountId: t.String(),
+            stripeAccountId: t.Nullable(t.String()),
             cnpj: t.String(),
             phone: t.String(),
             state: t.String(),
