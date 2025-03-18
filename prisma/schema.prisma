@@ -195,20 +195,22 @@ model EstimateItems {
 }
 
 model Invoice {
-  id             String         @id @default(uuid())
-  invoice_number String?
-  status         String?
-  notes          String?
-  total          Decimal?
-  payment_mode   String?
-  createdAt      DateTime       @default(now())
-  company_id     String?        @map("company_id")
-  client_id      String?        @map("client_id")
-  estimate_id    String
-  invoiceItems   InvoiceItems[]
-  client         Client?        @relation(fields: [client_id], references: [id], onDelete: Cascade)
-  company        Company?       @relation(fields: [company_id], references: [id], onDelete: Cascade)
-  estimate       Estimate       @relation(fields: [estimate_id], references: [id], onDelete: Cascade)
+  id              String         @id @default(uuid())
+  invoice_number  String?
+  status          String?
+  notes           String?
+  total           Decimal?
+  payment_mode    String?
+  createdAt       DateTime       @default(now())
+  company_id      String?        @map("company_id")
+  client_id       String?        @map("client_id")
+  estimate_id     String
+  stripeInvoiceId String?
+  paymentUrl      String?
+  invoiceItems    InvoiceItems[]
+  client          Client?        @relation(fields: [client_id], references: [id], onDelete: Cascade)
+  company         Company?       @relation(fields: [company_id], references: [id], onDelete: Cascade)
+  estimate        Estimate       @relation(fields: [estimate_id], references: [id], onDelete: Cascade)
 
   @@map("invoices")
 }
