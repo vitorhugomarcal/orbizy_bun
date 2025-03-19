@@ -3,7 +3,7 @@ import Elysia, { t } from "elysia"
 export const redirect = new Elysia().get(
   "/redirect-to-app",
   async ({ set }) => {
-    const appScheme = "vhminvoice://stripe-auth"
+    const appScheme = "vhminvoice://(tabs)"
     set.headers["Location"] = appScheme
     set.status = 302
 
