@@ -48,7 +48,7 @@ export const registerCompany = new Elysia().post(
       email,
       capabilities: {
         card_payments: { requested: true },
-        mobilepay_payments: { requested: true },
+        // mobilepay_payments: { requested: true },
         boleto_payments: { requested: true },
         samsung_pay_payments: { requested: true },
         transfers: { requested: true },
