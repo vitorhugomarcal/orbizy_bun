@@ -48,6 +48,9 @@ export const registerCompany = new Elysia().post(
       email,
       capabilities: {
         card_payments: { requested: true },
+        mobilepay_payments: { requested: true },
+        boleto_payments: { requested: true },
+        samsung_pay_payments: { requested: true },
         transfers: { requested: true },
       },
     }
@@ -81,8 +84,8 @@ export const registerCompany = new Elysia().post(
 
     const accountLink = await stripe.accountLinks.create({
       account: account.id,
-      refresh_url: "https://my.orbizy.app/reauth",
-      return_url: "https://my.orbizy.app/return",
+      refresh_url: "https://orbizy.app",
+      return_url: "https://api.orbizy.app/redirect",
       type: "account_onboarding",
     })
 
