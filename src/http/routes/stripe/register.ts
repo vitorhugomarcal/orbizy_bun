@@ -72,7 +72,7 @@ export const registerCompany = new Elysia().post(
           tax_id: cleanTaxId,
         },
         business_profile: {
-          url: "https://my.orbizy.app",
+          url: "https://orbizy.app",
         },
       }
     }

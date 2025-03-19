@@ -35,8 +35,6 @@ export const createInvoice = new Elysia().post(
       },
     })
 
-    console.log(invoice)
-
     if (!invoice || !hasCompany) {
       throw new AuthError("Fatura não encontrada", "INVOICE_NOT_FOUND", 404)
     }
