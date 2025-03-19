@@ -1,7 +1,7 @@
 import Elysia, { t } from "elysia"
 
 export const redirect = new Elysia().get(
-  "/redirect-to-app",
+  "/redirect",
   async ({ set }) => {
     const appScheme = "vhminvoice://(tabs)"
     set.headers["Location"] = appScheme
