@@ -64,6 +64,7 @@ export const getInvoiceById = new Elysia().get(
             status: t.Nullable(t.String()),
             notes: t.Nullable(t.String()),
             total: t.Number(),
+            paymentUrl: t.Nullable(t.String()),
             estimate: t.Object({
               id: t.String(),
               estimate_number: t.String(),

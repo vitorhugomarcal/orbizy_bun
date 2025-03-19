@@ -56,6 +56,7 @@ export const getAllInvoices = new Elysia().get(
               id: t.String(),
               invoice_number: t.Nullable(t.String()),
               payment_mode: t.Nullable(t.String()),
+              paymentUrl: t.Nullable(t.String()),
               status: t.Nullable(t.String()),
               notes: t.Nullable(t.String()),
               total: t.Number(),
