@@ -11,7 +11,7 @@ model User {
   id                 String        @id @default(uuid())
   name               String?
   email              String        @unique
-  country            String?
+  country            String
   company_id         String?
   role               Role          @default(BASIC)
   type               Type          @default(basic)
