@@ -27,9 +27,9 @@ export const registerCompany = new Elysia().post(
       throw new AuthError("Unauthorized", "UNAUTHORIZED", 401)
     }
 
-    const checkCompanyExists = await db.company.findUnique({
+    const checkCompanyExists = await db.company.findFirst({
       where: {
-        cnpj,
+        OR: [{ cnpj: cnpj || null }, { ein: ein || null }],
       },
     })
 
@@ -85,19 +85,19 @@ export const registerCompany = new Elysia().post(
   },
   {
     body: t.Object({
-      ein: t.Optional(t.String()),
-      cnpj: t.Optional(t.String()),
+      ein: t.Nullable(t.String()),
+      cnpj: t.Nullable(t.String()),
       company_name: t.String(),
       phone: t.String(),
       country: t.String(),
       city: t.String(),
       state: t.String(),
       postal_code: t.String(),
-      street: t.Optional(t.String()),
-      number: t.Optional(t.String()),
-      neighborhood: t.Optional(t.String()),
-      street_address: t.Optional(t.String()),
-      unit_number: t.Optional(t.String()),
+      street: t.Nullable(t.String()),
+      number: t.Nullable(t.String()),
+      neighborhood: t.Nullable(t.String()),
+      street_address: t.Nullable(t.String()),
+      unit_number: t.Nullable(t.String()),
     }),
     response: {
       201: t.Object(
