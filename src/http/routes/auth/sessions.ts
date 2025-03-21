@@ -42,6 +42,7 @@ export const sessions = new Elysia().post(
             id: t.String(),
             name: t.String(),
             email: t.String(),
+            country: t.String(),
             company_id: t.String(),
           }),
         },

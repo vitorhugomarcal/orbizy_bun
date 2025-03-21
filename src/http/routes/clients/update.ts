@@ -11,15 +11,20 @@ export const update = new Elysia().put(
       email_address,
       name,
       company_name,
+      phone,
       cpf,
       cnpj,
-      phone,
-      cep,
-      address,
-      address_number,
-      neighborhood,
       state,
       city,
+      neighborhood,
+      ssn,
+      ein,
+      country,
+      postal_code,
+      street,
+      number,
+      street_address,
+      unit_number,
     } = body
 
     const user = await auth({ cookie })
@@ -47,6 +52,23 @@ export const update = new Elysia().put(
       throw new AuthError("Cliente não encontrado", "CLIENT_NOT_FOUND", 404)
     }
 
+    await db.address.update({
+      where: {
+        id: clientExists.address_id,
+      },
+      data: {
+        country,
+        city,
+        state,
+        postal_code,
+        street,
+        number,
+        neighborhood,
+        street_address,
+        unit_number,
+      },
+    })
+
     const client = await db.client.update({
       where: {
         id: clientId,
@@ -58,13 +80,9 @@ export const update = new Elysia().put(
         company_name,
         cpf,
         cnpj,
+        ssn,
+        ein,
         phone,
-        cep,
-        address,
-        address_number,
-        neighborhood,
-        state,
-        city,
       },
     })
 
@@ -82,12 +100,17 @@ export const update = new Elysia().put(
       cpf: t.Nullable(t.Optional(t.String())),
       cnpj: t.Nullable(t.Optional(t.String())),
       phone: t.Optional(t.String()),
-      cep: t.Optional(t.String()),
-      address: t.Optional(t.String()),
-      address_number: t.Optional(t.String()),
-      neighborhood: t.Optional(t.String()),
+      ssn: t.Nullable(t.Optional(t.String())),
+      ein: t.Nullable(t.Optional(t.String())),
+      country: t.Optional(t.String()),
       state: t.Optional(t.String()),
       city: t.Optional(t.String()),
+      postal_code: t.Optional(t.String()),
+      neighborhood: t.Nullable(t.Optional(t.String())),
+      street: t.Nullable(t.Optional(t.String())),
+      number: t.Nullable(t.Optional(t.String())),
+      street_address: t.Nullable(t.Optional(t.String())),
+      unit_number: t.Nullable(t.Optional(t.String())),
     }),
     response: {
       200: t.Object(
@@ -100,13 +123,21 @@ export const update = new Elysia().put(
             company_name: t.Nullable(t.String()),
             cpf: t.Nullable(t.String()),
             cnpj: t.Nullable(t.String()),
+            ssn: t.Nullable(t.String()),
+            ein: t.Nullable(t.String()),
             phone: t.String(),
-            cep: t.String(),
-            address: t.String(),
-            address_number: t.String(),
-            neighborhood: t.String(),
-            state: t.String(),
-            city: t.String(),
+            address: t.Object({
+              id: t.String(),
+              country: t.String(),
+              city: t.String(),
+              state: t.String(),
+              postal_code: t.String(),
+              street: t.Nullable(t.String()),
+              number: t.Nullable(t.String()),
+              neighborhood: t.Nullable(t.String()),
+              street_address: t.Nullable(t.String()),
+              unit_number: t.Nullable(t.String()),
+            }),
           }),
         },
         {

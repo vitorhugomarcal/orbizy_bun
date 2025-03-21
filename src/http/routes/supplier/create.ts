@@ -6,14 +6,18 @@ import { AuthError } from "../errors/auth-error"
 const SupplierCreateBody = t.Object({
   email_address: t.String(),
   company_name: t.String(),
-  cnpj: t.String(),
+  cnpj: t.Nullable(t.String()),
+  ein: t.Nullable(t.String()),
   phone: t.String(),
-  cep: t.String(),
-  address: t.String(),
-  address_number: t.String(),
-  neighborhood: t.String(),
+  country: t.String(),
   state: t.String(),
   city: t.String(),
+  postal_code: t.String(),
+  street: t.Nullable(t.String()),
+  number: t.Nullable(t.String()),
+  neighborhood: t.Nullable(t.String()),
+  street_address: t.Nullable(t.String()),
+  unit_number: t.Nullable(t.String()),
 })
 
 const ResponseTypes = {
@@ -36,16 +40,20 @@ export const createSupplier = new Elysia().post(
   `/supplier/create`,
   async ({ cookie, body }) => {
     const {
-      company_name,
       cnpj,
+      ein,
       phone,
+      company_name,
+      email_address,
+      country,
       state,
       city,
-      cep,
-      address_number,
-      email_address,
-      address,
+      postal_code,
+      street,
+      number,
       neighborhood,
+      street_address,
+      unit_number,
     } = body
 
     const user = await auth({ cookie })
@@ -59,13 +67,25 @@ export const createSupplier = new Elysia().post(
       throw new AuthError("Empresa não encontrada", "COMPANY_NOT_FOUND", 404)
     }
 
-    const existingSupplier = await db.supplier.findUnique({ where: { cnpj } })
+    const existingSupplierCNPJ = await db.supplier.findFirst({
+      where: { cnpj },
+    })
 
-    if (existingSupplier) {
+    const existingSupplierEIN = await db.supplier.findFirst({ where: { ein } })
+
+    if (!existingSupplierCNPJ || !existingSupplierEIN) {
+      throw new AuthError(
+        "Supplier with this CNPJ already exists",
+        "SUPPLIER_ALREADY_EXISTS",
+        400
+      )
+    }
+
+    if (existingSupplierCNPJ || existingSupplierEIN) {
       const supplierUserExists = await db.supplierUser.findUnique({
         where: {
           supplier_id_company_id: {
-            supplier_id: existingSupplier.id,
+            supplier_id: existingSupplierCNPJ.id || existingSupplierEIN.id,
             company_id: hasCompany.id,
           },
         },
@@ -79,28 +99,37 @@ export const createSupplier = new Elysia().post(
       } else {
         await db.supplierUser.create({
           data: {
-            supplier_id: existingSupplier.id,
+            supplier_id: existingSupplierCNPJ.id || existingSupplierEIN.id,
             company_id: hasCompany.id,
           },
         })
       }
       return {
         message: "Supplier is already associated with this user",
-        supplier: existingSupplier,
+        supplier: existingSupplierCNPJ,
       }
     } else {
-      const newSupplier = await db.supplier.create({
+      const address = await db.address.create({
         data: {
-          company_name,
-          cnpj,
-          phone,
+          country,
           state,
           city,
-          cep,
-          address_number,
-          email_address,
-          address,
+          postal_code,
+          street,
+          number,
           neighborhood,
+          street_address,
+          unit_number,
+        },
+      })
+      const newSupplier = await db.supplier.create({
+        data: {
+          email_address,
+          company_name,
+          cnpj,
+          ein,
+          phone,
+          address_id: address.id,
         },
       })
 

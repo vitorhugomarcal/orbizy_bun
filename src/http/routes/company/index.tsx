@@ -1,5 +1,6 @@
 import { Elysia } from "elysia"
-import { checkCompany } from "./check"
+import { checkCompanyCNPJ } from "./checkCNPJ"
+import { checkCompanyEIN } from "./checkEIN"
 import { registerCompany } from "./create"
 import { getCompany } from "./get"
 import { getCompanyById } from "./getBy"
@@ -9,13 +10,14 @@ import { removeInviteToCompany } from "./removeInvite"
 import { update } from "./update"
 
 const companyRoutes = new Elysia()
-  .use(registerCompany)
-  .use(getCompany)
-  .use(getCompanyById)
-  .use(removeCompany)
   .use(update)
-  .use(checkCompany)
+  .use(getCompany)
+  .use(removeCompany)
+  .use(getCompanyById)
+  .use(registerCompany)
+  .use(checkCompanyEIN)
   .use(inviteToCompany)
+  .use(checkCompanyCNPJ)
   .use(removeInviteToCompany)
 
 export default companyRoutes

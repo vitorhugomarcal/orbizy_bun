@@ -11,9 +11,10 @@ model User {
   id                 String        @id @default(uuid())
   name               String?
   email              String        @unique
+  country            String?
+  company_id         String?
   role               Role          @default(BASIC)
   type               Type          @default(basic)
-  company_id         String?
   createdAt          DateTime      @default(now())
   updatedAt          DateTime      @updatedAt @map("updated_at")
   AuthLinks          AuthLinks[]
@@ -24,31 +25,32 @@ model User {
 }
 
 model Company {
-  id                String              @id @default(uuid())
-  cnpj              String              @unique
-  phone             String
-  state             String
-  city              String
-  cep               String
-  address           String
-  neighborhood      String
-  address_number    String
-  company_name      String
-  owner_id          String
-  stripeAccountId   String?
-  createdAt         DateTime            @default(now())
-  supplierUser      SupplierUser[]
-  client            Client[]
-  estimate          Estimate[]
-  estimateSupplier  EstimateSupplier[]
-  inviteLinks       InviteLinks[]
-  invoice           Invoice[]
+  id              String  @id @default(uuid())
+  company_name    String
+  ein             String? @unique
+  cnpj            String? @unique
+  phone           String
+  owner_id        String
+  address_id      String  @unique
+  stripeAccountId String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  user              User[]
   item              Item[]
-  paymentModeCustom PaymentModeCustom[]
+  client            Client[]
+  invoice           Invoice[]
+  schedule          Schedule[]
+  estimate          Estimate[]
+  inviteLinks       InviteLinks[]
+  supplierUser      SupplierUser[]
   pendingUsers      PendingUser[]
   unitTypeCustom    UnitTypeCustom[]
-  user              User[]
-  schedule          Schedule[]
+  estimateSupplier  EstimateSupplier[]
+  paymentModeCustom PaymentModeCustom[]
+
+  address Address @relation(fields: [address_id], references: [id], onDelete: Cascade)
 
   @@map("companies")
 }
@@ -75,45 +77,67 @@ model SupplierUser {
 }
 
 model Supplier {
-  id               String             @id @default(uuid())
-  cnpj             String             @unique
-  phone            String
-  state            String
-  city             String
-  cep              String
-  address          String
-  neighborhood     String
-  address_number   String
-  company_name     String
-  email_address    String             @default("")
-  createdAt        DateTime           @default(now())
+  id            String   @id @default(uuid())
+  ein           String?  @unique
+  cnpj          String?  @unique
+  phone         String
+  company_name  String
+  email_address String   @default("")
+  address_id    String   @unique // Garante que cada cliente tem um único endereço
+  createdAt     DateTime @default(now())
+
   supplierUser     SupplierUser[]
   estimateSupplier EstimateSupplier[]
+
+  address Address @relation(fields: [address_id], references: [id], onDelete: Cascade)
 
   @@map("sluppliers")
 }
 
+model Address {
+  id      String @id @default(uuid())
+  country String
+
+  city        String
+  state       String
+  postal_code String
+
+  street       String?
+  number       String?
+  neighborhood String?
+
+  street_address String?
+  unit_number    String?
+
+  company  Company?
+  client   Client?
+  Supplier Supplier?
+
+  @@map("addresses")
+}
+
 model Client {
-  id             String     @id @default(uuid())
-  type           String
-  cpf            String?
-  cnpj           String?
-  name           String
-  company_name   String?
-  email_address  String
-  phone          String
-  cep            String
-  address        String
-  address_number String
-  neighborhood   String
-  city           String
-  state          String
-  createdAt      DateTime   @default(now())
-  company_id     String
-  company        Company    @relation(fields: [company_id], references: [id], onDelete: Cascade)
-  estimate       Estimate[]
-  invoice        Invoice[]
-  Schedule       Schedule[]
+  id            String  @id @default(uuid())
+  name          String
+  company_name  String?
+  email_address String
+  phone         String
+  type          String
+  cpf           String?
+  cnpj          String?
+  ssn           String?
+  ein           String?
+
+  company_id String
+  address_id String   @unique
+  createdAt  DateTime @default(now())
+
+  invoice  Invoice[]
+  estimate Estimate[]
+  Schedule Schedule[]
+
+  company Company @relation(fields: [company_id], references: [id], onDelete: Cascade)
+  address Address @relation(fields: [address_id], references: [id], onDelete: Cascade)
 
   @@map("clients")
 }
@@ -163,19 +187,21 @@ model Item {
 }
 
 model Estimate {
-  id              String          @id @default(uuid())
+  id              String   @id @default(uuid())
   estimate_number String?
   status          String?
   notes           String?
-  sub_total       Decimal?
   total           Decimal?
-  createdAt       DateTime        @default(now())
-  company_id      String?         @map("company_id")
-  client_id       String?         @map("client_id")
-  EstimateItems   EstimateItems[]
-  client          Client?         @relation(fields: [client_id], references: [id], onDelete: Cascade)
-  company         Company?        @relation(fields: [company_id], references: [id], onDelete: Cascade)
-  Invoice         Invoice[]
+  sub_total       Decimal?
+  client_id       String?  @map("client_id")
+  company_id      String?  @map("company_id")
+  createdAt       DateTime @default(now())
+
+  Invoice       Invoice[]
+  EstimateItems EstimateItems[]
+
+  client  Client?  @relation(fields: [client_id], references: [id], onDelete: Cascade)
+  company Company? @relation(fields: [company_id], references: [id], onDelete: Cascade)
 
   @@map("estimates")
 }
@@ -195,22 +221,24 @@ model EstimateItems {
 }
 
 model Invoice {
-  id              String         @id @default(uuid())
+  id              String   @id @default(uuid())
   invoice_number  String?
   status          String?
   notes           String?
   total           Decimal?
   payment_mode    String?
-  createdAt       DateTime       @default(now())
-  company_id      String?        @map("company_id")
-  client_id       String?        @map("client_id")
+  createdAt       DateTime @default(now())
+  company_id      String?  @map("company_id")
+  client_id       String?  @map("client_id")
   estimate_id     String
   stripeInvoiceId String?
   paymentUrl      String?
-  invoiceItems    InvoiceItems[]
-  client          Client?        @relation(fields: [client_id], references: [id], onDelete: Cascade)
-  company         Company?       @relation(fields: [company_id], references: [id], onDelete: Cascade)
-  estimate        Estimate       @relation(fields: [estimate_id], references: [id], onDelete: Cascade)
+
+  invoiceItems InvoiceItems[]
+
+  client   Client?  @relation(fields: [client_id], references: [id], onDelete: Cascade)
+  company  Company? @relation(fields: [company_id], references: [id], onDelete: Cascade)
+  estimate Estimate @relation(fields: [estimate_id], references: [id], onDelete: Cascade)
 
   @@map("invoices")
 }
@@ -270,15 +298,12 @@ model Schedule {
   id            String   @id @default(uuid())
   date          DateTime
   deviceEventId String?
-
-  created_at DateTime @default(now())
-  updated_at DateTime @default(now())
-
-  company_id String
-  client_id  String
-
-  company Company @relation(fields: [company_id], references: [id], onDelete: Cascade)
-  client  Client  @relation(fields: [client_id], references: [id], onDelete: Cascade)
+  created_at    DateTime @default(now())
+  updated_at    DateTime @default(now())
+  company_id    String
+  client_id     String
+  company       Company  @relation(fields: [company_id], references: [id], onDelete: Cascade)
+  client        Client   @relation(fields: [client_id], references: [id], onDelete: Cascade)
 
   @@map("schedules")
 }

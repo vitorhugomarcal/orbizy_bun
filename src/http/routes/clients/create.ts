@@ -11,13 +11,18 @@ const ClientCreateBody = t.Object({
   company_name: t.Optional(t.String()),
   cpf: t.Optional(t.String()),
   cnpj: t.Optional(t.String()),
+  ssn: t.Optional(t.String()),
+  ein: t.Optional(t.String()),
   phone: t.String(),
-  cep: t.String(),
-  address: t.String(),
-  address_number: t.String(),
-  neighborhood: t.String(),
+  country: t.String(),
   state: t.String(),
   city: t.String(),
+  postal_code: t.String(),
+  street: t.Optional(t.String()),
+  number: t.Optional(t.String()),
+  neighborhood: t.Optional(t.String()),
+  street_address: t.Optional(t.String()),
+  unit_number: t.Optional(t.String()),
 })
 
 // Response types
@@ -59,6 +64,8 @@ export const createClient = new Elysia().post(
           { email_address: body.email_address },
           { cpf: body.cpf || undefined },
           { cnpj: body.cnpj || undefined },
+          { ssn: body.ssn || undefined },
+          { ein: body.ein || undefined },
         ],
       },
     })
@@ -88,6 +95,32 @@ export const createClient = new Elysia().post(
       )
     }
 
+    if (body.type === "EI" && !body.ein) {
+      throw new AuthError(
+        "EI é obrigatório para empresa individual",
+        "INVALID_DATA",
+        400
+      )
+    }
+
+    if (body.type === "SSN" && !body.ssn) {
+      throw new AuthError("SSN é obrigatório para empresa", "INVALID_DATA", 400)
+    }
+
+    const address = await db.address.create({
+      data: {
+        country: body.country,
+        state: body.state,
+        city: body.city,
+        postal_code: body.postal_code,
+        street: body.street,
+        number: body.number,
+        neighborhood: body.neighborhood,
+        street_address: body.street_address,
+        unit_number: body.unit_number,
+      },
+    })
+
     // Create new client
     await db.client.create({
       data: {
@@ -98,13 +131,10 @@ export const createClient = new Elysia().post(
         company_name: body.company_name,
         cpf: body.cpf,
         cnpj: body.cnpj,
+        ssn: body.ssn,
+        ein: body.ein,
         phone: body.phone,
-        cep: body.cep,
-        address: body.address,
-        address_number: body.address_number,
-        neighborhood: body.neighborhood,
-        state: body.state,
-        city: body.city,
+        address_id: address.id,
       },
     })
 

@@ -22,6 +22,7 @@ export const getAll = new Elysia().get(
         company_id: hasCompany.id,
       },
       include: {
+        address: true,
         estimate: {
           select: {
             id: true,
@@ -67,17 +68,24 @@ export const getAll = new Elysia().get(
               type: t.String(),
               cpf: t.Nullable(t.String()),
               cnpj: t.Nullable(t.String()),
+              ssn: t.Nullable(t.String()),
+              ein: t.Nullable(t.String()),
               company_name: t.Nullable(t.String()),
               name: t.String(),
               email_address: t.String(),
               phone: t.String(),
-              cep: t.String(),
-              address: t.String(),
-              address_number: t.String(),
-              neighborhood: t.String(),
-              city: t.String(),
-              state: t.String(),
-              company_id: t.Nullable(t.String()),
+              company_id: t.String(),
+              address: t.Object({
+                country: t.String(),
+                state: t.String(),
+                city: t.String(),
+                postal_code: t.String(),
+                street: t.Nullable(t.String()),
+                number: t.Nullable(t.String()),
+                neighborhood: t.Nullable(t.String()),
+                street_address: t.Nullable(t.String()),
+                unit_number: t.Nullable(t.String()),
+              }),
               createdAt: t.String(),
               estimate: t.Array(
                 t.Object({

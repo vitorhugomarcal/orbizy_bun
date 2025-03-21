@@ -7,15 +7,19 @@ export const registerCompany = new Elysia().post(
   `/company/register`,
   async ({ cookie, body }) => {
     const {
+      ein,
       cnpj,
-      phone,
-      state,
-      city,
-      cep,
-      address,
-      neighborhood,
-      address_number,
       company_name,
+      phone,
+      country,
+      city,
+      state,
+      postal_code,
+      street,
+      number,
+      neighborhood,
+      street_address,
+      unit_number,
     } = body
 
     const user = await auth({ cookie })
@@ -37,18 +41,31 @@ export const registerCompany = new Elysia().post(
       )
     }
 
+    const address = await db.address.create({
+      data: {
+        country,
+        city,
+        state,
+        postal_code,
+        street,
+        number,
+        neighborhood,
+        street_address,
+        unit_number,
+      },
+    })
+
     const company = await db.company.create({
       data: {
+        ein,
         cnpj,
         phone,
-        state,
-        city,
-        cep,
-        address,
-        neighborhood,
-        address_number,
         company_name,
         owner_id: user.id,
+        address_id: address.id,
+      },
+      include: {
+        address: true,
       },
     })
 
@@ -68,15 +85,19 @@ export const registerCompany = new Elysia().post(
   },
   {
     body: t.Object({
-      cnpj: t.String(),
-      phone: t.String(),
-      state: t.String(),
-      city: t.String(),
-      cep: t.String(),
-      address: t.String(),
-      neighborhood: t.String(),
-      address_number: t.String(),
+      ein: t.Optional(t.String()),
+      cnpj: t.Optional(t.String()),
       company_name: t.String(),
+      phone: t.String(),
+      country: t.String(),
+      city: t.String(),
+      state: t.String(),
+      postal_code: t.String(),
+      street: t.Optional(t.String()),
+      number: t.Optional(t.String()),
+      neighborhood: t.Optional(t.String()),
+      street_address: t.Optional(t.String()),
+      unit_number: t.Optional(t.String()),
     }),
     response: {
       201: t.Object(
@@ -84,15 +105,22 @@ export const registerCompany = new Elysia().post(
           message: t.String(),
           company: t.Object({
             id: t.String(),
-            cnpj: t.String(),
-            phone: t.String(),
-            state: t.String(),
-            city: t.String(),
-            cep: t.String(),
-            address: t.String(),
-            neighborhood: t.String(),
-            address_number: t.String(),
+            ein: t.Nullable(t.String()),
+            cnpj: t.Nullable(t.String()),
             company_name: t.String(),
+            phone: t.String(),
+            address: t.Object({
+              id: t.String(),
+              country: t.String(),
+              city: t.String(),
+              state: t.String(),
+              postal_code: t.String(),
+              street: t.Nullable(t.String()),
+              number: t.Nullable(t.String()),
+              neighborhood: t.Nullable(t.String()),
+              street_address: t.Nullable(t.String()),
+              unit_number: t.Nullable(t.String()),
+            }),
             owner_id: t.String(),
           }),
         },

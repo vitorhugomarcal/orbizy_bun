@@ -25,6 +25,9 @@ export const getAllByCompany = new Elysia().get(
           },
         },
       },
+      include: {
+        address: true,
+      },
     })
 
     if (!suppliers) {
@@ -48,15 +51,21 @@ export const getAllByCompany = new Elysia().get(
             t.Object({
               id: t.String(),
               company_name: t.String(),
-              cnpj: t.String(),
+              cnpj: t.Nullable(t.String()),
+              ein: t.Nullable(t.String()),
               phone: t.String(),
-              state: t.String(),
-              city: t.String(),
-              cep: t.String(),
-              address_number: t.String(),
               email_address: t.String(),
-              address: t.String(),
-              neighborhood: t.String(),
+              address: t.Object({
+                country: t.String(),
+                state: t.String(),
+                city: t.String(),
+                postal_code: t.String(),
+                street: t.Nullable(t.String()),
+                number: t.Nullable(t.String()),
+                neighborhood: t.Nullable(t.String()),
+                street_address: t.Nullable(t.String()),
+                unit_number: t.Nullable(t.String()),
+              }),
               createdAt: t.String(),
             })
           ),

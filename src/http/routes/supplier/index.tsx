@@ -1,6 +1,7 @@
 import { Elysia } from "elysia"
 
-import { checkSupplier } from "./check"
+import { checkSupplierCNPJ } from "./checkCNPJ"
+import { checkSupplierEIN } from "./checkEIN"
 import { createSupplier } from "./create"
 import { createInCompany } from "./createInCompany"
 import { getAllSupplier } from "./getAll"
@@ -17,6 +18,7 @@ const supplierRoutes = new Elysia()
   .use(getAllSupplier)
   .use(getAllByCompany)
   .use(getSupplierById)
-  .use(checkSupplier)
+  .use(checkSupplierCNPJ)
+  .use(checkSupplierEIN)
 
 export default supplierRoutes

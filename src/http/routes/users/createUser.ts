@@ -4,7 +4,7 @@ import { db } from "../../../lib/prisma"
 export const createUser = new Elysia().post(
   `/me/create`,
   async ({ body }) => {
-    const { name, email } = body
+    const { name, email, country } = body
 
     const invite = await db.pendingUser.findFirst({
       where: {
@@ -22,6 +22,7 @@ export const createUser = new Elysia().post(
           data: {
             name,
             email,
+            country,
             role: "MASTER",
             type: "basic",
           },
@@ -41,6 +42,7 @@ export const createUser = new Elysia().post(
         data: {
           name,
           email,
+          country,
           role: "BASIC",
           type: "basic",
           company_id: invite.company_id,
@@ -58,6 +60,7 @@ export const createUser = new Elysia().post(
     body: t.Object({
       name: t.String(),
       email: t.String(),
+      country: t.String(),
     }),
     response: {
       201: t.Object(
@@ -67,6 +70,7 @@ export const createUser = new Elysia().post(
             id: t.String(),
             name: t.String(),
             email: t.String(),
+            country: t.String(),
             type: t.String({
               enum: ["basic", "team", "pro"],
             }),

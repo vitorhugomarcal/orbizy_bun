@@ -36,7 +36,7 @@ app.use(
       info: {
         title: "Minha API",
         description: "API para gerenciar clientes, empresas, usuários, etc.",
-        version: "1.0.0",
+        version: "1.3.0",
       },
     },
   })

@@ -7,16 +7,20 @@ export const updateSupplier = new Elysia().put(
   `/supplier/update/:supplierId`,
   async ({ cookie, body, params }) => {
     const {
-      company_name,
       cnpj,
+      ein,
       phone,
+      company_name,
+      email_address,
+      country,
       state,
       city,
-      cep,
-      address_number,
-      email_address,
-      address,
+      postal_code,
+      street,
+      number,
       neighborhood,
+      street_address,
+      unit_number,
     } = body
 
     const user = await auth({ cookie })
@@ -39,21 +43,33 @@ export const updateSupplier = new Elysia().put(
       throw new AuthError("Supplier not found", "SUPPLIER_NOT_FOUND", 404)
     }
 
+    await db.address.update({
+      where: {
+        id: supplier.address_id,
+      },
+      data: {
+        country,
+        city,
+        state,
+        postal_code,
+        street,
+        number,
+        neighborhood,
+        street_address,
+        unit_number,
+      },
+    })
+
     const updatedSuppler = await db.supplier.update({
       where: {
         id: supplierId,
       },
       data: {
-        company_name,
         cnpj,
+        ein,
         phone,
-        state,
-        city,
-        cep,
-        address_number,
+        company_name,
         email_address,
-        address,
-        neighborhood,
       },
     })
 
@@ -64,16 +80,20 @@ export const updateSupplier = new Elysia().put(
   },
   {
     body: t.Object({
-      company_name: t.Optional(t.String()),
       cnpj: t.Optional(t.String()),
+      ein: t.Optional(t.String()),
       phone: t.Optional(t.String()),
+      company_name: t.Optional(t.String()),
+      email_address: t.Optional(t.String()),
+      country: t.Optional(t.String()),
       state: t.Optional(t.String()),
       city: t.Optional(t.String()),
-      cep: t.Optional(t.String()),
-      address_number: t.Optional(t.String()),
-      email_address: t.Optional(t.String()),
-      address: t.Optional(t.String()),
+      postal_code: t.Optional(t.String()),
+      street: t.Optional(t.String()),
+      number: t.Optional(t.String()),
       neighborhood: t.Optional(t.String()),
+      street_address: t.Optional(t.String()),
+      unit_number: t.Optional(t.String()),
     }),
     response: {
       201: t.Object(

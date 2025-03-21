@@ -29,7 +29,11 @@ export const createInvoice = new Elysia().post(
       include: {
         estimate: {
           include: {
-            client: true,
+            client: {
+              include: {
+                address: true,
+              },
+            },
           },
         },
       },
@@ -51,6 +55,21 @@ export const createInvoice = new Elysia().post(
       {
         email: invoice.estimate.client?.email_address,
         name: invoice.estimate.client?.name,
+        phone: invoice.estimate.client?.phone,
+        address: {
+          line1:
+            invoice.estimate.client?.address?.street_address ||
+            invoice.estimate.client?.address?.street ||
+            "",
+          line2:
+            invoice.estimate.client?.address?.unit_number ||
+            invoice.estimate.client?.address?.number ||
+            "",
+          city: invoice.estimate.client?.address?.city,
+          state: invoice.estimate.client?.address?.state,
+          postal_code: invoice.estimate.client?.address?.postal_code,
+          country: invoice.estimate.client?.address?.country,
+        },
       },
       {
         stripeAccount: hasCompany.stripeAccountId,
@@ -61,7 +80,7 @@ export const createInvoice = new Elysia().post(
       {
         customer: stripeCustomer.id,
         collection_method: "send_invoice",
-        days_until_due: 30, // Ajuste conforme necessário
+        days_until_due: 7, // Ajuste conforme necessário
         auto_advance: false, // Impede que a invoice seja finalizada automaticamente
         metadata: {
           invoiceId: invoice.id,
@@ -76,8 +95,8 @@ export const createInvoice = new Elysia().post(
       {
         customer: stripeCustomer.id,
         amount: Math.round(Number(invoice.total) * 100), // Stripe usa centavos, arredondamos para evitar problemas com decimais
-        currency: "brl",
-        description: `Invoice ${invoice.invoice_number}`,
+        currency: user.country === "BR" ? "brl" : "usd",
+        description: `${invoice.invoice_number}`,
         invoice: stripeInvoice.id,
       },
       {

@@ -3,8 +3,8 @@ import { db } from "../../../lib/prisma"
 import { auth } from "../../authentication"
 import { AuthError } from "../errors/auth-error"
 
-export const checkSupplier = new Elysia().get(
-  `/supplier/check/:cnpj`,
+export const checkCompanyCNPJ = new Elysia().get(
+  `/company/check/cnpj/:cnpj`,
   async ({ cookie, params }) => {
     const { cnpj } = params
 
@@ -13,19 +13,19 @@ export const checkSupplier = new Elysia().get(
       throw new AuthError("Unauthorized", "UNAUTHORIZED", 401)
     }
 
-    const checkSupplierExists = await db.supplier.findUnique({
+    const checkCompanyExists = await db.company.findUnique({
       where: {
         cnpj,
       },
     })
 
-    if (checkSupplierExists) {
+    if (checkCompanyExists) {
       return {
-        message: "Supplier already exists",
+        message: "Company already exists",
       }
     } else {
       return {
-        message: "Supplier not found",
+        message: "Company not found",
       }
     }
   },
@@ -39,7 +39,7 @@ export const checkSupplier = new Elysia().get(
           message: t.String(),
         },
         {
-          description: "Supplier not found",
+          description: "Company not found",
         }
       ),
       400: t.Object(
@@ -47,7 +47,7 @@ export const checkSupplier = new Elysia().get(
           message: t.String(),
         },
         {
-          description: "Supplier already exists",
+          description: "Company already exists",
         }
       ),
       401: t.Object(
@@ -60,8 +60,8 @@ export const checkSupplier = new Elysia().get(
       ),
     },
     detail: {
-      description: "Check if Supplier exists (individual or corporate)",
-      tags: ["Supplier"],
+      description: "Check if company exists (individual or corporate)",
+      tags: ["Company"],
     },
   }
 )

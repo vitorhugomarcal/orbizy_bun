@@ -44,7 +44,7 @@ export const registerCompany = new Elysia().post(
 
     let accountParams: Stripe.AccountCreateParams = {
       type: "express",
-      country: "BR",
+      country: user.country === "BR" ? "BR" : "US",
       email,
       capabilities: {
         card_payments: { requested: true },
