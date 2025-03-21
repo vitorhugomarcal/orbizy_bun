@@ -9,8 +9,12 @@ export const checkCompanyCNPJ = new Elysia().get(
     const { cnpj } = params
 
     const user = await auth({ cookie })
+
     if (!user) {
       throw new AuthError("Unauthorized", "UNAUTHORIZED", 401)
+    }
+    if (!cnpj) {
+      throw new AuthError("CNPJ is required", "CNPJ_REQUIRED", 400)
     }
 
     const checkCompanyExists = await db.company.findUnique({
