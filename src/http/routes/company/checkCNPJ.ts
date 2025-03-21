@@ -23,6 +23,8 @@ export const checkCompanyCNPJ = new Elysia().get(
       },
     })
 
+    console.log("CNPJ => ", checkCompanyExists)
+
     if (checkCompanyExists) {
       return {
         message: "Company already exists",
