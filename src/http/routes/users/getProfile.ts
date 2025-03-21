@@ -10,6 +10,8 @@ export const getProfile = new Elysia().get(
       throw new AuthError("Unauthorized", "UNAUTHORIZED", 401)
     }
 
+    console.log("user", user)
+
     return {
       message: "Profile retrieved successfully",
       user,
