@@ -27,7 +27,7 @@ export const checkCompanyCNPJ = new Elysia().get(
 
     console.log("CNPJ => ", checkCompanyExists)
 
-    if (!checkCompanyExists) {
+    if (checkCompanyExists === null) {
       return {
         message: "Company not found",
       }
