@@ -27,14 +27,14 @@ export const checkCompanyCNPJ = new Elysia().get(
 
     console.log("CNPJ => ", checkCompanyExists)
 
-    if (checkCompanyExists) {
+    if (!checkCompanyExists) {
       return {
-        message: "Company already exists",
-        company: checkCompanyExists,
+        message: "Company not found",
       }
     } else {
       return {
-        message: "Company not found",
+        message: "Company already exists",
+        company: checkCompanyExists,
       }
     }
   },
