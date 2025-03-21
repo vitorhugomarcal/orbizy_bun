@@ -11,15 +11,17 @@ export const registerCompany = new Elysia().post(
       cnpj,
       company_name,
       phone,
-      country,
-      city,
-      state,
-      postal_code,
-      street,
-      number,
-      neighborhood,
-      street_address,
-      unit_number,
+      address: {
+        country,
+        city,
+        state,
+        postal_code,
+        street,
+        number,
+        neighborhood,
+        street_address,
+        unit_number,
+      },
     } = body
 
     const user = await auth({ cookie })
@@ -41,7 +43,7 @@ export const registerCompany = new Elysia().post(
       )
     }
 
-    const address = await db.address.create({
+    const createAddress = await db.address.create({
       data: {
         country,
         city,
@@ -62,7 +64,7 @@ export const registerCompany = new Elysia().post(
         phone,
         company_name,
         owner_id: user.id,
-        address_id: address.id,
+        address_id: createAddress.id,
       },
       include: {
         address: true,
@@ -89,15 +91,17 @@ export const registerCompany = new Elysia().post(
       cnpj: t.Nullable(t.String()),
       company_name: t.String(),
       phone: t.String(),
-      country: t.String(),
-      city: t.String(),
-      state: t.String(),
-      postal_code: t.String(),
-      street: t.Nullable(t.String()),
-      number: t.Nullable(t.String()),
-      neighborhood: t.Nullable(t.String()),
-      street_address: t.Nullable(t.String()),
-      unit_number: t.Nullable(t.String()),
+      address: t.Object({
+        country: t.String(),
+        city: t.String(),
+        state: t.String(),
+        postal_code: t.String(),
+        street: t.Nullable(t.String()),
+        number: t.Nullable(t.String()),
+        neighborhood: t.Nullable(t.String()),
+        street_address: t.Nullable(t.String()),
+        unit_number: t.Nullable(t.String()),
+      }),
     }),
     response: {
       201: t.Object(
