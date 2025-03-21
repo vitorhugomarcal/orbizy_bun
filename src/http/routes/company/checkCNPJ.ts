@@ -22,6 +22,7 @@ export const checkCompanyCNPJ = new Elysia().get(
     if (checkCompanyExists) {
       return {
         message: "Company already exists",
+        company: checkCompanyExists,
       }
     } else {
       return {
@@ -37,6 +38,16 @@ export const checkCompanyCNPJ = new Elysia().get(
       200: t.Object(
         {
           message: t.String(),
+          company: t.Object({
+            id: t.String(),
+            company_name: t.String(),
+            cnpj: t.Nullable(t.String()),
+            ein: t.Nullable(t.String()),
+            phone: t.String(),
+            stripeAccountId: t.Nullable(t.String()),
+            owner_id: t.String(),
+            address_id: t.String(),
+          }),
         },
         {
           description: "Company not found",
