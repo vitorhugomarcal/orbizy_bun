@@ -13,20 +13,25 @@ export const checkCompanyEIN = new Elysia().get(
       throw new AuthError("Unauthorized", "UNAUTHORIZED", 401)
     }
 
+    if (!ein) {
+      throw new AuthError("EIN is required", "EIN_REQUIRED", 400)
+    }
+
     const checkCompanyExists = await db.company.findUnique({
       where: {
         ein,
       },
     })
 
-    if (checkCompanyExists) {
+    if (!checkCompanyExists) {
       return {
-        message: "Company already exists",
-        company: checkCompanyExists,
+        message: "Company not found",
+        company: null,
       }
     } else {
       return {
-        message: "Company not found",
+        message: "Company already exists",
+        company: checkCompanyExists,
       }
     }
   },
@@ -38,16 +43,18 @@ export const checkCompanyEIN = new Elysia().get(
       200: t.Object(
         {
           message: t.String(),
-          company: t.Object({
-            id: t.String(),
-            company_name: t.String(),
-            cnpj: t.Nullable(t.String()),
-            ein: t.Nullable(t.String()),
-            phone: t.String(),
-            stripeAccountId: t.Nullable(t.String()),
-            owner_id: t.String(),
-            address_id: t.String(),
-          }),
+          company: t.Nullable(
+            t.Object({
+              id: t.String(),
+              company_name: t.String(),
+              cnpj: t.Nullable(t.String()),
+              ein: t.Nullable(t.String()),
+              phone: t.String(),
+              stripeAccountId: t.Nullable(t.String()),
+              owner_id: t.String(),
+              address_id: t.String(),
+            })
+          ),
         },
         {
           description: "Company not found",
