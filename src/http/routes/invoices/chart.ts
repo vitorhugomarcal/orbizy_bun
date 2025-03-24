@@ -1,5 +1,12 @@
-import { endOfYear, format, isSameMonth, parse, startOfYear } from "date-fns"
-import { ptBR } from "date-fns/locale"
+import {
+  endOfYear,
+  format,
+  isSameMonth,
+  parse,
+  startOfYear,
+  type Locale,
+} from "date-fns"
+import { enUS, ptBR } from "date-fns/locale"
 import Elysia, { t } from "elysia"
 import { db } from "../../../lib/prisma"
 import { auth } from "../../authentication"
@@ -12,16 +19,17 @@ interface MonthlyRevenue {
 
 const calculateMonthlyRevenue = (
   invoices: any[],
-  currentYear: number
+  currentYear: number,
+  locale: Locale
 ): MonthlyRevenue[] => {
   const months = Array.from({ length: 12 }, (_, index) =>
-    format(new Date(currentYear, index), "MMMM", { locale: ptBR })
+    format(new Date(currentYear, index), "MMMM", { locale })
   )
 
   return months.map((month) => {
     const monthInvoices = invoices.filter((invoice) => {
       const invoiceDate = new Date(invoice.createdAt)
-      const monthDate = parse(month, "MMMM", new Date(), { locale: ptBR })
+      const monthDate = parse(month, "MMMM", new Date(), { locale })
       return isSameMonth(invoiceDate, monthDate)
     })
 
@@ -50,6 +58,9 @@ export const invoiceChart = new Elysia().get(
       throw new AuthError("Company not found", "COMPANY_NOT_FOUND", 404)
     }
 
+    const isUS = user.country === "US"
+    const locale = isUS ? enUS : ptBR
+
     const currentYear = new Date().getFullYear()
     const startDate = startOfYear(new Date())
     const endDate = endOfYear(new Date())
@@ -74,10 +85,12 @@ export const invoiceChart = new Elysia().get(
       (invoice) => invoice.total !== null
     )
 
-    const stats = calculateMonthlyRevenue(filteredInvoices, currentYear)
+    const stats = calculateMonthlyRevenue(filteredInvoices, currentYear, locale)
 
     return {
-      message: "Contagem dos meses finalizada obtida com sucesso",
+      message: isUS
+        ? "Monthly count obtained successfully"
+        : "Contagem dos meses finalizada obtida com sucesso",
       stats,
     }
   },
