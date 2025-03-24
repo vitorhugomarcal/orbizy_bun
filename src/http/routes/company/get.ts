@@ -136,8 +136,6 @@ export const getCompany = new Elysia().get(
       }),
     }
 
-    console.log(formattedCompany)
-
     return {
       message: "Company found",
       company: formattedCompany,

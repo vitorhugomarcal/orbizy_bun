@@ -13,6 +13,8 @@ export const registerCompany = new Elysia().post(
     const { name, email, taxId } = body
     const { companyId } = params
 
+    console.log("body stripe", name, email, taxId)
+
     if (!companyId) {
       throw new AuthError("Company ID not provided", "MISSING_COMPANY_ID", 400)
     }
