@@ -28,19 +28,15 @@ export const registerCompany = new Elysia().post(
       throw new AuthError("Unauthorized", "UNAUTHORIZED", 401)
     }
 
+    const client = await db.client.findFirst({
+      where: {
+        OR: [{ cpf: taxId }, { cnpj: taxId }, { ssn: taxId }, { ein: taxId }],
+      },
+    })
+
     const cleanTaxId = taxId.replace(/[^\d]/g, "")
-    const isIndividual = cleanTaxId.length === 11
-    const isCompany = cleanTaxId.length === 14
 
-    if (!isIndividual && !isCompany) {
-      throw new AuthError("CPF ou CNPJ inválido", "INVALID_TAX_ID", 400)
-    }
-
-    if (isIndividual && !isValidCPF(cleanTaxId)) {
-      throw new AuthError("CPF inválido", "INVALID_CPF", 400)
-    } else if (isCompany && !isValidCNPJ(cleanTaxId)) {
-      throw new AuthError("CNPJ inválido", "INVALID_CNPJ", 400)
-    }
+    const isIndividual = client?.type === "pf" || client?.type === "pfUS"
 
     let accountParams: Stripe.AccountCreateParams = {
       type: "express",
@@ -48,8 +44,10 @@ export const registerCompany = new Elysia().post(
       email,
       capabilities: {
         card_payments: { requested: true },
-        boleto_payments: { requested: true },
         transfers: { requested: true },
+        ...(user.country === "BR"
+          ? { boleto_payments: { requested: true } }
+          : {}),
       },
     }
 
