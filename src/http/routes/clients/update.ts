@@ -73,8 +73,9 @@ export const update = new Elysia().put(
 
     const client = await db.client.update({
       where: {
-        id: clientId,
+        id: clientExists.id,
       },
+      include: { address: true },
       data: {
         type,
         email_address,
