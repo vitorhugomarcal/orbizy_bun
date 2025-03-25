@@ -93,8 +93,8 @@ export const refreshToken = new Elysia().post(
       ),
     },
     detail: {
-      description: "Cadastra uma nova fatura",
-      tags: ["Stripe"],
+      description: "Refresh token",
+      tags: ["MercadoPago"],
     },
   }
 )

@@ -21,8 +21,8 @@ export const redirect = new Elysia().get(
       ),
     },
     detail: {
-      description: "Redirect to app after Stripe onboarding",
-      tags: ["Stripe"],
+      description: "Redirect to app after MercadoPago onboarding",
+      tags: ["MercadoPago"],
     },
   }
 )

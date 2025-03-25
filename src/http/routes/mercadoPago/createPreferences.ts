@@ -104,8 +104,8 @@ export const createPreferences = new Elysia().post(
       ),
     },
     detail: {
-      description: "Cadastra uma nova fatura",
-      tags: ["Stripe"],
+      description: "Preferences",
+      tags: ["MercadoPago"],
     },
   }
 )

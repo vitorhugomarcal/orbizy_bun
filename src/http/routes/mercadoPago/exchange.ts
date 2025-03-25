@@ -96,8 +96,8 @@ export const exchangeToken = new Elysia().post(
       ),
     },
     detail: {
-      description: "Cadastra uma nova fatura",
-      tags: ["Stripe"],
+      description: "Exchange token",
+      tags: ["MercadoPago"],
     },
   }
 )
