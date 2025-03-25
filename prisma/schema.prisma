@@ -13,6 +13,9 @@ model User {
   email              String        @unique
   country            String
   company_id         String?
+  mp_at              String?
+  mp_rt              String?
+  mp_id              String?
   role               Role          @default(BASIC)
   type               Type          @default(basic)
   createdAt          DateTime      @default(now())
