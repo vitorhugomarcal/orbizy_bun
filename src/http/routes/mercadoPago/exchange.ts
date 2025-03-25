@@ -8,6 +8,8 @@ export const exchangeToken = new Elysia().post(
   async ({ cookie, body }) => {
     const { code } = body
 
+    console.log("CODE MP", code)
+
     const user = await auth({ cookie })
     if (!user) {
       throw new AuthError("Unauthorized", "UNAUTHORIZED", 401)
