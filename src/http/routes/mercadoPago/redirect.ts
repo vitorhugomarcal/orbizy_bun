@@ -3,7 +3,7 @@ import Elysia, { t } from "elysia"
 export const redirect = new Elysia().get(
   "/mp/redirect",
   async ({ set }) => {
-    const appScheme = "vhminvoice://(tabs)/Settings/PaymentType"
+    const appScheme = "vhminvoice://settings/payment"
     set.headers["Location"] = appScheme
     set.status = 302
 
