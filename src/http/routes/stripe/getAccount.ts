@@ -37,7 +37,6 @@ export const getAccount = new Elysia().get(
           person: t.Array(
             t.Object({
               id: t.String(),
-              status: t.String(),
             })
           ),
         },
