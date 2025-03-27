@@ -20,11 +20,13 @@ export const getAccount = new Elysia().get(
       throw new AuthError("Unauthorized", "UNAUTHORIZED", 401)
     }
 
-    const { data } = await stripe.accounts.listPersons(accountId)
+    const response = await stripe.accounts.listPersons(accountId)
+
+    console.log(response)
 
     return {
       message: "Empresa cadastrada com sucesso",
-      person: data,
+      person: response,
     }
   },
   {
