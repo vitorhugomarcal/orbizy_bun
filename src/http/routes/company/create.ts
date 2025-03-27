@@ -33,22 +33,6 @@ export const registerCompany = new Elysia().post(
 
     console.log("USER =>", user)
 
-    const checkCompanyExists = await db.company.findFirst({
-      where: {
-        OR: [{ cnpj: cnpj || null }, { ein: ein || null }],
-      },
-    })
-
-    console.log("COMPANY EXISTS =>", checkCompanyExists)
-
-    if (checkCompanyExists) {
-      throw new AuthError(
-        "Company already exists",
-        "COMPANY_ALREADY_EXISTS",
-        400
-      )
-    }
-
     const createAddress = await db.address.create({
       data: {
         country,
