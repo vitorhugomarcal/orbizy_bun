@@ -64,6 +64,7 @@ export const getCompanyById = new Elysia().get(
             client: true,
           },
         },
+        paymentModeCustom: true,
       },
     })
 
@@ -309,6 +310,13 @@ export const getCompanyById = new Elysia().get(
                   company_name: t.Nullable(t.String()),
                   phone: t.String(),
                 }),
+              })
+            ),
+            paymentModeCustom: t.Array(
+              t.Object({
+                id: t.String(),
+                name: t.String(),
+                code: t.String(),
               })
             ),
           }),

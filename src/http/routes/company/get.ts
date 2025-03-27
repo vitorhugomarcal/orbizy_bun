@@ -47,7 +47,7 @@ export const getCompany = new Elysia().get(
             },
           },
         },
-        // paymentModeCustom: true,
+        paymentModeCustom: true,
         // unitTypeCustom: true,
         estimate: {
           include: {
@@ -398,6 +398,13 @@ export const getCompany = new Elysia().get(
                   email_address: t.String(),
                   phone: t.String(),
                 }),
+              })
+            ),
+            paymentModeCustom: t.Array(
+              t.Object({
+                id: t.String(),
+                name: t.String(),
+                code: t.String(),
               })
             ),
           }),

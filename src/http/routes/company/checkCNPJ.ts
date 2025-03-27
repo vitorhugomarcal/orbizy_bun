@@ -8,8 +8,6 @@ export const checkCompanyCNPJ = new Elysia().get(
   async ({ cookie, params }) => {
     const { cnpj } = params
 
-    console.log(cnpj)
-
     const user = await auth({ cookie })
 
     if (!user) {
@@ -24,8 +22,6 @@ export const checkCompanyCNPJ = new Elysia().get(
         cnpj,
       },
     })
-
-    console.log("CNPJ => ", checkCompanyExists)
 
     if (!checkCompanyExists) {
       return {

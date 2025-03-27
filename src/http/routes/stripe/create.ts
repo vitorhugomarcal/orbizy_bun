@@ -80,6 +80,9 @@ export const createInvoice = new Elysia().post(
       {
         customer: stripeCustomer.id,
         collection_method: "send_invoice",
+        payment_settings: {
+          payment_method_types: ["card"],
+        },
         days_until_due: 7, // Ajuste conforme necessário
         auto_advance: false, // Impede que a invoice seja finalizada automaticamente
         metadata: {
