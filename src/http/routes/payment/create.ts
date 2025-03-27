@@ -21,8 +21,6 @@ export const createPayment = new Elysia().post(
 
     const checkPaymentExists = await db.paymentModeCustom.findFirst({
       where: {
-        name,
-        type,
         code,
         company_id: hasCompany.id,
       },
