@@ -24,6 +24,8 @@ export const getAccount = new Elysia().get(
 
     const account = await stripe.accounts.retrieve(accountId)
 
+    console.log(account)
+
     return {
       message: "Empresa cadastrada com sucesso",
       person: response.data,
@@ -45,9 +47,6 @@ export const getAccount = new Elysia().get(
             email: t.String(),
             login_links: t.Object({
               url: t.String(),
-              data: t.Object({
-                url: t.String(),
-              }),
             }),
           }),
         },
