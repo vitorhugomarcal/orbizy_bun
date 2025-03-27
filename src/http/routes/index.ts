@@ -9,7 +9,7 @@ import estimateSupplierItensRoutes from "./estimateSupplierItens"
 import inviteRoutes from "./inviteClient"
 import invoiceRoutes from "./invoices"
 import itemRoutes from "./itens"
-import mercadoPagoRoutes from "./mercadoPago"
+import paymentRoutes from "./payment"
 import scheduleRoutes from "./schedule"
 import stripeRoutes from "./stripe"
 import supplierRoutes from "./supplier"
@@ -26,10 +26,10 @@ const routes = new Elysia()
   .use(invoiceRoutes)
   .use(clientsRoutes)
   .use(companyRoutes)
+  .use(paymentRoutes)
   .use(estimateRoutes)
   .use(supplierRoutes)
   .use(scheduleRoutes)
-  .use(mercadoPagoRoutes)
   .use(estimateItensRoutes)
   .use(estimateSupplierRoutes)
   .use(estimateSupplierItensRoutes)
