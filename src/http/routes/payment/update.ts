@@ -6,7 +6,7 @@ import { AuthError } from "../errors/auth-error"
 export const updatePayment = new Elysia().put(
   `/payment/update/:paymentId`,
   async ({ cookie, body, params }) => {
-    const { name, code } = body
+    const { name, type, code } = body
 
     const user = await auth({ cookie })
     if (!user) {
@@ -34,6 +34,7 @@ export const updatePayment = new Elysia().put(
       },
       data: {
         name,
+        type,
         code,
       },
     })
@@ -46,6 +47,7 @@ export const updatePayment = new Elysia().put(
   {
     body: t.Object({
       name: t.Optional(t.String()),
+      type: t.Optional(t.String()),
       code: t.Optional(t.String()),
     }),
     response: {
@@ -54,6 +56,7 @@ export const updatePayment = new Elysia().put(
           message: t.String(),
           payment: t.Object({
             name: t.String(),
+            type: t.String(),
             code: t.String(),
           }),
         },

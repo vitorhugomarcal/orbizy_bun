@@ -6,7 +6,7 @@ import { AuthError } from "../errors/auth-error"
 export const createPayment = new Elysia().post(
   `/payment/create`,
   async ({ cookie, body }) => {
-    const { name, code } = body
+    const { name, type, code } = body
 
     const user = await auth({ cookie })
     if (!user) {
@@ -22,6 +22,7 @@ export const createPayment = new Elysia().post(
     const checkPaymentExists = await db.paymentModeCustom.findFirst({
       where: {
         name,
+        type,
         code,
         company_id: hasCompany.id,
       },
@@ -39,6 +40,7 @@ export const createPayment = new Elysia().post(
       data: {
         company_id: hasCompany.id,
         name,
+        type,
         code,
       },
     })
@@ -51,6 +53,7 @@ export const createPayment = new Elysia().post(
   {
     body: t.Object({
       name: t.String(),
+      type: t.String(),
       code: t.String(),
     }),
     response: {
@@ -60,6 +63,7 @@ export const createPayment = new Elysia().post(
           payment: t.Object({
             id: t.String(),
             name: t.String(),
+            type: t.String(),
             code: t.String(),
           }),
         },

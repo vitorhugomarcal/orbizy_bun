@@ -52,6 +52,7 @@ export const getById = new Elysia().get(
           payment: t.Object({
             id: t.String(),
             name: t.String(),
+            type: t.String(),
             code: t.String(),
           }),
         },

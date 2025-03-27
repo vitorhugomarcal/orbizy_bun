@@ -404,6 +404,7 @@ export const getCompany = new Elysia().get(
               t.Object({
                 id: t.String(),
                 name: t.String(),
+                type: t.String(),
                 code: t.String(),
               })
             ),

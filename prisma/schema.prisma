@@ -152,6 +152,7 @@ model PaymentMode {
 model PaymentModeCustom {
   id         String   @id @default(uuid())
   name       String
+  type       String
   code       String
   company_id String?  @map("company_id")
   company    Company? @relation(fields: [company_id], references: [id], onDelete: Cascade)
