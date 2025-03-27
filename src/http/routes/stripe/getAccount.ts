@@ -22,7 +22,7 @@ export const getAccount = new Elysia().get(
 
     const response = await stripe.accounts.listPersons(accountId)
 
-    console.log(response)
+    console.log(response.data)
 
     return {
       message: "Empresa cadastrada com sucesso",
