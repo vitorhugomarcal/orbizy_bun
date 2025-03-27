@@ -71,6 +71,8 @@ export const registerCompany = new Elysia().post(
       },
     })
 
+    console.log(company)
+
     await db.user.update({
       where: {
         id: user.id,
