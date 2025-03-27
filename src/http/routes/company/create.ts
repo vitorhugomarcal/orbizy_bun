@@ -24,14 +24,10 @@ export const registerCompany = new Elysia().post(
       },
     } = body
 
-    console.log("BODY =>", body)
-
     const user = await auth({ cookie })
     if (!user) {
       throw new AuthError("Unauthorized", "UNAUTHORIZED", 401)
     }
-
-    console.log("USER =>", user)
 
     const createAddress = await db.address.create({
       data: {
@@ -46,7 +42,6 @@ export const registerCompany = new Elysia().post(
         unit_number,
       },
     })
-    console.log("ADDRESS CREATED =>", createAddress)
 
     const company = await db.company.create({
       data: {
@@ -61,8 +56,6 @@ export const registerCompany = new Elysia().post(
         address: true,
       },
     })
-
-    console.log("COMPANY CREATED =>", company)
 
     await db.user.update({
       where: {
