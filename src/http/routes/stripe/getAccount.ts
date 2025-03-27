@@ -22,11 +22,12 @@ export const getAccount = new Elysia().get(
 
     const response = await stripe.accounts.listPersons(accountId)
 
-    console.log(response.data)
+    const loginLink = await stripe.accounts.createLoginLink(accountId)
 
     return {
       message: "Empresa cadastrada com sucesso",
       person: response.data,
+      loginLink,
     }
   },
   {
@@ -39,6 +40,9 @@ export const getAccount = new Elysia().get(
               id: t.String(),
             })
           ),
+          loginLink: t.Object({
+            url: t.String(),
+          }),
         },
         {
           description: "Stripe Company created successfully",
