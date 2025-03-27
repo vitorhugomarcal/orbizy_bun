@@ -20,7 +20,7 @@ export const getAccount = new Elysia().get(
       throw new AuthError("Unauthorized", "UNAUTHORIZED", 401)
     }
 
-    const account = await stripe.accounts.retrieve(accountId)
+    const account = await stripe.accounts.listPersons(accountId)
 
     return {
       message: "Empresa cadastrada com sucesso",
@@ -34,12 +34,7 @@ export const getAccount = new Elysia().get(
           message: t.String(),
           account: t.Object({
             id: t.String(),
-            requirements: t.Object({
-              pending_verification: t.Array(t.String()),
-              currently_due: t.Array(t.String()),
-              eventually_due: t.Array(t.String()),
-              disabled_reason: t.String(),
-            }),
+            status: t.String(),
           }),
         },
         {
