@@ -31,11 +31,15 @@ export const registerCompany = new Elysia().post(
       throw new AuthError("Unauthorized", "UNAUTHORIZED", 401)
     }
 
+    console.log("USER =>", user)
+
     const checkCompanyExists = await db.company.findFirst({
       where: {
         OR: [{ cnpj: cnpj || null }, { ein: ein || null }],
       },
     })
+
+    console.log("COMPANY EXISTS =>", checkCompanyExists)
 
     if (checkCompanyExists) {
       throw new AuthError(
