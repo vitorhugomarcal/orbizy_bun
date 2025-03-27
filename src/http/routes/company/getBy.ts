@@ -54,6 +54,9 @@ export const getCompanyById = new Elysia().get(
               },
             },
           },
+          orderBy: {
+            createdAt: "desc",
+          },
         },
         item: true,
         pendingUsers: true,

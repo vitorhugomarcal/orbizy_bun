@@ -58,6 +58,9 @@ export const getCompany = new Elysia().get(
               },
             },
           },
+          orderBy: {
+            createdAt: "desc",
+          },
         },
         invoice: {
           include: {
@@ -67,6 +70,9 @@ export const getCompany = new Elysia().get(
                 client: { include: { address: true } },
               },
             },
+          },
+          orderBy: {
+            createdAt: "desc",
           },
         },
         item: true,
