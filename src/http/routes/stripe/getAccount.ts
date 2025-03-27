@@ -26,7 +26,7 @@ export const getAccount = new Elysia().get(
 
     return {
       message: "Empresa cadastrada com sucesso",
-      person: response,
+      person: response.data,
     }
   },
   {
