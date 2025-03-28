@@ -10,7 +10,7 @@ export const registerCompany = new Elysia().post(
   async ({ cookie, body, params }) => {
     const stripe = new Stripe(env.STRIPE_SECRET_KEY)
 
-    const { name, email, taxId } = body
+    const { name, email, taxId, country } = body
     const { companyId } = params
 
     if (!companyId) {
@@ -28,54 +28,81 @@ export const registerCompany = new Elysia().post(
       throw new AuthError("Unauthorized", "UNAUTHORIZED", 401)
     }
 
-    const cleanTaxId = taxId.replace(/[^\d]/g, "")
-    const isIndividual = cleanTaxId.length === 11
-    const isCompany = cleanTaxId.length === 14
-
-    if (!isIndividual && !isCompany) {
-      throw new AuthError("CPF ou CNPJ inválido", "INVALID_TAX_ID", 400)
-    }
-
-    if (isIndividual && !isValidCPF(cleanTaxId)) {
-      throw new AuthError("CPF inválido", "INVALID_CPF", 400)
-    } else if (isCompany && !isValidCNPJ(cleanTaxId)) {
-      throw new AuthError("CNPJ inválido", "INVALID_CNPJ", 400)
-    }
-
     let accountParams: Stripe.AccountCreateParams = {
       type: "express",
-      country: user.country,
       email,
+      country,
       capabilities: {
         card_payments: { requested: true },
-        boleto_payments: { requested: true },
         transfers: { requested: true },
       },
     }
 
-    if (isIndividual) {
-      accountParams = {
-        ...accountParams,
-        business_type: "individual",
-        individual: {
-          first_name: name.split(" ")[0],
-          last_name: name.split(" ").slice(1).join(" "),
-          email: email,
-          id_number: cleanTaxId,
-        },
+    if (country === "BR") {
+      const cleanTaxId = taxId.replace(/[^\d]/g, "")
+      const isIndividual = cleanTaxId.length === 11
+      const isCompany = cleanTaxId.length === 14
+
+      if (!isIndividual && !isCompany) {
+        throw new AuthError("CPF ou CNPJ inválido", "INVALID_TAX_ID", 400)
       }
-    } else {
+
+      if (isIndividual && !isValidCPF(cleanTaxId)) {
+        throw new AuthError("CPF inválido", "INVALID_CPF", 400)
+      } else if (isCompany && !isValidCNPJ(cleanTaxId)) {
+        throw new AuthError("CNPJ inválido", "INVALID_CNPJ", 400)
+      }
+
+      accountParams.capabilities = {
+        ...accountParams.capabilities,
+        boleto_payments: { requested: true },
+        // pix_payments: { requested: true },
+      }
+
+      if (isIndividual) {
+        accountParams = {
+          ...accountParams,
+          business_type: "individual",
+          individual: {
+            first_name: name.split(" ")[0],
+            last_name: name.split(" ").slice(1).join(" "),
+            email: email,
+            id_number: cleanTaxId,
+          },
+        }
+      } else {
+        accountParams = {
+          ...accountParams,
+          business_type: "company",
+          company: {
+            name,
+            tax_id: cleanTaxId,
+          },
+          business_profile: {
+            url: "https://orbizy.app",
+          },
+        }
+      }
+    } else if (country === "US") {
+      // Para os EUA, geralmente usamos SSN para indivíduos e EIN para empresas
       accountParams = {
         ...accountParams,
-        business_type: "company",
+        business_type: "company", // ou "individual" dependendo do caso
         company: {
           name,
-          tax_id: cleanTaxId,
+          tax_id: taxId, // EIN para empresas
         },
         business_profile: {
           url: "https://orbizy.app",
         },
       }
+
+      accountParams.capabilities = {
+        ...accountParams.capabilities,
+        // ach_direct_debits: { requested: true },
+      }
+    } else {
+      throw new AuthError("País não suportado", "UNSUPPORTED_COUNTRY", 400)
     }
 
     const account = await stripe.accounts.create(accountParams)
@@ -97,9 +124,12 @@ export const registerCompany = new Elysia().post(
     })
 
     return {
-      message: isIndividual
-        ? "Pessoa física cadastrada com sucesso"
-        : "Empresa cadastrada com sucesso",
+      message:
+        country === "BR"
+          ? accountParams.business_type === "individual"
+            ? "Pessoa física cadastrada com sucesso"
+            : "Empresa cadastrada com sucesso"
+          : "Company registered successfully",
       companyId: company.id,
       stripeAccountId: account.id,
       onboardingUrl: accountLink.url,
@@ -110,6 +140,7 @@ export const registerCompany = new Elysia().post(
       name: t.String(),
       email: t.String(),
       taxId: t.String(),
+      country: t.String(),
     }),
     response: {
       201: t.Object(
@@ -136,7 +167,7 @@ export const registerCompany = new Elysia().post(
           message: t.String(),
         },
         {
-          description: "Item já cadastrado",
+          description: "Invalid input",
         }
       ),
     },
@@ -149,15 +180,11 @@ export const registerCompany = new Elysia().post(
 
 // Funções de validação (implemente a lógica completa)
 function isValidCPF(cpf: string): boolean {
-  cpf = cpf.replace(/[^\d]/g, "")
-  if (cpf.length !== 11) return false
-  // Implementar lógica completa de validação de CPF
+  // Implemente a lógica completa de validação de CPF
   return true
 }
 
 function isValidCNPJ(cnpj: string): boolean {
-  cnpj = cnpj.replace(/[^\d]/g, "")
-  if (cnpj.length !== 14) return false
-  // Implementar lógica completa de validação de CNPJ
+  // Implemente a lógica completa de validação de CNPJ
   return true
 }
