@@ -54,7 +54,7 @@ export const getAllByCompany = new Elysia().get(
               cnpj: t.Nullable(t.String()),
               ein: t.Nullable(t.String()),
               phone: t.String(),
-              email_address: t.String(),
+              email_address: t.Nullable(t.String()),
               address: t.Object({
                 country: t.String(),
                 state: t.String(),

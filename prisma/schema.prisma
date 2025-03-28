@@ -82,7 +82,7 @@ model Supplier {
   cnpj          String?  @unique
   phone         String
   company_name  String
-  email_address String   @default("")
+  email_address String?  @default("")
   address_id    String   @unique // Garante que cada cliente tem um único endereço
   createdAt     DateTime @default(now())
 

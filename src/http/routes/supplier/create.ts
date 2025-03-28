@@ -4,20 +4,22 @@ import { auth } from "../../authentication"
 import { AuthError } from "../errors/auth-error"
 
 const SupplierCreateBody = t.Object({
-  email_address: t.String(),
-  company_name: t.String(),
-  cnpj: t.Nullable(t.String()),
   ein: t.Nullable(t.String()),
+  cnpj: t.Nullable(t.String()),
+  company_name: t.String(),
+  email_address: t.Nullable(t.String()),
   phone: t.String(),
-  country: t.String(),
-  state: t.String(),
-  city: t.String(),
-  postal_code: t.String(),
-  street: t.Nullable(t.String()),
-  number: t.Nullable(t.String()),
-  neighborhood: t.Nullable(t.String()),
-  street_address: t.Nullable(t.String()),
-  unit_number: t.Nullable(t.String()),
+  address: t.Object({
+    country: t.String(),
+    city: t.String(),
+    state: t.String(),
+    postal_code: t.String(),
+    street: t.Nullable(t.String()),
+    number: t.Nullable(t.String()),
+    neighborhood: t.Nullable(t.String()),
+    street_address: t.Nullable(t.String()),
+    unit_number: t.Nullable(t.String()),
+  }),
 })
 
 const ResponseTypes = {
@@ -40,20 +42,22 @@ export const createSupplier = new Elysia().post(
   `/supplier/create`,
   async ({ cookie, body }) => {
     const {
-      cnpj,
       ein,
-      phone,
+      cnpj,
       company_name,
       email_address,
-      country,
-      state,
-      city,
-      postal_code,
-      street,
-      number,
-      neighborhood,
-      street_address,
-      unit_number,
+      phone,
+      address: {
+        country,
+        city,
+        state,
+        postal_code,
+        street,
+        number,
+        neighborhood,
+        street_address,
+        unit_number,
+      },
     } = body
 
     const user = await auth({ cookie })
@@ -124,8 +128,8 @@ export const createSupplier = new Elysia().post(
       })
       const newSupplier = await db.supplier.create({
         data: {
-          email_address,
           company_name,
+          email_address,
           cnpj,
           ein,
           phone,
