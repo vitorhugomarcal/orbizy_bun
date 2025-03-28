@@ -24,7 +24,7 @@ const SupplierCreateBody = t.Object({
 
 const ResponseTypes = {
   201: t.Object(
-    { message: t.String() },
+    { message: t.String(), supplier: t.Any() },
     { description: "Fornecedor criado com sucesso" }
   ),
   400: t.Object(
@@ -71,46 +71,47 @@ export const createSupplier = new Elysia().post(
       throw new AuthError("Empresa não encontrada", "COMPANY_NOT_FOUND", 404)
     }
 
-    const existingSupplierCNPJ = await db.supplier.findFirst({
-      where: { cnpj },
-    })
-
-    const existingSupplierEIN = await db.supplier.findFirst({ where: { ein } })
-
-    if (!existingSupplierCNPJ || !existingSupplierEIN) {
+    if (!ein && !cnpj) {
       throw new AuthError(
-        "Supplier with this CNPJ already exists",
-        "SUPPLIER_ALREADY_EXISTS",
+        "É necessário fornecer CNPJ ou EIN",
+        "MISSING_IDENTIFIER",
         400
       )
     }
 
-    if (existingSupplierCNPJ || existingSupplierEIN) {
+    let existingSupplier = null
+    if (cnpj) {
+      existingSupplier = await db.supplier.findFirst({ where: { cnpj } })
+    } else if (ein) {
+      existingSupplier = await db.supplier.findFirst({ where: { ein } })
+    }
+
+    if (existingSupplier) {
       const supplierUserExists = await db.supplierUser.findUnique({
         where: {
           supplier_id_company_id: {
-            supplier_id: existingSupplierCNPJ.id || existingSupplierEIN.id,
+            supplier_id: existingSupplier.id,
             company_id: hasCompany.id,
           },
         },
       })
+
       if (supplierUserExists) {
-        throw new AuthError(
-          "Supplier is already associated with this user",
-          "SUPPLIER_ALREADY_EXISTS",
-          400
-        )
+        return {
+          message: "Fornecedor já está associado a este usuário",
+          supplier: existingSupplier,
+        }
       } else {
         await db.supplierUser.create({
           data: {
-            supplier_id: existingSupplierCNPJ.id || existingSupplierEIN.id,
+            supplier_id: existingSupplier.id,
             company_id: hasCompany.id,
           },
         })
-      }
-      return {
-        message: "Supplier is already associated with this user",
-        supplier: existingSupplierCNPJ,
+        return {
+          message: "Fornecedor existente associado com sucesso",
+          supplier: existingSupplier,
+        }
       }
     } else {
       const address = await db.address.create({
@@ -126,6 +127,7 @@ export const createSupplier = new Elysia().post(
           unit_number,
         },
       })
+
       const newSupplier = await db.supplier.create({
         data: {
           company_name,
@@ -143,8 +145,9 @@ export const createSupplier = new Elysia().post(
           company_id: hasCompany.id,
         },
       })
+
       return {
-        message: "Supplier created successfully",
+        message: "Fornecedor criado com sucesso",
         supplier: newSupplier,
       }
     }
@@ -153,7 +156,7 @@ export const createSupplier = new Elysia().post(
     body: SupplierCreateBody,
     response: ResponseTypes,
     detail: {
-      description: "Create a new supplier",
+      description: "Criar um novo fornecedor",
       tags: ["Supplier"],
     },
   }
