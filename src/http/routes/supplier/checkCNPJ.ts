@@ -24,7 +24,7 @@ export const checkSupplierCNPJ = new Elysia().get(
     if (checkSupplierExists) {
       return {
         message: "Supplier already exists",
-        data: {
+        supplier: {
           id: checkSupplierExists.id,
         },
       }
@@ -42,7 +42,7 @@ export const checkSupplierCNPJ = new Elysia().get(
       200: t.Object(
         {
           message: t.String(),
-          data: t.Object({
+          supplier: t.Object({
             id: t.String(),
           }),
         },
