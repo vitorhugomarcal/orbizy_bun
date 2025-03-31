@@ -21,6 +21,8 @@ export const checkSupplierEIN = new Elysia().get(
       },
     })
 
+    console.log(checkSupplierExists)
+
     if (checkSupplierExists) {
       return {
         message: "Supplier already exists",
