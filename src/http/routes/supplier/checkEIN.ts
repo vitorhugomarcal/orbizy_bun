@@ -1,5 +1,7 @@
 import Elysia, { t } from "elysia"
 import { db } from "../../../lib/prisma"
+import { formatEIN } from "../../../utils/formatEIN"
+import { formatSSN } from "../../../utils/formatSSN"
 import { auth } from "../../authentication"
 import { AuthError } from "../errors/auth-error"
 
@@ -15,14 +17,14 @@ export const checkSupplierEIN = new Elysia().get(
 
     const checkSupplierExists = await db.supplier.findUnique({
       where: {
-        ein,
+        ein: formatEIN(ein) || formatSSN(ein),
       },
     })
 
     if (checkSupplierExists) {
       return {
         message: "Supplier already exists",
-        data: {
+        supplier: {
           id: checkSupplierExists.id,
         },
       }
@@ -40,20 +42,20 @@ export const checkSupplierEIN = new Elysia().get(
       200: t.Object(
         {
           message: t.String(),
-        },
-        {
-          description: "Supplier not found",
-        }
-      ),
-      400: t.Object(
-        {
-          message: t.String(),
-          data: t.Object({
+          supplier: t.Object({
             id: t.String(),
           }),
         },
         {
           description: "Supplier already exists",
+        }
+      ),
+      400: t.Object(
+        {
+          message: t.String(),
+        },
+        {
+          description: "Supplier not found",
         }
       ),
       401: t.Object(
