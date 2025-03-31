@@ -12,6 +12,7 @@ import itemRoutes from "./itens"
 import paymentRoutes from "./payment"
 import scheduleRoutes from "./schedule"
 import stripeRoutes from "./stripe"
+import stripeUSRoutes from "./stripeUS"
 import supplierRoutes from "./supplier"
 import unitRoutes from "./unit"
 import userRoutes from "./users"
@@ -27,6 +28,7 @@ const routes = new Elysia()
   .use(clientsRoutes)
   .use(companyRoutes)
   .use(paymentRoutes)
+  .use(stripeUSRoutes)
   .use(estimateRoutes)
   .use(supplierRoutes)
   .use(scheduleRoutes)
