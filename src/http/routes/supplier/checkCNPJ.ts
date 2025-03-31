@@ -43,7 +43,7 @@ export const checkSupplierCNPJ = new Elysia().get(
         {
           message: t.String(),
           supplier: t.Object({
-            id: t.String(),
+            id: t.Nullable(t.String()),
           }),
         },
         {
