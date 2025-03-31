@@ -82,8 +82,8 @@ export const updateSupplier = new Elysia().put(
   },
   {
     body: t.Object({
-      cnpj: t.Optional(t.String()),
-      ein: t.Optional(t.String()),
+      cnpj: t.Optional(t.Nullable(t.String())),
+      ein: t.Optional(t.Nullable(t.String())),
       phone: t.Optional(t.String()),
       company_name: t.Optional(t.String()),
       email_address: t.Optional(t.String()),
@@ -92,11 +92,11 @@ export const updateSupplier = new Elysia().put(
         state: t.Optional(t.String()),
         city: t.Optional(t.String()),
         postal_code: t.Optional(t.String()),
-        street: t.Optional(t.String()),
-        number: t.Optional(t.String()),
+        street: t.Optional(t.Nullable(t.String())),
+        number: t.Optional(t.Nullable(t.String())),
         neighborhood: t.Optional(t.String()),
-        street_address: t.Optional(t.String()),
-        unit_number: t.Optional(t.String()),
+        street_address: t.Optional(t.Nullable(t.String())),
+        unit_number: t.Optional(t.Nullable(t.String())),
       }),
     }),
     response: {
