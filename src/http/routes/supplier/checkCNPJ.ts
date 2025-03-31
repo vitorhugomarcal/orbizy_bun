@@ -21,7 +21,7 @@ export const checkSupplierCNPJ = new Elysia().get(
       },
     })
 
-    if (checkSupplierExists) {
+    if (checkSupplierExists && checkSupplierExists.id) {
       return {
         message: "Supplier already exists",
         supplier: {

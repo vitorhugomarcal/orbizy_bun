@@ -21,16 +21,16 @@ export const checkSupplierEIN = new Elysia().get(
       },
     })
 
-    if (checkSupplierExists === null) {
-      return {
-        message: "Supplier not found",
-      }
-    } else {
+    if (checkSupplierExists && checkSupplierExists.id) {
       return {
         message: "Supplier already exists",
         supplier: {
           id: checkSupplierExists.id,
         },
+      }
+    } else {
+      return {
+        message: "Supplier not found",
       }
     }
   },
