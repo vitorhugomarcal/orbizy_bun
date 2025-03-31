@@ -28,10 +28,6 @@ export const registerUSCompany = new Elysia().post(
       throw new AuthError("Unauthorized", "UNAUTHORIZED", 401)
     }
 
-    if (!isValidUSTaxId(taxId)) {
-      throw new AuthError("Invalid Tax ID", "INVALID_TAX_ID", 400)
-    }
-
     let accountParams: Stripe.AccountCreateParams = {
       type: "express",
       country: "US",
@@ -154,13 +150,3 @@ export const registerUSCompany = new Elysia().post(
     },
   }
 )
-
-function isValidUSTaxId(taxId: string): boolean {
-  if (taxId.length === 11) {
-    // Validação básica para SSN (9 dígitos)
-    return /^\d{9}$/.test(taxId)
-  } else {
-    // Validação básica para EIN (9 dígitos, geralmente no formato XX-XXXXXXX)
-    return /^\d{2}-?\d{7}$/.test(taxId)
-  }
-}
