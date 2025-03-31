@@ -1,5 +1,7 @@
 import Elysia, { t } from "elysia"
 import { db } from "../../../lib/prisma"
+import { formatCNPJ } from "../../../utils/formatCNPJ"
+import { formatCPF } from "../../../utils/formatCPF"
 import { auth } from "../../authentication"
 import { AuthError } from "../errors/auth-error"
 
@@ -15,7 +17,7 @@ export const checkSupplierCNPJ = new Elysia().get(
 
     const checkSupplierExists = await db.supplier.findUnique({
       where: {
-        cnpj,
+        cnpj: formatCNPJ(cnpj) || formatCPF(cnpj),
       },
     })
 
