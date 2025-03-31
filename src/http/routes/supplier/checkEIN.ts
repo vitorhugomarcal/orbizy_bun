@@ -21,7 +21,7 @@ export const checkSupplierEIN = new Elysia().get(
       },
     })
 
-    if (!checkSupplierExists) {
+    if (checkSupplierExists === null) {
       return {
         message: "Supplier not found",
       }
