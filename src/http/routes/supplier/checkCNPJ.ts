@@ -42,20 +42,20 @@ export const checkSupplierCNPJ = new Elysia().get(
       200: t.Object(
         {
           message: t.String(),
-        },
-        {
-          description: "Supplier not found",
-        }
-      ),
-      400: t.Object(
-        {
-          message: t.String(),
           data: t.Object({
             id: t.String(),
           }),
         },
         {
           description: "Supplier already exists",
+        }
+      ),
+      400: t.Object(
+        {
+          message: t.String(),
+        },
+        {
+          description: "Supplier not found",
         }
       ),
       401: t.Object(
