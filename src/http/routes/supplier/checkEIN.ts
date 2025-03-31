@@ -15,32 +15,22 @@ export const checkSupplierEIN = new Elysia().get(
       throw new AuthError("Unauthorized", "UNAUTHORIZED", 401)
     }
 
-    if (!ein) {
-      throw new AuthError("EIN is required", "EIN_REQUIRED", 400)
-    }
-
-    console.log(ein)
-    console.log(formatEIN(ein))
-    console.log(formatSSN(ein))
-
     const checkSupplierExists = await db.supplier.findUnique({
       where: {
         ein: formatEIN(ein) || formatSSN(ein),
       },
     })
 
-    console.log(checkSupplierExists)
-
-    if (checkSupplierExists) {
+    if (!checkSupplierExists) {
+      return {
+        message: "Supplier not found",
+      }
+    } else {
       return {
         message: "Supplier already exists",
         supplier: {
           id: checkSupplierExists.id,
         },
-      }
-    } else {
-      return {
-        message: "Supplier not found",
       }
     }
   },
