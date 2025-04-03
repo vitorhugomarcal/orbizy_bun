@@ -6,7 +6,7 @@ import { AuthError } from "../errors/auth-error"
 export const updateEstimateItem = new Elysia().put(
   `/itens/estimate/update/:itemInvoiceId`,
   async ({ cookie, body, params }) => {
-    const { name, quantity, price, unit, total } = body
+    const { name, quantity, price, unit, total, description } = body
 
     const user = await auth({ cookie })
     if (!user) {
@@ -46,6 +46,7 @@ export const updateEstimateItem = new Elysia().put(
         quantity,
         price,
         unit,
+        description,
         total,
       },
     })
@@ -68,6 +69,7 @@ export const updateEstimateItem = new Elysia().put(
       quantity: t.Optional(t.Number()),
       price: t.Optional(t.Number()),
       unit: t.Optional(t.String()),
+      description: t.Optional(t.String()),
       total: t.Optional(t.Number()),
     }),
     params: t.Object({
@@ -82,6 +84,7 @@ export const updateEstimateItem = new Elysia().put(
             quantity: t.Number(),
             price: t.Number(),
             unit: t.String(),
+            description: t.Nullable(t.String()),
             total: t.Number(),
           }),
         },

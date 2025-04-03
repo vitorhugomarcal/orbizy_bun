@@ -214,6 +214,7 @@ model EstimateItems {
   price       Decimal
   quantity    Decimal
   unit        String
+  description String?
   total       Decimal
   createdAt   DateTime @default(now())
   estimate_id String

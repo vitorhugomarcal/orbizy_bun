@@ -101,6 +101,7 @@ export const getEstimateById = new Elysia().get(
                 price: t.Number(),
                 quantity: t.Number(),
                 unit: t.String(),
+                description: t.Nullable(t.String()),
                 total: t.Number(),
               })
             ),
