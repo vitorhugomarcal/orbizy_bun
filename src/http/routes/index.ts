@@ -1,5 +1,6 @@
 import { Elysia } from "elysia"
 import authRoutes from "./auth"
+import categoryRoutes from "./category"
 import clientsRoutes from "./clients"
 import companyRoutes from "./company"
 import estimateRoutes from "./estimate"
@@ -28,6 +29,7 @@ const routes = new Elysia()
   .use(clientsRoutes)
   .use(companyRoutes)
   .use(paymentRoutes)
+  .use(categoryRoutes)
   .use(stripeUSRoutes)
   .use(estimateRoutes)
   .use(supplierRoutes)

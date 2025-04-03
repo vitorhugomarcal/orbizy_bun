@@ -50,7 +50,8 @@ model Company {
   estimateSupplier  EstimateSupplier[]
   paymentModeCustom PaymentModeCustom[]
 
-  address Address @relation(fields: [address_id], references: [id], onDelete: Cascade)
+  address        Address          @relation(fields: [address_id], references: [id], onDelete: Cascade)
+  CategoryCustom CategoryCustom[]
 
   @@map("companies")
 }
@@ -176,6 +177,18 @@ model UnitTypeCustom {
   @@map("unit_types_custom")
 }
 
+model CategoryCustom {
+  id   String @id @default(uuid())
+  name String
+
+  company    Company @relation(fields: [company_id], references: [id])
+  company_id String
+
+  item Item[]
+
+  @@map("category_custom")
+}
+
 model Item {
   id          String   @id @default(uuid())
   name        String
@@ -184,6 +197,9 @@ model Item {
   unit        String
   company_id  String?  @map("company_id")
   company     Company? @relation(fields: [company_id], references: [id], onDelete: Cascade)
+
+  CategoryCustom     CategoryCustom? @relation(fields: [category_custom_id], references: [id], onDelete: Cascade)
+  category_custom_id String?
 
   @@map("items")
 }

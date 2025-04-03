@@ -62,6 +62,7 @@ export const getCompanyById = new Elysia().get(
         pendingUsers: true,
         user: true,
         unitTypeCustom: true,
+        CategoryCustom: true,
         schedule: {
           include: {
             client: true,
@@ -295,6 +296,13 @@ export const getCompanyById = new Elysia().get(
               })
             ),
             unitTypeCustom: t.Array(
+              t.Object({
+                id: t.String(),
+                name: t.String(),
+                company_id: t.Nullable(t.String()),
+              })
+            ),
+            CategoryCustom: t.Array(
               t.Object({
                 id: t.String(),
                 name: t.String(),
