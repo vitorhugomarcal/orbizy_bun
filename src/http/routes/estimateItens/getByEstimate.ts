@@ -37,7 +37,7 @@ export const getByEstimate = new Elysia().get(
         name: item.name,
         estimate_id: item.estimate_id,
         unit: item.unit,
-        description: item.description,
+        description: item.description || null,
         price: Number(item.price),
         quantity: Number(item.quantity),
         total: Number(item.total),
