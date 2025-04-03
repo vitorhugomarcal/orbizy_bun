@@ -181,8 +181,8 @@ model CategoryCustom {
   id   String @id @default(uuid())
   name String
 
-  company    Company @relation(fields: [company_id], references: [id])
-  company_id String
+  company    Company? @relation(fields: [company_id], references: [id])
+  company_id String?
 
   item Item[]
 
