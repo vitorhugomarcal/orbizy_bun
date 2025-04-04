@@ -18,6 +18,8 @@ export const createInvoice = new Elysia().post(
 
     const { invoiceId } = params
 
+    console.log(invoiceId)
+
     if (!invoiceId) {
       throw new AuthError(
         "Invoice ID not provided",
@@ -138,7 +140,7 @@ export const createInvoice = new Elysia().post(
       where: { id: invoiceId },
       data: {
         stripeInvoiceId: finalizedInvoice.id,
-        status: "PENDING",
+        status: "SENT",
         paymentUrl: finalizedInvoice.hosted_invoice_url,
       },
     })
