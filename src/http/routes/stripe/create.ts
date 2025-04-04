@@ -80,7 +80,7 @@ export const createInvoice = new Elysia().post(
       },
     }
 
-    console.log(formattedInvoice)
+    console.log(JSON.stringify(formattedInvoice, null, 2))
 
     if (!hasCompany.stripeAccountId) {
       throw new AuthError(
