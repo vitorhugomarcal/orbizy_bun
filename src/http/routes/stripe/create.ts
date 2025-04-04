@@ -6,10 +6,10 @@ import { auth } from "../../authentication"
 import { AuthError } from "../errors/auth-error"
 
 export const createInvoice = new Elysia().post(
-  `/stripe/create/invoice`,
-  async ({ cookie, body }) => {
+  `/stripe/create/invoice/:invoiceId`,
+  async ({ cookie, params }) => {
     const stripe = new Stripe(env.STRIPE_SECRET_KEY)
-    const { invoiceId } = body
+    const { invoiceId } = params
 
     const user = await auth({ cookie })
     if (!user) {
@@ -40,6 +40,8 @@ export const createInvoice = new Elysia().post(
       },
     })
 
+    console.log("INVOICE => ", invoice)
+
     if (!invoice || !hasCompany) {
       throw new AuthError("Fatura não encontrada", "INVOICE_NOT_FOUND", 404)
     }
@@ -58,14 +60,8 @@ export const createInvoice = new Elysia().post(
         name: invoice.estimate.client?.name,
         phone: invoice.estimate.client?.phone,
         address: {
-          line1:
-            invoice.estimate.client?.address?.street_address ||
-            invoice.estimate.client?.address?.street ||
-            "",
-          line2:
-            invoice.estimate.client?.address?.unit_number ||
-            invoice.estimate.client?.address?.number ||
-            "",
+          line1: invoice.estimate.client?.address?.street || "",
+          line2: invoice.estimate.client?.address?.number || "",
           city: invoice.estimate.client?.address?.city,
           state: invoice.estimate.client?.address?.state,
           postal_code: invoice.estimate.client?.address?.postal_code,
@@ -144,7 +140,7 @@ export const createInvoice = new Elysia().post(
     }
   },
   {
-    body: t.Object({
+    params: t.Object({
       invoiceId: t.String(),
     }),
     response: {
