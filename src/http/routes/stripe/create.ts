@@ -40,8 +40,6 @@ export const createInvoice = new Elysia().post(
       },
     })
 
-    console.log("INVOICE => ", invoice)
-
     if (!invoice || !hasCompany) {
       throw new AuthError("Fatura não encontrada", "INVOICE_NOT_FOUND", 404)
     }
@@ -73,8 +71,6 @@ export const createInvoice = new Elysia().post(
       }
     )
 
-    console.log("STRIPE CUSTOMER => ", stripeCustomer)
-
     const stripeInvoice = await stripe.invoices.create(
       {
         customer: stripeCustomer.id,
@@ -87,24 +83,14 @@ export const createInvoice = new Elysia().post(
         metadata: {
           invoiceId: invoice.id,
         },
-        // number: invoice.invoice_number!,
+        number: invoice.invoice_number!,
       },
       {
         stripeAccount: hasCompany.stripeAccountId,
       }
     )
 
-    console.log("STRIPE INVOICE => ", stripeInvoice)
-
     for (const item of invoice.estimate.EstimateItems) {
-      console.log("Criando item da fatura:", {
-        customer: stripeCustomer.id,
-        description: `${item.name} - ${item.description}`,
-        currency: "brl",
-        quantity: Number(item.quantity),
-        unit_amount: Math.round(Number(item.price) * 100),
-        invoice: stripeInvoice.id,
-      })
       try {
         await stripe.invoiceItems.create(
           {
@@ -120,12 +106,9 @@ export const createInvoice = new Elysia().post(
           }
         )
       } catch (error) {
-        console.error(`Erro ao criar item da fatura: ${error.message}`)
-        // Você pode optar por lançar o erro aqui ou lidar com ele de outra forma
+        console.error(`Erro ao criar item da fatura`)
       }
     }
-
-    console.log("STRIPE INVOICE ITEMS => ", stripeInvoice)
 
     const finalizedInvoice = await stripe.invoices.finalizeInvoice(
       stripeInvoice.id,
