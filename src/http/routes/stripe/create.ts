@@ -73,6 +73,8 @@ export const createInvoice = new Elysia().post(
       }
     )
 
+    console.log("STRIPE CUSTOMER => ", stripeCustomer)
+
     const stripeInvoice = await stripe.invoices.create(
       {
         customer: stripeCustomer.id,
@@ -92,6 +94,8 @@ export const createInvoice = new Elysia().post(
       }
     )
 
+    console.log("STRIPE INVOICE => ", stripeInvoice)
+
     for (const item of invoice.estimate.EstimateItems) {
       const response = await stripe.invoiceItems.create(
         {
@@ -109,6 +113,8 @@ export const createInvoice = new Elysia().post(
       )
       console.log("AQUI", JSON.stringify(response, null, 2))
     }
+
+    console.log("STRIPE INVOICE ITEMS => ", stripeInvoice)
 
     const finalizedInvoice = await stripe.invoices.finalizeInvoice(
       stripeInvoice.id,
