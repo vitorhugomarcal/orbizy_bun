@@ -9,11 +9,21 @@ export const createInvoice = new Elysia().post(
   `/stripe/create/invoice/:invoiceId`,
   async ({ cookie, params }) => {
     const stripe = new Stripe(env.STRIPE_SECRET_KEY)
-    const { invoiceId } = params
 
     const user = await auth({ cookie })
+
     if (!user) {
       throw new AuthError("Unauthorized", "UNAUTHORIZED", 401)
+    }
+
+    const { invoiceId } = params
+
+    if (!invoiceId) {
+      throw new AuthError(
+        "Invoice ID not provided",
+        "INVOICE_ID_NOT_PROVIDED",
+        400
+      )
     }
 
     const hasCompany = user.Company
@@ -40,7 +50,7 @@ export const createInvoice = new Elysia().post(
       },
     })
 
-    if (!invoice || !hasCompany) {
+    if (!invoice) {
       throw new AuthError("Fatura não encontrada", "INVOICE_NOT_FOUND", 404)
     }
 
@@ -83,7 +93,7 @@ export const createInvoice = new Elysia().post(
         metadata: {
           invoiceId: invoice.id,
         },
-        number: invoice.invoice_number!,
+        number: invoice.invoice_number || "",
       },
       {
         stripeAccount: hasCompany.stripeAccountId,
