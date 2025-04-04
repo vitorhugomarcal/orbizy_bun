@@ -101,19 +101,13 @@ export const createInvoice = new Elysia().post(
     )
 
     for (const item of invoice.estimate.EstimateItems) {
-      console.log("Criando item da fatura:", {
-        customer: stripeCustomer.id,
-        description: `${item.name} - ${item.description}`,
-        currency: "brl",
-        quantity: Number(item.quantity),
-        unit_amount: Math.round(Number(item.price) * 100),
-        invoice: stripeInvoice.id,
-      })
       try {
         await stripe.invoiceItems.create(
           {
             customer: stripeCustomer.id,
-            description: `${item.name} - ${item.description}`,
+            description: item.description
+              ? `${item.name} - ${item.description}`
+              : item.name,
             currency: "brl",
             quantity: Number(item.quantity),
             unit_amount: Math.round(Number(item.price) * 100),
@@ -127,8 +121,6 @@ export const createInvoice = new Elysia().post(
         console.error(`Erro ao criar item da fatura`)
       }
     }
-
-    console.log("STRIPE INVOICE ITEMS => ", stripeInvoice)
 
     const finalizedInvoice = await stripe.invoices.finalizeInvoice(
       stripeInvoice.id,
