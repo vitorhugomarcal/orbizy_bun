@@ -21,6 +21,7 @@ export const createCategoryByCompany = new Elysia().post(
     const checkCategoryExists = await db.categoryCustom.findFirst({
       where: {
         name,
+        company_id: company.id,
       },
     })
 
