@@ -29,6 +29,7 @@ export const createInvoice = new Elysia().post(
       include: {
         estimate: {
           include: {
+            EstimateItems: true,
             client: {
               include: {
                 address: true,
@@ -94,18 +95,21 @@ export const createInvoice = new Elysia().post(
       }
     )
 
-    await stripe.invoiceItems.create(
-      {
-        customer: stripeCustomer.id,
-        amount: Math.round(Number(invoice.total) * 100), // Stripe usa centavos, arredondamos para evitar problemas com decimais
-        currency: user.country === "BR" ? "brl" : "usd",
-        description: `${invoice.invoice_number}`,
-        invoice: stripeInvoice.id,
-      },
-      {
-        stripeAccount: hasCompany.stripeAccountId,
-      }
-    )
+    for (const item of invoice.estimate.EstimateItems) {
+      await stripe.invoiceItems.create(
+        {
+          customer: stripeCustomer.id,
+          amount: Math.round(Number(item.total) * 100),
+          currency: user.country === "BR" ? "brl" : "usd",
+          description: `${item.name} - ${item.description}`,
+          quantity: Number(item.quantity),
+          invoice: stripeInvoice.id,
+        },
+        {
+          stripeAccount: hasCompany.stripeAccountId,
+        }
+      )
+    }
 
     const finalizedInvoice = await stripe.invoices.finalizeInvoice(
       stripeInvoice.id,
