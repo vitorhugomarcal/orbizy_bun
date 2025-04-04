@@ -6,14 +6,24 @@ import { auth } from "../../authentication"
 import { AuthError } from "../errors/auth-error"
 
 export const createInvoice = new Elysia().post(
-  `/stripe/us/create/invoice`,
-  async ({ cookie, body }) => {
+  `/stripe/us/create/invoice/:invoiceId`,
+  async ({ cookie, params }) => {
     const stripe = new Stripe(env.STRIPE_US_SECRET_KEY)
-    const { invoiceId } = body
 
     const user = await auth({ cookie })
+
     if (!user) {
       throw new AuthError("Unauthorized", "UNAUTHORIZED", 401)
+    }
+
+    const { invoiceId } = params
+
+    if (!invoiceId) {
+      throw new AuthError(
+        "Invoice ID not provided",
+        "INVOICE_ID_NOT_PROVIDED",
+        400
+      )
     }
 
     const hasCompany = user.Company
@@ -29,6 +39,7 @@ export const createInvoice = new Elysia().post(
       include: {
         estimate: {
           include: {
+            EstimateItems: true,
             client: {
               include: {
                 address: true,
@@ -39,8 +50,32 @@ export const createInvoice = new Elysia().post(
       },
     })
 
-    if (!invoice || !hasCompany) {
+    if (!invoice) {
       throw new AuthError("Fatura não encontrada", "INVOICE_NOT_FOUND", 404)
+    }
+
+    const formattedInvoice = {
+      ...invoice,
+      total: Number(invoice.total),
+      estimate: {
+        ...invoice?.estimate,
+        total: Number(invoice?.estimate?.total),
+        sub_total: Number(invoice?.estimate?.sub_total),
+        EstimateItems: invoice?.estimate?.EstimateItems.map((item) => {
+          return {
+            ...item,
+            total: Number(item.total),
+            price: Number(item.price),
+            quantity: Number(item.quantity),
+          }
+        }),
+        client: {
+          ...invoice?.estimate?.client,
+          address: {
+            ...invoice?.estimate?.client?.address,
+          },
+        },
+      },
     }
 
     if (!hasCompany.stripeAccountId) {
@@ -51,30 +86,42 @@ export const createInvoice = new Elysia().post(
       )
     }
 
-    let stripeCustomer = await stripe.customers.create(
+    let stripeCustomer
+
+    const customers = await stripe.customers.list(
       {
         email: invoice.estimate.client?.email_address,
-        name: invoice.estimate.client?.name,
-        phone: invoice.estimate.client?.phone,
-        address: {
-          line1:
-            invoice.estimate.client?.address?.street_address ||
-            invoice.estimate.client?.address?.street ||
-            "",
-          line2:
-            invoice.estimate.client?.address?.unit_number ||
-            invoice.estimate.client?.address?.number ||
-            "",
-          city: invoice.estimate.client?.address?.city,
-          state: invoice.estimate.client?.address?.state,
-          postal_code: invoice.estimate.client?.address?.postal_code,
-          country: invoice.estimate.client?.address?.country,
-        },
+        limit: 1,
       },
       {
         stripeAccount: hasCompany.stripeAccountId,
       }
     )
+
+    if (!customers.data.length) {
+      stripeCustomer = await stripe.customers.create(
+        {
+          email: invoice.estimate.client?.email_address,
+          name: invoice.estimate.client?.company_name
+            ? invoice.estimate.client.company_name
+            : invoice.estimate.client?.name,
+          phone: invoice.estimate.client?.phone,
+          address: {
+            line1: invoice.estimate.client?.address?.street_address || "",
+            line2: invoice.estimate.client?.address?.unit_number || "",
+            city: invoice.estimate.client?.address?.city,
+            state: invoice.estimate.client?.address?.state,
+            postal_code: invoice.estimate.client?.address?.postal_code,
+            country: invoice.estimate.client?.address?.country,
+          },
+        },
+        {
+          stripeAccount: hasCompany.stripeAccountId,
+        }
+      )
+    } else {
+      stripeCustomer = customers.data[0]
+    }
 
     const stripeInvoice = await stripe.invoices.create(
       {
@@ -94,18 +141,28 @@ export const createInvoice = new Elysia().post(
       }
     )
 
-    await stripe.invoiceItems.create(
-      {
-        customer: stripeCustomer.id,
-        amount: Math.round(Number(invoice.total) * 100), // Stripe usa centavos, arredondamos para evitar problemas com decimais
-        currency: user.country === "BR" ? "brl" : "usd",
-        description: `${invoice.invoice_number}`,
-        invoice: stripeInvoice.id,
-      },
-      {
-        stripeAccount: hasCompany.stripeAccountId,
+    for (const item of formattedInvoice.estimate.EstimateItems) {
+      try {
+        await stripe.invoiceItems.create(
+          {
+            customer: stripeCustomer.id,
+            description: item.description
+              ? `${item.name} - ${item.description}`
+              : item.name,
+            currency: "usd",
+            quantity: item.quantity,
+            unit_amount: Math.round(item.price * 100),
+            invoice: stripeInvoice.id,
+          },
+          {
+            stripeAccount: hasCompany.stripeAccountId,
+          }
+        )
+      } catch (error) {
+        console.error(`Erro ao criar item da fatura`)
+        // Você pode optar por lançar o erro aqui ou lidar com ele de outra forma
       }
-    )
+    }
 
     const finalizedInvoice = await stripe.invoices.finalizeInvoice(
       stripeInvoice.id,
@@ -121,7 +178,7 @@ export const createInvoice = new Elysia().post(
       where: { id: invoiceId },
       data: {
         stripeInvoiceId: finalizedInvoice.id,
-        status: "PENDING",
+        status: "SENT",
         paymentUrl: finalizedInvoice.hosted_invoice_url,
       },
     })
@@ -137,7 +194,7 @@ export const createInvoice = new Elysia().post(
     }
   },
   {
-    body: t.Object({
+    params: t.Object({
       invoiceId: t.String(),
     }),
     response: {
