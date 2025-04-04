@@ -18,8 +18,6 @@ export const createInvoice = new Elysia().post(
 
     const { invoiceId } = params
 
-    console.log(invoiceId)
-
     if (!invoiceId) {
       throw new AuthError(
         "Invoice ID not provided",
@@ -80,8 +78,6 @@ export const createInvoice = new Elysia().post(
       },
     }
 
-    console.log(JSON.stringify(formattedInvoice, null, 2))
-
     if (!hasCompany.stripeAccountId) {
       throw new AuthError(
         "A empresa não possui uma conta Stripe Connect ativa",
@@ -90,24 +86,40 @@ export const createInvoice = new Elysia().post(
       )
     }
 
-    let stripeCustomer = await stripe.customers.create(
+    let stripeCustomer
+
+    const customers = await stripe.customers.list(
       {
         email: invoice.estimate.client?.email_address,
-        name: invoice.estimate.client?.name,
-        phone: invoice.estimate.client?.phone,
-        address: {
-          line1: invoice.estimate.client?.address?.street || "",
-          line2: invoice.estimate.client?.address?.number || "",
-          city: invoice.estimate.client?.address?.city,
-          state: invoice.estimate.client?.address?.state,
-          postal_code: invoice.estimate.client?.address?.postal_code,
-          country: invoice.estimate.client?.address?.country,
-        },
+        limit: 1,
       },
       {
         stripeAccount: hasCompany.stripeAccountId,
       }
     )
+
+    if (!customers.data.length) {
+      stripeCustomer = await stripe.customers.create(
+        {
+          email: invoice.estimate.client?.email_address,
+          name: invoice.estimate.client?.name,
+          phone: invoice.estimate.client?.phone,
+          address: {
+            line1: invoice.estimate.client?.address?.street || "",
+            line2: invoice.estimate.client?.address?.number || "",
+            city: invoice.estimate.client?.address?.city,
+            state: invoice.estimate.client?.address?.state,
+            postal_code: invoice.estimate.client?.address?.postal_code,
+            country: invoice.estimate.client?.address?.country,
+          },
+        },
+        {
+          stripeAccount: hasCompany.stripeAccountId,
+        }
+      )
+    } else {
+      stripeCustomer = customers.data[0]
+    }
 
     const stripeInvoice = await stripe.invoices.create(
       {
@@ -116,8 +128,8 @@ export const createInvoice = new Elysia().post(
         payment_settings: {
           payment_method_types: ["card"],
         },
-        days_until_due: 7, // Ajuste conforme necessário
-        auto_advance: false, // Impede que a invoice seja finalizada automaticamente
+        days_until_due: 7,
+        auto_advance: false,
         metadata: {
           invoiceId: invoice.id,
         },
@@ -146,6 +158,7 @@ export const createInvoice = new Elysia().post(
         )
       } catch (error) {
         console.error(`Erro ao criar item da fatura`)
+        // Você pode optar por lançar o erro aqui ou lidar com ele de outra forma
       }
     }
 
