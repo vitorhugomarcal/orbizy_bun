@@ -52,11 +52,35 @@ export const createInvoice = new Elysia().post(
       },
     })
 
-    console.log(invoice)
-
     if (!invoice) {
       throw new AuthError("Fatura não encontrada", "INVOICE_NOT_FOUND", 404)
     }
+
+    const formattedInvoice = {
+      ...invoice,
+      total: Number(invoice.total),
+      estimate: {
+        ...invoice?.estimate,
+        total: Number(invoice?.estimate?.total),
+        sub_total: Number(invoice?.estimate?.sub_total),
+        EstimateItems: invoice?.estimate?.EstimateItems.map((item) => {
+          return {
+            ...item,
+            total: Number(item.total),
+            price: Number(item.price),
+            quantity: Number(item.quantity),
+          }
+        }),
+        client: {
+          ...invoice?.estimate?.client,
+          address: {
+            ...invoice?.estimate?.client?.address,
+          },
+        },
+      },
+    }
+
+    console.log(formattedInvoice)
 
     if (!hasCompany.stripeAccountId) {
       throw new AuthError(
@@ -104,7 +128,7 @@ export const createInvoice = new Elysia().post(
       }
     )
 
-    for (const item of invoice.estimate.EstimateItems) {
+    for (const item of formattedInvoice.estimate.EstimateItems) {
       try {
         await stripe.invoiceItems.create(
           {
@@ -113,8 +137,8 @@ export const createInvoice = new Elysia().post(
               ? `${item.name} - ${item.description}`
               : item.name,
             currency: "brl",
-            quantity: Number(item.quantity),
-            unit_amount: Math.round(Number(item.price) * 100),
+            quantity: item.quantity,
+            unit_amount: Math.round(item.price * 100),
             invoice: stripeInvoice.id,
           },
           {
