@@ -97,21 +97,32 @@ export const createInvoice = new Elysia().post(
     console.log("STRIPE INVOICE => ", stripeInvoice)
 
     for (const item of invoice.estimate.EstimateItems) {
-      const response = await stripe.invoiceItems.create(
-        {
-          customer: stripeCustomer.id,
-          description: `${item.name} - ${item.description}`,
-          amount: Math.round(Number(item.total) * 100),
-          currency: "brl",
-          unit_amount: Math.round(Number(item.price) * 100),
-          quantity: Number(item.quantity),
-          invoice: stripeInvoice.id,
-        },
-        {
-          stripeAccount: hasCompany.stripeAccountId,
-        }
-      )
-      console.log("AQUI", JSON.stringify(response, null, 2))
+      console.log("Criando item da fatura:", {
+        customer: stripeCustomer.id,
+        description: `${item.name} - ${item.description}`,
+        currency: "brl",
+        quantity: Number(item.quantity),
+        unit_amount: Math.round(Number(item.price) * 100),
+        invoice: stripeInvoice.id,
+      })
+      try {
+        await stripe.invoiceItems.create(
+          {
+            customer: stripeCustomer.id,
+            description: `${item.name} - ${item.description}`,
+            currency: "brl",
+            quantity: Number(item.quantity),
+            unit_amount: Math.round(Number(item.price) * 100),
+            invoice: stripeInvoice.id,
+          },
+          {
+            stripeAccount: hasCompany.stripeAccountId,
+          }
+        )
+      } catch (error) {
+        console.error(`Erro ao criar item da fatura: ${error.message}`)
+        // Você pode optar por lançar o erro aqui ou lidar com ele de outra forma
+      }
     }
 
     console.log("STRIPE INVOICE ITEMS => ", stripeInvoice)
