@@ -24,6 +24,7 @@ export const getInvoiceById = new Elysia().get(
       include: {
         estimate: {
           include: {
+            EstimateItems: true,
             client: { include: { address: true } },
           },
         },
@@ -72,6 +73,16 @@ export const getInvoiceById = new Elysia().get(
               notes: t.String(),
               sub_total: t.Number(),
               total: t.Number(),
+              EstimateItems: t.Array(
+                t.Object({
+                  id: t.String(),
+                  name: t.String(),
+                  description: t.String(),
+                  quantity: t.Number(),
+                  price: t.Number(),
+                  total: t.Number(),
+                })
+              ),
               client: t.Object({
                 id: t.String(),
                 name: t.String(),
