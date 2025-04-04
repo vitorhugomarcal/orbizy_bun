@@ -89,7 +89,7 @@ export const createInvoice = new Elysia().post(
         metadata: {
           invoiceId: invoice.id,
         },
-        number: invoice.invoice_number!,
+        // number: invoice.invoice_number!,
       },
       {
         stripeAccount: hasCompany.stripeAccountId,
