@@ -4,7 +4,7 @@ import { auth } from "../../authentication"
 import { AuthError } from "../errors/auth-error"
 
 export const getInvoiceByEstimateId = new Elysia().get(
-  `/invoice/:estimateId`,
+  `/invoice/estimate/:estimateId`,
   async ({ cookie, params }) => {
     const user = await auth({ cookie })
     if (!user) {
