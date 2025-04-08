@@ -382,8 +382,9 @@ export const getCompany = new Elysia().get(
                 id: t.String(),
                 name: t.String(),
                 price: t.Number(),
-                description: t.Nullable(t.String()),
                 unit: t.String(),
+                description: t.Nullable(t.String()),
+                category_custom_id: t.Nullable(t.String()),
               })
             ),
             unitTypeCustom: t.Array(
