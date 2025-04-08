@@ -60,6 +60,7 @@ export const getById = new Elysia().get(
             price: t.Number(),
             description: t.String(),
             unit: t.String(),
+            category_custom_id: t.String(),
           }),
         },
         {
