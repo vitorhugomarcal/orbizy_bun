@@ -40,9 +40,27 @@ export const createServiceOrder = new Elysia().post(
       throw new AuthError("Estimate not found", "ESTIMATE_NOT_FOUND", 404)
     }
 
+    const countAllServiceOrder = await db.serviceOrder.count({
+      where: {
+        company_id: hasCompany,
+      },
+    })
+
+    const currentYear = new Date().getFullYear()
+
+    const serviceOrderNumber = `#${String(countAllServiceOrder + 1).padStart(
+      4,
+      "0"
+    )}-${currentYear} - ${
+      checkEstimateExists.client?.type === "jurídica"
+        ? checkEstimateExists.client?.company_name
+        : checkEstimateExists.client?.name
+    }`
+
     const order = await db.serviceOrder.create({
       data: {
         estimate_id: checkEstimateExists.id,
+        order_number: serviceOrderNumber,
         user_id: userId,
         status: "PENDING",
         company_id: hasCompany,
