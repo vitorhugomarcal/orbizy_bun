@@ -52,7 +52,7 @@ export const createItem = new Elysia().post(
       price: t.Number(),
       description: t.String(),
       unit: t.String(),
-      category_custom_id: t.Nullable(t.String()),
+      category_custom_id: t.Optional(t.String()),
     }),
     response: {
       201: t.Object(
@@ -64,7 +64,7 @@ export const createItem = new Elysia().post(
             price: t.Number(),
             description: t.String(),
             unit: t.String(),
-            category_custom_id: t.String(),
+            category_custom_id: t.Nullable(t.String()),
           }),
         },
         {
