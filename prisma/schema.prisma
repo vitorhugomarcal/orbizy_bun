@@ -8,18 +8,19 @@ datasource db {
 }
 
 model User {
-  id                 String        @id @default(uuid())
+  id                 String         @id @default(uuid())
   name               String?
-  email              String        @unique
+  email              String         @unique
   country            String
   company_id         String?
-  role               Role          @default(BASIC)
-  type               Type          @default(basic)
-  createdAt          DateTime      @default(now())
-  updatedAt          DateTime      @updatedAt @map("updated_at")
+  role               Role           @default(BASIC)
+  type               Type           @default(basic)
+  createdAt          DateTime       @default(now())
+  updatedAt          DateTime       @updatedAt @map("updated_at")
   AuthLinks          AuthLinks[]
   PendingUserInvites PendingUser[]
-  Company            Company?      @relation(fields: [company_id], references: [id], onDelete: Cascade)
+  Company            Company?       @relation(fields: [company_id], references: [id], onDelete: Cascade)
+  ServiceOrder       ServiceOrder[]
 
   @@map("users")
 }
@@ -44,14 +45,15 @@ model Company {
   schedule          Schedule[]
   estimate          Estimate[]
   inviteLinks       InviteLinks[]
-  supplierUser      SupplierUser[]
   pendingUsers      PendingUser[]
+  serviceOrder      ServiceOrder[]
+  supplierUser      SupplierUser[]
+  CategoryCustom    CategoryCustom[]
   unitTypeCustom    UnitTypeCustom[]
   estimateSupplier  EstimateSupplier[]
   paymentModeCustom PaymentModeCustom[]
 
-  address        Address          @relation(fields: [address_id], references: [id], onDelete: Cascade)
-  CategoryCustom CategoryCustom[]
+  address Address @relation(fields: [address_id], references: [id], onDelete: Cascade)
 
   @@map("companies")
 }
@@ -217,6 +219,7 @@ model Estimate {
 
   Invoice       Invoice[]
   EstimateItems EstimateItems[]
+  service_order ServiceOrder[]
 
   client  Client?  @relation(fields: [client_id], references: [id], onDelete: Cascade)
   company Company? @relation(fields: [company_id], references: [id], onDelete: Cascade)
@@ -300,6 +303,24 @@ model EstimateSupplierItems {
   estimateSupplier     EstimateSupplier @relation(fields: [estimate_supplier_id], references: [id], onDelete: Cascade)
 
   @@map("estimate_supplier_items")
+}
+
+model ServiceOrder {
+  id           String    @id @default(uuid())
+  order_number String?
+  status       String
+  notes        String?
+  created_at   DateTime  @default(now())
+  finished_at  DateTime?
+
+  estimate_id String
+  user_id     String
+  company_id  String
+  user        User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  company     Company  @relation(fields: [company_id], references: [id], onDelete: Cascade)
+  estimate    Estimate @relation(fields: [estimate_id], references: [id], onDelete: Cascade)
+
+  @@map("service_orders")
 }
 
 model AuthLinks {

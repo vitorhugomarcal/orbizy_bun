@@ -63,6 +63,16 @@ export const getCompanyById = new Elysia().get(
         user: true,
         unitTypeCustom: true,
         CategoryCustom: true,
+        serviceOrder: {
+          include: {
+            estimate: {
+              include: {
+                client: { include: { address: true } },
+              },
+            },
+            user: true,
+          },
+        },
         schedule: {
           include: {
             client: true,
@@ -283,6 +293,36 @@ export const getCompanyById = new Elysia().get(
                     street_address: t.Nullable(t.String()),
                     unit_number: t.Nullable(t.String()),
                   }),
+                }),
+              })
+            ),
+            serviceOrder: t.Array(
+              t.Object({
+                id: t.String(),
+                order_number: t.Nullable(t.String()),
+                status: t.Nullable(t.String()),
+                notes: t.Nullable(t.String()),
+                created_at: t.Date(),
+                finished_at: t.Nullable(t.Date()),
+                client: t.Object({
+                  id: t.String(),
+                  type: t.String(),
+                  name: t.String(),
+                  company_name: t.Nullable(t.String()),
+                  phone: t.String(),
+                  address: t.Object({
+                    id: t.String(),
+                    country: t.String(),
+                    city: t.String(),
+                    state: t.String(),
+                    postal_code: t.String(),
+                    street: t.Nullable(t.String()),
+                  }),
+                }),
+                user: t.Object({
+                  id: t.String(),
+                  name: t.String(),
+                  email: t.String(),
                 }),
               })
             ),
