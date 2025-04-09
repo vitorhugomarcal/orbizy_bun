@@ -23,6 +23,7 @@ export const getEstimateById = new Elysia().get(
       },
       include: {
         EstimateItems: true,
+        service_order: true,
         client: {
           include: {
             address: true,
@@ -70,6 +71,11 @@ export const getEstimateById = new Elysia().get(
             sub_total: t.Number(),
             total: t.Number(),
             client_id: t.String(),
+            service_order: t.Array(
+              t.Object({
+                id: t.Nullable(t.String()),
+              })
+            ),
             client: t.Object({
               id: t.String(),
               name: t.String(),
