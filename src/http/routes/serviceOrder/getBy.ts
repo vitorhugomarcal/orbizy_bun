@@ -31,6 +31,8 @@ export const getOrderById = new Elysia().get(
       },
     })
 
+    console.log(JSON.stringify(order, null, 2))
+
     if (!order) {
       throw new AuthError(
         "Ordem de serviço não encontrada",
