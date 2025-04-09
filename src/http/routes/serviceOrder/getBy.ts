@@ -68,10 +68,10 @@ export const getOrderById = new Elysia().get(
               client: t.Object({
                 id: t.String(),
                 name: t.String(),
-                type: t.String(),
                 company_name: t.Nullable(t.String()),
                 email_address: t.Nullable(t.String()),
                 phone: t.String(),
+                type: t.String(),
                 address: t.Object({
                   id: t.String(),
                   country: t.String(),
@@ -88,7 +88,7 @@ export const getOrderById = new Elysia().get(
               user: t.Object({
                 id: t.String(),
                 name: t.String(),
-                email_address: t.String(),
+                email: t.String(),
               }),
             }),
           }),
