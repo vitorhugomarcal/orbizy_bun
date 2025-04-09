@@ -62,13 +62,13 @@ export const getOrderById = new Elysia().get(
             estimate: t.Object({
               id: t.String(),
               estimate_number: t.String(),
-              notes: t.String(),
+              notes: t.Nullable(t.String()),
               client: t.Object({
                 id: t.String(),
                 name: t.String(),
                 type: t.String(),
                 company_name: t.Nullable(t.String()),
-                email_address: t.String(),
+                email_address: t.Nullable(t.String()),
                 phone: t.String(),
                 address: t.Object({
                   id: t.String(),
