@@ -297,9 +297,11 @@ export const getCompany = new Elysia().get(
                 sub_total: t.Nullable(t.Number()),
                 total: t.Nullable(t.Number()),
                 createdAt: t.Date(),
-                service_order: t.Object({
-                  id: t.String(),
-                }),
+                service_order: t.Array(
+                  t.Object({
+                    id: t.Nullable(t.String()),
+                  })
+                ),
                 client: t.Object({
                   id: t.String(),
                   type: t.String(),
